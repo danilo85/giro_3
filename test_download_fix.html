@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Download Fix</title>
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="test-token-123">
+</head>
+<body>
+    <h1>Test Download Fix</h1>
+    <button id="testBtn">Test CSRF Token Fix</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testBtn').addEventListener('click', function() {
+            const resultDiv = document.getElementById('result');
+            
+            // Testar se o token CSRF é obtido corretamente
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            
+            if (csrfToken) {
+                const tokenValue = csrfToken.getAttribute('content');
+                resultDiv.innerHTML = `
+                    <p style="color: green;">✅ Token CSRF encontrado: ${tokenValue}</p>
+                    <p>Método correto: csrfToken.getAttribute('content')</p>
+                    <p>Valor obtido: ${tokenValue}</p>
+                `;
+                
+                // Simular a requisição que seria feita
+                console.log('Token CSRF obtido corretamente:', tokenValue);
+                console.log('Header que seria enviado:', {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': tokenValue,
+                    'Accept': 'application/json'
+                });
+            } else {
+                resultDiv.innerHTML = '<p style="color: red;">❌ Token CSRF não encontrado</p>';
+            }
+        });
+    </script>
+</body>
+</html>

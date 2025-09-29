@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Acesso à Rota</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { margin: 10px 5px; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Teste de Acesso à Rota de Download em Lote</h1>
+    
+    <div>
+        <button onclick="checkAuth()">1. Verificar Autenticação</button>
+        <button onclick="testRouteAccess()">2. Testar Acesso à Rota</button>
+        <button onclick="testWithValidData()">3. Testar com Dados Válidos</button>
+        <button onclick="clearResults()">Limpar Resultados</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        function checkAuth() {
+            addResult('Verificando status de autenticação...', 'info');
+            
+            fetch('/api/auth/check', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Não autenticado - Status: ' + response.status);
+                }
+            })
+            .then(data => {
+                if (data.authenticated) {
+                    addResult('✅ Usuário autenticado: ' + (data.user ? data.user.name || data.user.email : 'Usuário válido'), 'success');
+                } else {
+                    addResult('❌ Usuário não autenticado', 'error');
+                }
+            })
+            .catch(error => {
+                addResult('❌ Erro de autenticação: ' + error.message, 'error');
+                addResult('💡 Acesse <a href="/login" target="_blank">/login</a> para fazer login primeiro', 'info');
+            });
+        }
+        
+        function testRouteAccess() {
+            addResult('Testando acesso à rota...', 'info');
+            
+            // Primeiro, vamos tentar acessar a página de assets para obter o token CSRF
+            fetch('/assets', {
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        addResult('✅ Página /assets acessível', 'success');
+                        return response.text();
+                    } else {
+                        throw new Error('Erro ao acessar /assets: ' + response.status);
+                    }
+                })
+                .then(html => {
+                    // Extrair token CSRF
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const csrfToken = doc.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    
+                    if (csrfToken) {
+                        addResult('✅ Token CSRF obtido: ' + csrfToken.substring(0, 10) + '...', 'success');
+                        
+                        // Agora testar a rota de download com dados inválidos para ver a resposta
+                        return fetch('/assets/download-batch', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                asset_ids: ['test-id-invalid']
+                            })
+                        });
+                    } else {
+                        throw new Error('Token CSRF não encontrado na página');
+                    }
+                })
+                .then(response => {
+                    addResult('Status da rota /assets/download-batch: ' + response.status, 'info');
+                    
+                    if (response.status === 404) {
+                        addResult('✅ Rota responde (404 esperado para ID inválido)', 'success');
+                    } else if (response.status === 422) {
+                        addResult('✅ Rota responde (422 - erro de validação esperado)', 'success');
+                    } else if (response.status === 419) {
+                        addResult('❌ Erro 419 - Problema com token CSRF', 'error');
+                    } else {
+                        addResult('ℹ️ Status inesperado: ' + response.status, 'info');
+                    }
+                    
+                    return response.text();
+                })
+                .then(data => {
+                    addResult('Resposta: ' + data.substring(0, 300) + (data.length > 300 ? '...' : ''), 'info');
+                })
+                .catch(error => {
+                    addResult('❌ Erro: ' + error.message, 'error');
+                });
+        }
+        
+        function testWithValidData() {
+            addResult('Testando com IDs válidos...', 'info');
+            
+            // Usar IDs válidos que sabemos que existem
+            const validIds = ['13e679a2-ecff-4456-9258-9a572f9fc05e', '4c2d1911-0fee-4fb6-80b3-0826c4e04e9d'];
+            
+            fetch('/assets', {
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const csrfToken = doc.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    
+                    if (csrfToken) {
+                        addResult('Token CSRF obtido para teste com IDs válidos', 'info');
+                        
+                        return fetch('/assets/download-batch', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                asset_ids: validIds
+                            })
+                        });
+                    } else {
+                        throw new Error('Token CSRF não encontrado');
+                    }
+                })
+                .then(response => {
+                    addResult('Status com IDs válidos: ' + response.status, 'info');
+                    
+                    if (response.ok) {
+                        const contentType = response.headers.get('content-type');
+                        addResult('✅ Rota funcionando! Tipo de resposta: ' + contentType, 'success');
+                        
+                        if (contentType && contentType.includes('application/zip')) {
+                            addResult('✅ Arquivo ZIP sendo retornado corretamente!', 'success');
+                        }
+                    } else {
+                        return response.text().then(text => {
+                            addResult('❌ Erro na resposta: ' + text, 'error');
+                        });
+                    }
+                })
+                .catch(error => {
+                    addResult('❌ Erro: ' + error.message, 'error');
+                });
+        }
+    </script>
+</body>
+</html>
