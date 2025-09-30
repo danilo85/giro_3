@@ -153,7 +153,47 @@
                             
                             <!-- Content Column -->
                             <div class="flex-1 ml-10 sm:ml-10">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg border {{ $entry->type === 'project_start' ? 'border-emerald-400 dark:border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20' : 'border-gray-200 dark:border-gray-700' }} p-4 shadow-sm hover:shadow-md transition-all duration-200" data-entry-id="{{ $entry->id }}">
+                                <div class="rounded-lg border p-4 shadow-sm hover:shadow-md transition-all duration-200
+                                    @switch($entry->type)
+                                        @case('project_start')
+                                            border-emerald-400 dark:border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20
+                                            @break
+                                        @case('milestone')
+                                            border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20
+                                            @break
+                                        @case('issue')
+                                            border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20
+                                            @break
+                                        @case('resolution')
+                                            border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20
+                                            @break
+                                        @case('update')
+                                            border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20
+                                            @break
+                                        @case('note')
+                                            border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20
+                                            @break
+                                        @case('meeting')
+                                            border-indigo-200 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-900/20
+                                            @break
+                                        @case('decision')
+                                            border-teal-200 dark:border-teal-700 bg-teal-50 dark:bg-teal-900/20
+                                            @break
+                                        @case('manual')
+                                            border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800
+                                            @break
+                                        @case('system')
+                                            border-cyan-200 dark:border-cyan-700 bg-cyan-50 dark:bg-cyan-900/20
+                                            @break
+                                        @case('status_change')
+                                            border-orange-200 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20
+                                            @break
+                                        @case('payment')
+                                            border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20
+                                            @break
+                                        @default
+                                            border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800
+                                    @endswitch" data-entry-id="{{ $entry->id }}">
                                     <!-- Header with Title, Type, Checkbox and Actions -->
                                     <div class="flex items-start justify-between mb-2">
                                         <div class="flex items-start gap-3 flex-1">

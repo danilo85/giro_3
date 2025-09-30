@@ -211,13 +211,13 @@
                          data-temporary="{{ $file->is_temporary ? 'true' : 'false' }}"
                          data-expires="{{ $file->expires_at ? $file->expires_at->toISOString() : '' }}"
                          @if($file->is_temporary && $file->expires_at)
-                             style="background: linear-gradient(135deg, {{ $file->category ? $file->category->color : '#ffffff' }}08 0%, {{ $file->category ? $file->category->color : '#ffffff' }}15 100%); animation-duration: {{ $pulseSpeed }};"
+                             class="bg-white dark:bg-gray-800" style="background: linear-gradient(135deg, {{ $file->category ? $file->category->color : '#ffffff' }}08 0%, {{ $file->category ? $file->category->color : '#ffffff' }}15 100%); animation-duration: {{ $pulseSpeed }};"
                          @elseif($file->category)
-                             style="background: linear-gradient(135deg, {{ $file->category->color }}08 0%, {{ $file->category->color }}15 100%);"
+                             class="bg-white dark:bg-gray-800" style="background: linear-gradient(135deg, {{ $file->category->color }}08 0%, {{ $file->category->color }}15 100%);"
                          @else
-                             style="background: #ffffff; "
+                             class="bg-white dark:bg-gray-700"
                          @endif
-                         class="dark:bg-gray-800">
+                         >
                         
                         <!-- File Header -->
                         <div class="p-4">

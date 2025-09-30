@@ -129,7 +129,7 @@
      </div>
 
     <!-- Navegação de Período -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+    <div class="mb-6">
         <div class="px-6 py-4">
             <div class="flex items-center justify-center">
                 <div class="flex items-center space-x-2 sm:space-x-4">

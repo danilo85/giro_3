@@ -342,33 +342,33 @@ class ProfileController extends Controller
     public function updateSocialMedia(Request $request)
     {
         $request->validate([
-            'instagram' => 'nullable|url',
-            'facebook' => 'nullable|url',
-            'linkedin' => 'nullable|url',
-            'twitter' => 'nullable|url',
-            'youtube' => 'nullable|url',
-            'tiktok' => 'nullable|url',
-            'whatsapp' => 'nullable|url',
-            'website' => 'nullable|url',
+            'facebook_url' => 'nullable|url',
+            'instagram_url' => 'nullable|url',
+            'twitter_url' => 'nullable|url',
+            'linkedin_url' => 'nullable|url',
+            'youtube_url' => 'nullable|url',
+            'tiktok_url' => 'nullable|url',
+            'whatsapp_url' => 'nullable|url',
+            'website_url' => 'nullable|url',
         ]);
 
         $user = auth()->user();
         
-        // Mapear os campos do formulário para os campos do banco
+        // Campos de redes sociais
         $socialMediaFields = [
-            'instagram' => 'instagram_url',
-            'facebook' => 'facebook_url',
-            'linkedin' => 'linkedin_url',
-            'twitter' => 'twitter_url',
-            'youtube' => 'youtube_url',
-            'tiktok' => 'tiktok_url',
-            'whatsapp' => 'whatsapp_url',
-            'website' => 'website_url',
+            'facebook_url',
+            'instagram_url',
+            'twitter_url',
+            'linkedin_url',
+            'youtube_url',
+            'tiktok_url',
+            'whatsapp_url',
+            'website_url',
         ];
         
-        foreach ($socialMediaFields as $formField => $dbField) {
-            if ($request->has($formField)) {
-                $user->$dbField = $request->$formField;
+        foreach ($socialMediaFields as $field) {
+            if ($request->has($field)) {
+                $user->$field = $request->$field;
             }
         }
         
@@ -417,6 +417,28 @@ class ProfileController extends Controller
         }
         
         return back()->with('success', $platformName . ' removido com sucesso!');
+    }
+
+    /**
+     * Disconnect a social media account.
+     */
+    public function disconnectSocialMedia(Request $request, $accountId)
+    {
+        $user = Auth::user();
+        
+        // Find the social account that belongs to the authenticated user
+        $socialAccount = $user->socialAccounts()->find($accountId);
+        
+        if (!$socialAccount) {
+            return back()->with('error', 'Conta social não encontrada.');
+        }
+        
+        $provider = $socialAccount->provider;
+        
+        // Delete the social account
+        $socialAccount->delete();
+        
+        return back()->with('success', 'Conta do ' . ucfirst($provider) . ' desconectada com sucesso!');
     }
 
     /**

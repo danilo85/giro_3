@@ -71,7 +71,7 @@
                     <input type="time" 
                            id="cleanup_time" 
                            name="cleanup_time" 
-                           value="{{ old('cleanup_time', $settings['cleanup_time']) }}"
+                           value="{{ old('cleanup_time', $settings->getCleanupTimeFormatted()) }}"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            required>
                     <p class="text-sm text-gray-500 mt-1">Horário diário para executar a limpeza automática</p>

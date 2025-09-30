@@ -311,31 +311,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Atualizar interface
-                    const userCard = this.closest('.bg-white');
-                    const statusBadge = userCard.querySelector('.inline-flex.items-center.px-2.py-1');
-                    
-                    // Atualizar badge de status
-                    if (data.is_active) {
-                        statusBadge.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-                        statusBadge.textContent = 'Ativo';
-                        
-                        // Atualizar botão para desativar
-                        button.className = 'p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors duration-200 dark:hover:bg-yellow-900/20 dark:text-yellow-400';
-                        button.title = 'Desativar usuário';
-                        button.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"></path></svg>';
-                    } else {
-                        statusBadge.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-                        statusBadge.textContent = 'Inativo';
-                        
-                        // Atualizar botão para ativar
-                        button.className = 'p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200 dark:hover:bg-green-900/20 dark:text-green-400';
-                        button.title = 'Ativar usuário';
-                        button.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-                    }
-                    
                     // Mostrar toast de sucesso
                     showToast(data.message, 'success');
+                    
+                    // Redirecionar para a página de gestão de usuários após 1 segundo
+                    setTimeout(() => {
+                        window.location.href = '{{ route("users.index") }}';
+                    }, 1000);
                 } else {
                     // Em caso de erro, restaurar botão original
                     button.innerHTML = originalHtml;

@@ -434,19 +434,20 @@ function initializeSearch() {
 // Filter credit cards based on search term
 function filterCards(searchTerm = null) {
     if (searchTerm === null) {
-        const searchInput = document.getElementById('card-search');
+        const searchInput = document.getElementById('search');
         searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
     } else {
         searchTerm = searchTerm.toLowerCase().trim();
     }
     
-    const cardElements = document.querySelectorAll('.card-item[data-card-id]');
-    const cardsGrid = document.getElementById('cards-grid');
+    const cardElements = document.querySelectorAll('.credit-card-item[data-card-id]');
+    const cardsGrid = document.getElementById('credit-cards-grid');
     let visibleCount = 0;
     
     cardElements.forEach(card => {
         const cardName = card.querySelector('h3').textContent.toLowerCase();
-        const shouldShow = cardName.includes(searchTerm);
+        const cardBrand = card.querySelector('p').textContent.toLowerCase();
+        const shouldShow = cardName.includes(searchTerm) || cardBrand.includes(searchTerm);
         
         if (shouldShow) {
             card.style.display = 'flex';

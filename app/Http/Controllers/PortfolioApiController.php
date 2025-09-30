@@ -368,6 +368,37 @@ class PortfolioApiController extends Controller
     }
 
     /**
+     * Get images for a specific portfolio work
+     */
+    public function getWorkImages(PortfolioWork $work)
+    {
+        // Verificar se o trabalho está publicado
+        if ($work->status !== 'published') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Trabalho não encontrado'
+            ], 404);
+        }
+
+        $cacheKey = "portfolio_work_images_{$work->id}";
+        
+        $images = Cache::remember($cacheKey, 600, function() use ($work) {
+            return $work->images()->ordered()->get([
+                'id', 'portfolio_work_id', 'filename', 'original_name',
+                'path', 'alt_text', 'caption', 'sort_order', 'is_featured',
+                'width', 'height', 'file_size'
+            ]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'work_id' => $work->id,
+            'work_title' => $work->title,
+            'images' => $images
+        ]);
+    }
+
+    /**
      * Get related works
      */
     private function getRelatedWorks(PortfolioWork $work, int $limit = 3)

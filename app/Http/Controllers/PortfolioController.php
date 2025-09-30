@@ -481,7 +481,7 @@ class PortfolioController extends Controller
         $orcamentos = $query->orderBy('created_at', 'desc')->paginate(10);
         $clients = Cliente::forUser(Auth::id())->orderBy('nome')->get();
         $authors = Autor::forUser(Auth::id())->orderBy('nome')->get();
-        $categories = PortfolioCategory::active()->ordered()->get();
+        $categories = PortfolioCategory::active()->where('user_id', Auth::id())->ordered()->get();
 
         return view('portfolio.pipeline', compact('orcamentos', 'clients', 'authors', 'categories'))->with('budgets', $orcamentos);
     }

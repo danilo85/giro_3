@@ -71,4 +71,15 @@ class TempFileSetting extends Model
         $maxDate = $baseDate->copy()->addDays($this->max_expiry_days);
         return $date <= $maxDate && $date > now();
     }
+    
+    /**
+     * Get cleanup time formatted for HTML time input
+     */
+    public function getCleanupTimeFormatted()
+    {
+        if ($this->cleanup_time) {
+            return $this->cleanup_time->format('H:i');
+        }
+        return '02:00'; // Default fallback
+    }
 }

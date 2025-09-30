@@ -320,7 +320,7 @@
                     <div id="autores_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
                         <!-- Autores já selecionados aparecerão aqui -->
                         @foreach($orcamento->autores as $autor)
-                            <div class="relative bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow" data-autor-id="{{ $autor->id }}">
+                            <div class="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow" data-autor-id="{{ $autor->id }}">
                                 <input type="checkbox" name="autores[]" value="{{ $autor->id }}" checked class="hidden">
                                 
                                 <!-- Avatar -->
@@ -331,8 +331,8 @@
                                     
                                     <!-- Nome e Badge -->
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-900 truncate">{{ $autor->nome }}</p>
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $autor->nome }}</p>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400">
                                             Existente
                                         </span>
                                     </div>

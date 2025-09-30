@@ -116,7 +116,7 @@
                            id="search" 
                            name="search" 
                            value="{{ request('search') }}"
-                           placeholder="Buscar por cliente, título ou autor..."
+                           placeholder="Pesquisar modelos por nome, categoria ou descrição..."
                            class="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -519,57 +519,11 @@ document.addEventListener('keydown', function(event) {
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get all elements with null checks
-        const searchToggle = document.getElementById('search-toggle');
-        const searchContainer = document.getElementById('search-container');
-        const searchInput = document.getElementById('modelo-search');
-        const clearSearch = document.getElementById('clear-search');
-        const closeSearch = document.getElementById('close-search');
+        // Get search elements using correct IDs
+        const searchInput = document.getElementById('search');
+        const clearSearchBtn = document.getElementById('clearSearch');
         
-        // Toggle search container
-        if (searchToggle && searchContainer) {
-            searchToggle.addEventListener('click', function() {
-                searchContainer.classList.toggle('hidden');
-                if (!searchContainer.classList.contains('hidden') && searchInput) {
-                    searchInput.focus();
-                }
-            });
-        }
-        
-        // Close search
-        if (closeSearch && searchContainer) {
-            closeSearch.addEventListener('click', function() {
-                searchContainer.classList.add('hidden');
-                if (searchInput) {
-                    searchInput.value = '';
-                }
-                if (clearSearch) {
-                    clearSearch.classList.add('hidden');
-                }
-            });
-        }
-        
-        // Clear search
-        if (clearSearch && searchInput) {
-            clearSearch.addEventListener('click', function() {
-                searchInput.value = '';
-                clearSearch.classList.add('hidden');
-                searchInput.focus();
-            });
-        }
-        
-        // Show/hide clear button
-        if (searchInput && clearSearch) {
-            searchInput.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    clearSearch.classList.remove('hidden');
-                } else {
-                    clearSearch.classList.add('hidden');
-                }
-            });
-        }
-        
-        // Search functionality - versão melhorada
+        // Search functionality with debounce
         if (searchInput) {
             let searchTimeout;
             
@@ -582,12 +536,13 @@ document.addEventListener('keydown', function(event) {
                     modelCards.forEach(card => {
                         const modelName = card.querySelector('.modelo-name');
                         const modelCategory = card.querySelector('.modelo-category');
-                        const modelDescription = card.querySelector('.model-description');
+                        // Buscar por descrição no texto do card
+                        const modelDescriptionElement = card.querySelector('p.text-sm.text-gray-500');
                         
                         if (modelName && modelCategory) {
                             const nameText = modelName.textContent.toLowerCase();
                             const categoryText = modelCategory.textContent.toLowerCase();
-                            const descriptionText = modelDescription ? modelDescription.textContent.toLowerCase() : '';
+                            const descriptionText = modelDescriptionElement ? modelDescriptionElement.textContent.toLowerCase() : '';
                             
                             const isVisible = nameText.includes(searchTerm) || 
                                             categoryText.includes(searchTerm) || 
@@ -603,13 +558,16 @@ document.addEventListener('keydown', function(event) {
                     });
                 }
                 
-                // Mostrar/ocultar botão de limpar
-                const clearButton = document.getElementById('clearSearch');
-                if (clearButton) {
-                    if (searchTerm) {
-                        clearButton.classList.remove('hidden');
+                // Mostrar/ocultar botão de limpar baseado no valor do input
+                updateClearButton();
+            }
+            
+            function updateClearButton() {
+                if (clearSearchBtn) {
+                    if (searchInput.value.trim()) {
+                        clearSearchBtn.style.display = 'block';
                     } else {
-                        clearButton.classList.add('hidden');
+                        clearSearchBtn.style.display = 'none';
                     }
                 }
             }
@@ -628,10 +586,30 @@ document.addEventListener('keydown', function(event) {
                 }
             });
             
+            // Inicializar estado do botão de limpar
+            updateClearButton();
+            
             // Inicializar busca se houver valor no campo
             if (searchInput.value.trim()) {
                 filterModels();
             }
+        }
+        
+        // Funcionalidade do botão de limpar busca
+        if (clearSearchBtn && searchInput) {
+            clearSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                searchInput.focus();
+                
+                // Mostrar todos os cards novamente
+                const modelCards = document.querySelectorAll('.modelo-card');
+                modelCards.forEach(card => {
+                    card.style.display = '';
+                });
+                
+                // Ocultar botão de limpar
+                clearSearchBtn.style.display = 'none';
+            });
         }
     });
 </script>

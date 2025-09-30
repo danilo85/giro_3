@@ -99,6 +99,11 @@ class PortfolioWork extends Model
     /**
      * Relacionamento com cliente
      */
+    public function clientRelation()
+    {
+        return $this->belongsTo(Cliente::class, 'client_id');
+    }
+
     public function client()
     {
         return $this->belongsTo(Cliente::class, 'client_id');
@@ -145,11 +150,19 @@ class PortfolioWork extends Model
     }
 
     /**
+     * Accessor para verificar se está publicado
+     */
+    public function getIsPublishedAttribute()
+    {
+        return $this->status === 'published';
+    }
+
+    /**
      * Accessor para URL do trabalho
      */
     public function getUrlAttribute()
     {
-        return route('portfolio.public.work', $this->slug);
+        return route('public.portfolio.public.work', $this->slug);
     }
 
     /**

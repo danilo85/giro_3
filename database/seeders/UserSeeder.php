@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             ['email' => 'admin@giro.com'],
             [
                 'name' => 'Administrator',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('admin123'),
                 'email_verified_at' => now(),
             ]
         );

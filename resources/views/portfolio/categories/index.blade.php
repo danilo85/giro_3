@@ -147,7 +147,7 @@
                                         <span class="text-white font-bold text-lg">{{ strtoupper(substr($category->name, 0, 2)) }}</span>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $category->name }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white ">{{ $category->name }}</h3>
                                         <div class="flex items-center space-x-2 mt-1">
                                             @if($category->is_active)
                                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -1175,6 +1175,103 @@ function reinitializeDragAndDrop() {
         initializeDragAndDrop();
     }, 100);
 }
+
+// Funcionalidade de busca
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search');
+    const clearButton = document.getElementById('clear-search');
+    const categoriesGrid = document.getElementById('categories-grid');
+    
+    if (searchInput && categoriesGrid) {
+        let searchTimeout;
+        
+        // Função de busca
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const categoryCards = categoriesGrid.querySelectorAll('[data-category-id]');
+            let visibleCount = 0;
+            
+            categoryCards.forEach(card => {
+                const categoryName = card.querySelector('h3').textContent.toLowerCase();
+                const categoryDescription = card.querySelector('p')?.textContent.toLowerCase() || '';
+                
+                const isVisible = categoryName.includes(searchTerm) || 
+                                categoryDescription.includes(searchTerm);
+                
+                if (isVisible) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Mostrar/ocultar botão de limpar
+            updateClearButton();
+            
+            // Mostrar mensagem se nenhuma categoria for encontrada
+            showNoResultsMessage(visibleCount === 0 && searchTerm.length > 0);
+        }
+        
+        // Atualizar botão de limpar
+        function updateClearButton() {
+            if (clearButton) {
+                if (searchInput.value.trim()) {
+                    clearButton.style.display = 'block';
+                } else {
+                    clearButton.style.display = 'none';
+                }
+            }
+        }
+        
+        // Mostrar mensagem de "nenhum resultado"
+        function showNoResultsMessage(show) {
+            let noResultsDiv = document.getElementById('no-results-message');
+            
+            if (show && !noResultsDiv) {
+                noResultsDiv = document.createElement('div');
+                noResultsDiv.id = 'no-results-message';
+                noResultsDiv.className = 'col-span-full text-center py-12';
+                noResultsDiv.innerHTML = `
+                    <div class="text-gray-500 dark:text-gray-400">
+                        <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium mb-2">Nenhuma categoria encontrada</h3>
+                        <p class="text-sm">Tente ajustar os termos de busca ou limpe o filtro para ver todas as categorias.</p>
+                    </div>
+                `;
+                categoriesGrid.appendChild(noResultsDiv);
+            } else if (!show && noResultsDiv) {
+                noResultsDiv.remove();
+            }
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300);
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                performSearch();
+            }
+        });
+        
+        if (clearButton) {
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                performSearch();
+                searchInput.focus();
+            });
+        }
+        
+        // Inicializar estado do botão de limpar
+        updateClearButton();
+    }
+});
 
 // Função para mostrar toast notifications
 function showToast(message, type = 'info') {
