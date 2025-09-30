@@ -99,7 +99,7 @@ class PortfolioWork extends Model
     /**
      * Relacionamento com cliente
      */
-    public function client()
+    public function clientRelation()
     {
         return $this->belongsTo(Cliente::class, 'client_id');
     }
@@ -142,6 +142,14 @@ class PortfolioWork extends Model
     public function scopeByCategory($query, $categoryId)
     {
         return $query->where('portfolio_category_id', $categoryId);
+    }
+
+    /**
+     * Accessor para verificar se está publicado
+     */
+    public function getIsPublishedAttribute()
+    {
+        return $this->status === 'published';
     }
 
     /**

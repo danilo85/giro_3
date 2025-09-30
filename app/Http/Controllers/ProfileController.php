@@ -420,6 +420,28 @@ class ProfileController extends Controller
     }
 
     /**
+     * Disconnect a social media account.
+     */
+    public function disconnectSocialMedia(Request $request, $accountId)
+    {
+        $user = Auth::user();
+        
+        // Find the social account that belongs to the authenticated user
+        $socialAccount = $user->socialAccounts()->find($accountId);
+        
+        if (!$socialAccount) {
+            return back()->with('error', 'Conta social não encontrada.');
+        }
+        
+        $provider = $socialAccount->provider;
+        
+        // Delete the social account
+        $socialAccount->delete();
+        
+        return back()->with('success', 'Conta do ' . ucfirst($provider) . ' desconectada com sucesso!');
+    }
+
+    /**
      * Upload imagem de rodapé.
      */
     public function uploadRodapeImage(Request $request)

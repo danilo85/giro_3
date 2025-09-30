@@ -29,6 +29,10 @@ class DatabaseSeeder extends Seeder
             SocialPostSeeder::class,
             AdminUserSeeder::class,
             CreditCardSeeder::class,
+            HashtagSeeder::class,
+            SocialAccountSeeder::class,
+            AssetSeeder::class,
+            FileSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Direct</title>
+    <style>
+        .test-container {
+            width: 200px;
+            height: 200px;
+            border: 2px solid red;
+            margin: 20px;
+        }
+        .test-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Image Loading</h1>
+    
+    <div class="test-container">
+        <img src="http://127.0.0.1:8000/storage/portfolio/works/1759190828_0_imagem-gerada-1758422150665.png" 
+             alt="Test Image 1" 
+             class="test-image"
+             onload="console.log('Image 1 loaded successfully')"
+             onerror="console.log('Image 1 failed to load')">
+    </div>
+    
+    <div class="test-container">
+        <img src="http://127.0.0.1:8000/storage/portfolio/works/1759191886_0_1757215921_ChatGPT Image 4 de abr. de 2025, 09_13_32.png" 
+             alt="Test Image 2" 
+             class="test-image"
+             onload="console.log('Image 2 loaded successfully')"
+             onerror="console.log('Image 2 failed to load')">
+    </div>
+    
+    <script>
+        console.log('Test page loaded');
+    </script>
+</body>
+</html>

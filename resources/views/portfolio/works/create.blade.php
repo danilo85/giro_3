@@ -294,9 +294,46 @@
             <div x-show="currentStep === 2" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 space-y-6">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Imagens do Trabalho</h2>
                 
+                <!-- Featured Image Upload -->
+                <div>
+                    <label for="featured_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Imagem Destacada (Thumbnail)
+                    </label>
+                    
+                    <!-- Preview Container -->
+                    <div id="featured-image-preview" class="hidden mb-4">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview da imagem selecionada:</p>
+                        <div class="relative inline-block">
+                            <img id="featured-image-preview-img" src="" alt="Preview da imagem destacada" class="w-32 h-32 object-cover rounded-lg border-2 border-blue-500">
+                            <button type="button" onclick="removeFeaturedImagePreview()" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="featured-image-upload-area" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400">
+                                <label for="featured_image" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                    <span>Selecionar imagem destacada</span>
+                                    <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewFeaturedImage(this)">
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, GIF até 2MB</p>
+                        </div>
+                    </div>
+                    @error('featured_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Esta imagem será usada como thumbnail na listagem do portfólio</p>
+                </div>
+                
                 <!-- Image Upload -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adicionar Imagens</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Galeria de Imagens</label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors"
                          @dragover.prevent @drop.prevent="handleDrop($event)">
                         <div class="space-y-1 text-center">
@@ -341,7 +378,7 @@
                             </div>
                         </template>
                     </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">A primeira imagem será usada como capa do trabalho</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Imagens adicionais para a galeria do trabalho</p>
                 </div>
             </div>
             
@@ -712,6 +749,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Featured Image Preview Functions
+function previewFeaturedImage(input) {
+    const file = input.files[0];
+    if (file) {
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Por favor, selecione apenas arquivos de imagem (PNG, JPG, GIF).');
+            input.value = '';
+            return;
+        }
+        
+        // Validar tamanho do arquivo (2MB)
+        const maxSize = 2 * 1024 * 1024; // 2MB em bytes
+        if (file.size > maxSize) {
+            alert('O arquivo deve ter no máximo 2MB.');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewContainer = document.getElementById('featured-image-preview');
+            const previewImg = document.getElementById('featured-image-preview-img');
+            const uploadArea = document.getElementById('featured-image-upload-area');
+            
+            previewImg.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+            uploadArea.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeFeaturedImagePreview() {
+    const previewContainer = document.getElementById('featured-image-preview');
+    const previewImg = document.getElementById('featured-image-preview-img');
+    const uploadArea = document.getElementById('featured-image-upload-area');
+    const fileInput = document.getElementById('featured_image');
+    
+    previewImg.src = '';
+    previewContainer.classList.add('hidden');
+    uploadArea.classList.remove('hidden');
+    fileInput.value = '';
+}
 </script>
 
 <style>

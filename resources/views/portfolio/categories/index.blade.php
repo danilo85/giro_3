@@ -147,7 +147,7 @@
                                         <span class="text-white font-bold text-lg">{{ strtoupper(substr($category->name, 0, 2)) }}</span>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $category->name }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white ">{{ $category->name }}</h3>
                                         <div class="flex items-center space-x-2 mt-1">
                                             @if($category->is_active)
                                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">

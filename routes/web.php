@@ -47,10 +47,25 @@ Route::get('/maintenance', function () {
     return view('maintenance');
 })->name('maintenance');
 
-// Redirect root to dashboard
+// Public home page
 Route::get('/', function () {
-    return redirect()->route('dashboard');
-});
+    $portfolioWorks = \App\Models\PortfolioWork::with(['category', 'images', 'clientRelation', 'featuredImage'])
+        ->where('status', 'published')
+        ->where('user_id', 1)
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    $portfolioCategories = \App\Models\PortfolioCategory::where('is_active', true)
+        ->whereHas('portfolioWorks', function ($query) {
+            $query->where('user_id', 1)->where('status', 'published');
+        })
+        ->orderBy('sort_order')
+        ->get()
+        ->unique('name')
+        ->values();
+    
+    return view('home', compact('portfolioWorks', 'portfolioCategories'));
+})->name('home');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -189,6 +204,7 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'delete'])->name('profile.delete');
     Route::put('/profile/social-media', [ProfileController::class, 'updateSocialMedia'])->name('profile.social-media.update');
     Route::delete('/profile/social-media/{platform}', [ProfileController::class, 'deleteSocialMedia'])->name('profile.social-media.delete');
+    Route::delete('/profile/social-disconnect/{accountId}', [ProfileController::class, 'disconnectSocialMedia'])->name('profile.social-disconnect');
     Route::post('/profile/upload-rodape', [ProfileController::class, 'uploadRodapeImage'])->name('profile.rodape.upload');
     Route::post('/profile/upload-qrcode', [ProfileController::class, 'uploadQrcodeImage'])->name('profile.qrcode.upload');
     Route::delete('/profile/rodape', [ProfileController::class, 'deleteRodapeImage'])->name('profile.rodape.delete');
