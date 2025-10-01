@@ -150,6 +150,99 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background */
+        .animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.15;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+        
+        .shape-1 {
+            width: 500px;
+            height: 140px;
+            background: linear-gradient(45deg, rgba(200, 220, 240, 0.25), rgba(150, 180, 220, 0.15));
+            top: 15%;
+            left: -10%;
+            border-radius: 60% 40% 70% 30%;
+            opacity: 0.18;
+            animation: waveFloat1 20s infinite, waveMove1 18s linear infinite;
+        }
+        
+        .shape-2 {
+            width: 420px;
+            height: 100px;
+            background: linear-gradient(-45deg, rgba(100, 150, 250, 0.22), rgba(80, 120, 200, 0.12));
+            top: 45%;
+            right: -15%;
+            border-radius: 50% 30% 80% 20%;
+            opacity: 0.16;
+            animation: waveFloat2 24s infinite, waveMove2 20s linear infinite;
+        }
+        
+        .shape-3 {
+            width: 380px;
+            height: 120px;
+            background: linear-gradient(90deg, rgba(220, 235, 255, 0.2), rgba(180, 210, 240, 0.1));
+            top: 70%;
+            left: 20%;
+            border-radius: 40% 60% 50% 70%;
+            opacity: 0.14;
+            animation: waveFloat3 18s infinite, waveMove3 16s linear infinite;
+        }
+        
+        .shape-4 {
+            width: 550px;
+            height: 110px;
+            background: linear-gradient(135deg, rgba(80, 100, 130, 0.18), rgba(60, 80, 110, 0.08));
+            bottom: 25%;
+            right: 10%;
+            border-radius: 70% 30% 60% 40%;
+            opacity: 0.12;
+            animation: waveFloat4 22s infinite, waveMove4 19s linear infinite;
+        }
+        
+        .shape-5 {
+            width: 350px;
+            height: 90px;
+            background: linear-gradient(180deg, rgba(70, 90, 120, 0.2), rgba(50, 70, 100, 0.1));
+            top: 5%;
+            left: 50%;
+            border-radius: 80% 20% 40% 60%;
+            opacity: 0.15;
+            animation: waveFloat5 17s infinite, waveMove5 14s linear infinite;
+        }
+        
+        .shape-6 {
+            width: 480px;
+            height: 130px;
+            background: linear-gradient(270deg, rgba(90, 110, 140, 0.17), rgba(70, 90, 120, 0.07));
+            bottom: 10%;
+            left: -5%;
+            border-radius: 30% 70% 80% 20%;
+            opacity: 0.13;
+            animation: waveFloat6 25s infinite, waveMove6 21s linear infinite;
         }
         
         .hero-content h1 {
@@ -250,6 +343,26 @@
         }
         
         /* Responsive styles for animated avatar */
+        @media (max-width: 1024px) {
+            .about-content {
+                grid-template-columns: 1.2fr 0.8fr;
+                gap: 3rem;
+            }
+            
+            .about-text h2 {
+                font-size: 2.2rem;
+            }
+            
+            .about-text p {
+                font-size: 1rem;
+            }
+            
+            .animated-avatar {
+                width: 350px;
+                height: 350px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .about-content {
                 grid-template-columns: 1fr;
@@ -276,6 +389,74 @@
             .animated-avatar {
                 width: 300px;
                 height: 300px;
+            }
+        }
+        
+        /* Responsive Animated Background - Waves */
+        @media (max-width: 768px) {
+            .shape-1 {
+                width: 180px;
+                height: 45px;
+            }
+            
+            .shape-2 {
+                width: 120px;
+                height: 30px;
+            }
+            
+            .shape-3 {
+                width: 200px;
+                height: 50px;
+            }
+            
+            .shape-4 {
+                width: 160px;
+                height: 40px;
+            }
+            
+            .shape-5 {
+                width: 140px;
+                height: 35px;
+            }
+            
+            .shape-6 {
+                width: 190px;
+                height: 55px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .floating-shape {
+                opacity: 0.08;
+            }
+            
+            .shape-1 {
+                width: 120px;
+                height: 30px;
+            }
+            
+            .shape-2 {
+                width: 80px;
+                height: 20px;
+            }
+            
+            .shape-3 {
+                width: 140px;
+                height: 35px;
+            }
+            
+            .shape-4 {
+                width: 100px;
+                height: 25px;
+            }
+            
+            .shape-5 {
+                display: none; /* Hide on very small screens */
+            }
+            
+            .shape-6 {
+                width: 130px;
+                height: 40px;
             }
         }
         
@@ -478,14 +659,52 @@
         .contact-item {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+            transform: translateX(5px);
         }
         
         .contact-item i {
             font-size: 1.5rem;
-            color: var(--primary-orange);
             margin-right: 1rem;
             width: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-item:hover i {
+            transform: scale(1.1);
+        }
+        
+        .contact-icon-email {
+            color: #3b82f6;
+        }
+        
+        .contact-icon-whatsapp {
+            color: #10b981;
+        }
+        
+        .contact-icon-location {
+            color: #ef4444;
+        }
+        
+        .contact-icon-behance {
+            color: #8b5cf6;
+        }
+        
+        .contact-link {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .contact-link:hover {
+            color: #3b82f6;
         }
         
         .contact-form {
@@ -677,6 +896,76 @@
             }
         }
         
+        /* Wave Animations */
+        @keyframes waveFloat1 {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove1 {
+            0% { transform: translateX(-10%); }
+            100% { transform: translateX(110%); }
+        }
+        
+        @keyframes waveFloat2 {
+            0% { transform: translateY(0px) scale(1); }
+            33% { transform: translateY(12px) scale(0.95); }
+            66% { transform: translateY(-8px) scale(1.03); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove2 {
+            0% { transform: translateX(15%); }
+            100% { transform: translateX(-115%); }
+        }
+        
+        @keyframes waveFloat3 {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(18px) scale(1.02); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove3 {
+            0% { transform: translateX(20%); }
+            100% { transform: translateX(-120%); }
+        }
+        
+        @keyframes waveFloat4 {
+            0% { transform: translateY(0px) scale(1); }
+            40% { transform: translateY(-10px) scale(1.04); }
+            80% { transform: translateY(5px) scale(0.98); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove4 {
+            0% { transform: translateX(10%); }
+            100% { transform: translateX(-110%); }
+        }
+        
+        @keyframes waveFloat5 {
+            0% { transform: translateY(0px) scale(1); }
+            30% { transform: translateY(8px) scale(1.01); }
+            70% { transform: translateY(-12px) scale(0.99); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove5 {
+            0% { transform: translateX(50%); }
+            100% { transform: translateX(-150%); }
+        }
+        
+        @keyframes waveFloat6 {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.03); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes waveMove6 {
+            0% { transform: translateX(-5%); }
+            100% { transform: translateX(105%); }
+        }
+        
         /* Portfolio Grid Styles */
          #portfolio-grid {
              display: grid;
@@ -740,11 +1029,35 @@
          
          @media (max-width: 480px) {
              #portfolio-grid {
-                 grid-template-columns: repeat(2, 1fr) !important;
+                 grid-template-columns: repeat(1, 1fr) !important;
+                 gap: 1.5rem;
              }
              
              #portfolio h2 {
                  font-size: 1.75rem;
+             }
+             
+             .portfolio-item {
+                 max-width: 400px;
+                 margin: 0 auto;
+             }
+         }
+         
+         @media (max-width: 640px) {
+             #portfolio-grid {
+                 grid-template-columns: repeat(1, 1fr) !important;
+                 gap: 1rem;
+             }
+             
+             .portfolio-item {
+                 max-width: 100%;
+                 margin: 0 auto;
+             }
+             
+             .portfolio-filter {
+                 flex-wrap: wrap;
+                 gap: 1rem;
+                 margin-bottom: 2rem;
              }
          }
          
@@ -907,17 +1220,71 @@
          }
          
          .modal-tech-tag {
-             background: #3b82f6;
-             color: white;
-             padding: 8px 16px;
-             border-radius: 25px;
-             font-size: 14px;
+             background: #f1f5f9;
+             color: #475569;
+             border: 1px solid #e2e8f0;
+             padding: 4px 12px;
+             border-radius: 6px;
+             font-size: 13px;
              font-weight: 500;
-             transition: background 0.3s ease;
+             transition: all 0.3s ease;
          }
          
          .modal-tech-tag:hover {
+             background: #e2e8f0;
+             color: #334155;
+             border-color: #cbd5e1;
+         }
+         
+         /* New Modal Styles */
+         .modal-short-description {
+             font-size: 16px;
+             line-height: 1.6;
+             color: #666;
+             margin: 15px 0;
+             text-align: left;
+         }
+         
+         .modal-full-content {
+             padding: 30px 40px;
+             border-bottom: 1px solid #e5e5e5;
+         }
+         
+         .modal-content-title {
+             font-size: 14px;
+             font-weight: 600;
+             color: #666;
+             text-transform: uppercase;
+             letter-spacing: 0.5px;
+             margin-bottom: 15px;
+         }
+         
+         .modal-download-section {
+             padding: 30px 40px;
+             text-align: center;
+             border-bottom: 1px solid #e5e5e5;
+         }
+         
+         .modal-download-btn {
+             display: inline-flex;
+             align-items: center;
+             gap: 10px;
+             background: #3b82f6;
+             color: white;
+             padding: 12px 24px;
+             border-radius: 8px;
+             text-decoration: none;
+             font-weight: 500;
+             transition: background-color 0.3s ease;
+         }
+         
+         .modal-download-btn:hover {
              background: #1d4ed8;
+         }
+         
+         .modal-download-btn svg {
+             width: 20px;
+             height: 20px;
          }
          
 
@@ -1029,8 +1396,8 @@
                     </a>
                     @endif
                     @if($user->website_url)
-                    <a href="{{ $user->website_url }}" target="_blank" class="social-link" title="Website" style="color: #2b363f;">
-                        <i class="fas fa-globe"></i>
+                    <a href="{{ $user->website_url }}" target="_blank" class="social-link" title="BEHANCE" style="color: #1769ff;">
+                        <i class="fab fa-behance"></i>
                     </a>
                     @endif
                 </div>
@@ -1063,10 +1430,20 @@
 
     <!-- Home Section -->
     <section id="home">
+        <!-- Animated Background -->
+        <div class="animated-background">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+            <div class="floating-shape shape-5"></div>
+            <div class="floating-shape shape-6"></div>
+        </div>
+        
         <div class="container">
             <div class="hero-content">
-                <h1>Bem-vindo ao Nosso Portfólio</h1>
-                <p>Criamos experiências digitais incríveis que conectam marcas e pessoas</p>
+                <h1>Design e ilustração para comunicar, inspirar e transformar.</h1>
+                <p>Cada traço, cor e forma é pensado para transformar mensagens em experiências marcantes.</p>
                 <a href="#portfolio" class="cta-button">Ver Trabalhos</a>
             </div>
         </div>
@@ -1092,21 +1469,7 @@
                 </div>
                 <div class="about-image">
                     <div class="animated-avatar">
-                        <img src="{{ asset('storage/caricaturas/caricatura_1.png') }}" alt="Avatar Animado" class="avatar-img active">
-                        <img src="{{ asset('storage/caricaturas/caricatura_2.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_3.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_4.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_5.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_6.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_7.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_8.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_9.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_10.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_11.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_12.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_13.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_14.png') }}" alt="Avatar Animado" class="avatar-img">
-                        <img src="{{ asset('storage/caricaturas/caricatura_15.png') }}" alt="Avatar Animado" class="avatar-img">
+                        <video src="{{ asset('storage/caricatura.mp4') }}" alt="Avatar Animado" class="avatar-img active" autoplay loop muted playsinline></video>
                     </div>
                 </div>
             </div>
@@ -1134,12 +1497,12 @@
             <div class="portfolio-filter">
                 <button class="category-filter active" data-category="all">TODOS</button>
                 @foreach($portfolioCategories as $category)
-                <button class="category-filter" data-category="{{ $category->slug }}">{{ strtoupper($category->name) }}</button>
+                <button class="category-filter" data-category="{{ $category->slug }}">{{ mb_strtoupper($category->name, 'UTF-8') }}</button>
                 @endforeach
             </div>
             @endif
             
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="portfolio-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="portfolio-grid">
                 @forelse($portfolioWorks as $work)
                 <div class="portfolio-item group relative aspect-square overflow-hidden rounded-lg cursor-pointer" 
                      data-category="{{ $work->category ? $work->category->slug : 'uncategorized' }}"
@@ -1151,6 +1514,7 @@
                      data-date="{{ $work->date ? $work->date->format('Y') : '' }}"
                      data-url="{{ $work->url ?? '' }}"
                      data-technologies="{{ $work->technologies ? implode(',', $work->technologies) : '' }}"
+                     data-content="{{ $work->content ?? '' }}"
                      onclick="openPortfolioModal(this)">
                     
                     @if($work->featuredImage)
@@ -1210,23 +1574,27 @@
                     <p>Vamos conversar sobre seu próximo projeto!</p>
                     
                     <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>contato@portfolio.com</span>
+                        <i class="fas fa-envelope contact-icon-email"></i>
+                        <span>danilo.a.miguel@hotmail.com</span>
                     </div>
                     
                     <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+55 (11) 99999-9999</span>
+                        <i class="fab fa-whatsapp contact-icon-whatsapp"></i>
+                        <a href="https://wa.me/5514991436268" target="_blank" class="contact-link">
+                            <span>(14) 99143-6268</span>
+                        </a>
                     </div>
                     
                     <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>São Paulo, SP - Brasil</span>
+                        <i class="fas fa-map-marker-alt contact-icon-location"></i>
+                        <span>Marília, SP - Brasil</span>
                     </div>
                     
                     <div class="contact-item">
-                        <i class="fab fa-linkedin"></i>
-                        <span>linkedin.com/company/portfolio</span>
+                        <i class="fab fa-behance contact-icon-behance"></i>
+                        <a href="https://www.behance.net/danilomiguel" target="_blank" class="contact-link">
+                            <span>behance.net/danilomiguel</span>
+                        </a>
                     </div>
                 </div>
                 
@@ -1386,11 +1754,20 @@
         });
         
         // Portfolio modal functionality
+        console.log('Portfolio modal JavaScript loaded successfully');
         let currentImageIndex = 0;
         let portfolioImages = [];
         let currentWorkData = {};
         
+        // Test function accessibility
+        window.testPortfolioModal = function() {
+            console.log('Portfolio modal functions are accessible');
+            console.log('openPortfolioModal function:', typeof openPortfolioModal);
+        };
+        
         function openPortfolioModal(element) {
+            console.log('openPortfolioModal called with element:', element);
+            
             const modal = document.getElementById('portfolioModal');
             if (!modal) {
                 createPortfolioModal();
@@ -1404,28 +1781,42 @@
             const date = element.getAttribute('data-date');
             const url = element.getAttribute('data-url');
             const technologies = element.getAttribute('data-technologies');
+            const content = element.getAttribute('data-content');
+            
+            console.log('Work ID:', workId);
+            console.log('Work data:', { title, description, categoryName, client, date, url, technologies, content });
             
             // Store current work data
             currentWorkData = {
-                workId, title, description, categoryName, client, date, url, technologies
+                workId, title, description, categoryName, client, date, url, technologies, content
             };
             
             // Fetch portfolio images
             fetchPortfolioImages(workId).then(images => {
+                console.log('Images fetched successfully:', images);
                 portfolioImages = images;
                 currentImageIndex = 0;
                 updateModalContent();
                 showModal();
+            }).catch(error => {
+                console.error('Error in fetchPortfolioImages promise:', error);
             });
         }
         
         async function fetchPortfolioImages(workId) {
             try {
-                const response = await fetch(`/api/portfolio/${workId}/images`);
+                const apiUrl = `/api/portfolio/works/${workId}/images`;
+                console.log('Fetching images from:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to fetch images');
+                    throw new Error(`Failed to fetch images: ${response.status} ${response.statusText}`);
                 }
+                
                 const data = await response.json();
+                console.log('API Response data:', data);
                 
                 // Transform the images data to include proper URLs
                 const transformedImages = data.images.map(image => ({
@@ -1435,6 +1826,7 @@
                     caption: image.caption || ''
                 }));
                 
+                console.log('Transformed images:', transformedImages);
                 return transformedImages;
             } catch (error) {
                 console.error('Error fetching portfolio images:', error);
@@ -1458,15 +1850,7 @@
             document.getElementById('modalDescription').textContent = currentWorkData.description;
             document.getElementById('modalCategory').textContent = currentWorkData.categoryName;
             
-            // Update client if exists
-            const clientElement = document.getElementById('modalClient');
-            const clientSection = document.getElementById('clientSection');
-            if (currentWorkData.client && currentWorkData.client.trim() !== '') {
-                clientElement.textContent = currentWorkData.client;
-                clientSection.style.display = 'block';
-            } else {
-                clientSection.style.display = 'none';
-            }
+            // Client section removed - no longer needed
             
             // Update date if exists
             const dateElement = document.getElementById('modalDate');
@@ -1478,14 +1862,24 @@
                 dateSection.style.display = 'none';
             }
             
-            // Update URL if exists
+            // Update URL for download button if exists
             const urlElement = document.getElementById('modalUrl');
-            const urlSection = document.getElementById('urlSection');
+            const downloadSection = document.getElementById('downloadSection');
             if (currentWorkData.url && currentWorkData.url.trim() !== '') {
                 urlElement.href = currentWorkData.url;
-                urlSection.style.display = 'block';
+                downloadSection.style.display = 'block';
             } else {
-                urlSection.style.display = 'none';
+                downloadSection.style.display = 'none';
+            }
+            
+            // Update full content section
+            const contentElement = document.getElementById('modalContent');
+            const fullContentSection = document.getElementById('fullContentSection');
+            if (currentWorkData.content && currentWorkData.content.trim() !== '') {
+                contentElement.innerHTML = currentWorkData.content;
+                fullContentSection.style.display = 'block';
+            } else {
+                fullContentSection.style.display = 'none';
             }
             
             // Update technologies if exists - Fix array display issue
@@ -1577,10 +1971,16 @@
                             </svg>
                         </button>
                         
-                        <!-- Project Title -->
+                        <!-- Header: Título, Categoria e Descrição Curta -->
                         <div class="modal-header">
                             <h1 id="modalTitle" class="modal-title"></h1>
                             <span id="modalCategory" class="modal-category"></span>
+                            <p id="modalDescription" class="modal-short-description"></p>
+                            
+                            <!-- Tecnologias no Header -->
+                            <div id="technologiesSection" class="modal-detail-item">
+                                <div id="modalTechnologies" class="modal-tech-tags"></div>
+                            </div>
                         </div>
                         
                         <!-- Images Stacked Vertically -->
@@ -1588,32 +1988,28 @@
                             <!-- Images will be populated by JavaScript -->
                         </div>
                         
-                        <!-- Project Information -->
+                        <!-- Conteúdo Completo - Depois das Imagens -->
+                        <div id="fullContentSection" class="modal-full-content">
+                            <h3 class="modal-content-title">Conteúdo Completo</h3>
+                            <div id="modalContent" class="modal-content-text"></div>
+                        </div>
+                        
+                        <!-- Botão de Download Centralizado -->
+                        <div id="downloadSection" class="modal-download-section">
+                            <a id="modalUrl" href="#" target="_blank" class="modal-download-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Acessar Projeto
+                            </a>
+                        </div>
+                        
+                        <!-- Project Details - Apenas Data -->
                         <div class="modal-info">
-                            <div class="modal-description">
-                                <p id="modalDescription"></p>
-                                <div id="modalContent" class="modal-content-text"></div>
-                            </div>
-                            
                             <div class="modal-details">
-                                <div id="clientSection" class="modal-detail-item">
-                                    <span class="modal-detail-label">Cliente:</span>
-                                    <span id="modalClient" class="modal-detail-value"></span>
-                                </div>
-                                
                                 <div id="dateSection" class="modal-detail-item">
                                     <span class="modal-detail-label">Ano:</span>
                                     <span id="modalDate" class="modal-detail-value"></span>
-                                </div>
-                                
-                                <div id="urlSection" class="modal-detail-item">
-                                    <span class="modal-detail-label">Website:</span>
-                                    <a id="modalUrl" href="#" target="_blank" class="modal-detail-link">Visitar Site</a>
-                                </div>
-                                
-                                <div id="technologiesSection" class="modal-detail-item">
-                                    <span class="modal-detail-label">Tecnologias:</span>
-                                    <div id="modalTechnologies" class="modal-tech-tags"></div>
                                 </div>
                             </div>
                         </div>
