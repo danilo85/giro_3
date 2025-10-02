@@ -154,8 +154,8 @@
             overflow: hidden;
         }
         
-        /* Animated Background */
-        .animated-background {
+        /* Portfolio Background Slideshow */
+        .portfolio-background-slideshow {
             position: absolute;
             top: 0;
             left: 0;
@@ -163,91 +163,47 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .background-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(5px);
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            transform: scale(1.1); /* Slight zoom to compensate for blur edge effects */
+        }
+        
+        .background-slide.active {
+            opacity: 1;
+        }
+        
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2;
         }
         
         .hero-content {
             position: relative;
-            z-index: 2;
-        }
-        
-        .floating-shape {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0.15;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-            animation-direction: alternate;
-        }
-        
-        .shape-1 {
-            width: 500px;
-            height: 140px;
-            background: linear-gradient(45deg, rgba(200, 220, 240, 0.25), rgba(150, 180, 220, 0.15));
-            top: 15%;
-            left: -10%;
-            border-radius: 60% 40% 70% 30%;
-            opacity: 0.18;
-            animation: waveFloat1 20s infinite, waveMove1 18s linear infinite;
-        }
-        
-        .shape-2 {
-            width: 420px;
-            height: 100px;
-            background: linear-gradient(-45deg, rgba(100, 150, 250, 0.22), rgba(80, 120, 200, 0.12));
-            top: 45%;
-            right: -15%;
-            border-radius: 50% 30% 80% 20%;
-            opacity: 0.16;
-            animation: waveFloat2 24s infinite, waveMove2 20s linear infinite;
-        }
-        
-        .shape-3 {
-            width: 380px;
-            height: 120px;
-            background: linear-gradient(90deg, rgba(220, 235, 255, 0.2), rgba(180, 210, 240, 0.1));
-            top: 70%;
-            left: 20%;
-            border-radius: 40% 60% 50% 70%;
-            opacity: 0.14;
-            animation: waveFloat3 18s infinite, waveMove3 16s linear infinite;
-        }
-        
-        .shape-4 {
-            width: 550px;
-            height: 110px;
-            background: linear-gradient(135deg, rgba(80, 100, 130, 0.18), rgba(60, 80, 110, 0.08));
-            bottom: 25%;
-            right: 10%;
-            border-radius: 70% 30% 60% 40%;
-            opacity: 0.12;
-            animation: waveFloat4 22s infinite, waveMove4 19s linear infinite;
-        }
-        
-        .shape-5 {
-            width: 350px;
-            height: 90px;
-            background: linear-gradient(180deg, rgba(70, 90, 120, 0.2), rgba(50, 70, 100, 0.1));
-            top: 5%;
-            left: 50%;
-            border-radius: 80% 20% 40% 60%;
-            opacity: 0.15;
-            animation: waveFloat5 17s infinite, waveMove5 14s linear infinite;
-        }
-        
-        .shape-6 {
-            width: 480px;
-            height: 130px;
-            background: linear-gradient(270deg, rgba(90, 110, 140, 0.17), rgba(70, 90, 120, 0.07));
-            bottom: 10%;
-            left: -5%;
-            border-radius: 30% 70% 80% 20%;
-            opacity: 0.13;
-            animation: waveFloat6 25s infinite, waveMove6 21s linear infinite;
+            z-index: 3;
         }
         
         .hero-content h1 {
             font-size: 3.5rem;
             font-weight: 700;
+            line-height: 1.2;
             margin-bottom: 1rem;
             opacity: 0;
             animation: fadeInUp 1s ease 0.5s forwards;
@@ -364,17 +320,21 @@
         }
         
         @media (max-width: 768px) {
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                text-align: center;
-            }
+             #about {
+                 padding-top: 3rem;
+             }
+             
+             .about-content {
+                 grid-template-columns: 1fr;
+                 gap: 1.5rem;
+                 text-align: center;
+             }
             
             .animated-avatar {
-                width: 350px;
-                height: 350px;
-                margin: 1rem auto;
-            }
+                 width: 350px;
+                 height: 350px;
+                 margin: 0 auto 1.5rem auto;
+             }
             
             .about-text {
                 order: 2;
@@ -386,85 +346,29 @@
         }
         
         @media (max-width: 480px) {
-            .animated-avatar {
-                width: 300px;
-                height: 300px;
-            }
-        }
+             #about {
+                 padding-top: 2rem;
+             }
+             
+             .about-content {
+                 gap: 1rem;
+             }
+             
+             .animated-avatar {
+                 width: 300px;
+                 height: 300px;
+                 margin: 0 auto 1rem auto;
+             }
+         }
         
-        /* Responsive Animated Background - Waves */
-        @media (max-width: 768px) {
-            .shape-1 {
-                width: 180px;
-                height: 45px;
-            }
-            
-            .shape-2 {
-                width: 120px;
-                height: 30px;
-            }
-            
-            .shape-3 {
-                width: 200px;
-                height: 50px;
-            }
-            
-            .shape-4 {
-                width: 160px;
-                height: 40px;
-            }
-            
-            .shape-5 {
-                width: 140px;
-                height: 35px;
-            }
-            
-            .shape-6 {
-                width: 190px;
-                height: 55px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .floating-shape {
-                opacity: 0.08;
-            }
-            
-            .shape-1 {
-                width: 120px;
-                height: 30px;
-            }
-            
-            .shape-2 {
-                width: 80px;
-                height: 20px;
-            }
-            
-            .shape-3 {
-                width: 140px;
-                height: 35px;
-            }
-            
-            .shape-4 {
-                width: 100px;
-                height: 25px;
-            }
-            
-            .shape-5 {
-                display: none; /* Hide on very small screens */
-            }
-            
-            .shape-6 {
-                width: 130px;
-                height: 40px;
-            }
-        }
+
         
         /* Portfolio Section */
         #portfolio {
             background: #f8f9fa;
             color: var(--primary-dark);
             padding-top: 10rem;
+            padding-bottom: 8rem;
             min-height: 100vh;
         }
         
@@ -762,6 +666,7 @@
             width: 100%;
             overflow: hidden;
             line-height: 0;
+            z-index: 10;
         }
         
         .wave svg {
@@ -875,8 +780,8 @@
             }
             
             .fonteria-logo {
-                width: 100px;
-                max-width: 100px;
+                width: 100%;
+                max-width: 100%;
             }
             
             .footer-text p {
@@ -897,74 +802,7 @@
         }
         
         /* Wave Animations */
-        @keyframes waveFloat1 {
-            0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-15px) scale(1.05); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove1 {
-            0% { transform: translateX(-10%); }
-            100% { transform: translateX(110%); }
-        }
-        
-        @keyframes waveFloat2 {
-            0% { transform: translateY(0px) scale(1); }
-            33% { transform: translateY(12px) scale(0.95); }
-            66% { transform: translateY(-8px) scale(1.03); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove2 {
-            0% { transform: translateX(15%); }
-            100% { transform: translateX(-115%); }
-        }
-        
-        @keyframes waveFloat3 {
-            0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(18px) scale(1.02); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove3 {
-            0% { transform: translateX(20%); }
-            100% { transform: translateX(-120%); }
-        }
-        
-        @keyframes waveFloat4 {
-            0% { transform: translateY(0px) scale(1); }
-            40% { transform: translateY(-10px) scale(1.04); }
-            80% { transform: translateY(5px) scale(0.98); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove4 {
-            0% { transform: translateX(10%); }
-            100% { transform: translateX(-110%); }
-        }
-        
-        @keyframes waveFloat5 {
-            0% { transform: translateY(0px) scale(1); }
-            30% { transform: translateY(8px) scale(1.01); }
-            70% { transform: translateY(-12px) scale(0.99); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove5 {
-            0% { transform: translateX(50%); }
-            100% { transform: translateX(-150%); }
-        }
-        
-        @keyframes waveFloat6 {
-            0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-20px) scale(1.03); }
-            100% { transform: translateY(0px) scale(1); }
-        }
-        
-        @keyframes waveMove6 {
-            0% { transform: translateX(-5%); }
-            100% { transform: translateX(105%); }
-        }
+
         
         /* Portfolio Grid Styles */
          #portfolio-grid {
@@ -1002,6 +840,21 @@
                  font-size: 2.5rem;
              }
              
+             .portfolio-filter {
+                 gap: 0.75rem;
+                 margin-bottom: 1.5rem;
+             }
+             
+             .category-filter {
+                 font-size: 0.8rem;
+                 padding: 0.4rem 0.8rem;
+                 line-height: 1.1;
+             }
+             
+             .cta-button {
+                 margin-bottom: 3rem;
+             }
+             
              .about-content,
              .contact-content {
                  grid-template-columns: 1fr;
@@ -1012,14 +865,41 @@
                  padding: 6rem 1rem 2rem;
              }
              
+             #portfolio {
+                 padding-top: 6rem;
+                 padding-bottom: 7rem;
+             }
+             
+             #contact {
+                 padding-top: 6rem;
+             }
+             
+             .contact-info {
+                 text-align: center;
+             }
+             
+             .contact-item {
+                 justify-content: center;
+             }
+             
+             .contact-content {
+                 gap: 1.5rem;
+             }
+             
              #portfolio-grid {
                  grid-template-columns: repeat(3, 1fr) !important;
                  gap: 0.75rem !important;
              }
              
+             .portfolio-filter {
+                 gap: 1rem;
+                 margin-bottom: 2rem;
+             }
+             
              .category-filter {
                  font-size: 0.875rem;
                  padding: 0.5rem 1rem;
+                 line-height: 1.2;
              }
              
              #portfolio h2 {
@@ -1028,6 +908,27 @@
          }
          
          @media (max-width: 480px) {
+             #portfolio {
+                 padding-top: 5rem;
+                 padding-bottom: 6rem;
+             }
+             
+             #contact {
+                 padding-top: 5rem;
+             }
+             
+             .contact-info {
+                 text-align: center;
+             }
+             
+             .contact-item {
+                 justify-content: center;
+             }
+             
+             .contact-content {
+                 gap: 1rem;
+             }
+             
              #portfolio-grid {
                  grid-template-columns: repeat(1, 1fr) !important;
                  gap: 1.5rem;
@@ -1040,6 +941,10 @@
              .portfolio-item {
                  max-width: 400px;
                  margin: 0 auto;
+             }
+             
+             .cta-button {
+                 margin-bottom: 3rem;
              }
          }
          
@@ -1056,8 +961,15 @@
              
              .portfolio-filter {
                  flex-wrap: wrap;
-                 gap: 1rem;
-                 margin-bottom: 2rem;
+                 gap: 0.8rem;
+                 margin-bottom: 1.8rem;
+                 justify-content: center;
+             }
+             
+             .category-filter {
+                 font-size: 0.85rem;
+                 padding: 0.45rem 0.9rem;
+                 line-height: 1.15;
              }
          }
          
@@ -1408,11 +1320,11 @@
                     <div class="auth-links">
                         @auth
                             <a href="{{ url('/dashboard') }}" class="auth-link" title="Dashboard">
-                                <i class="fas fa-tachometer-alt"></i>
+                                <i class="fas fa-toggle-on"></i>
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="auth-link" title="Entrar">
-                                <i class="fas fa-sign-in-alt"></i>
+                                <i class="fas fa-toggle-off"></i>
                             </a>
                             @if (Route::has('register') && App\Models\Setting::isPublicRegistrationEnabled())
                                 <a href="{{ route('register') }}" class="auth-link" title="Cadastrar">
@@ -1430,14 +1342,32 @@
 
     <!-- Home Section -->
     <section id="home">
-        <!-- Animated Background -->
-        <div class="animated-background">
-            <div class="floating-shape shape-1"></div>
-            <div class="floating-shape shape-2"></div>
-            <div class="floating-shape shape-3"></div>
-            <div class="floating-shape shape-4"></div>
-            <div class="floating-shape shape-5"></div>
-            <div class="floating-shape shape-6"></div>
+        <!-- Portfolio Background Slideshow -->
+        <div class="portfolio-background-slideshow">
+            @php
+                $portfolioImages = [];
+                foreach($portfolioWorks as $work) {
+                    if($work->featuredImage) {
+                        $portfolioImages[] = $work->featuredImage->url;
+                    } elseif($work->images->count() > 0) {
+                        $portfolioImages[] = $work->images->first()->url;
+                    }
+                }
+                // Add some default images if no portfolio images exist
+                if(empty($portfolioImages)) {
+                    $portfolioImages = [
+                        '/images/default-portfolio-1.jpg',
+                        '/images/default-portfolio-2.jpg',
+                        '/images/default-portfolio-3.jpg'
+                    ];
+                }
+            @endphp
+            
+            @foreach($portfolioImages as $index => $imageUrl)
+                <div class="background-slide {{ $index === 0 ? 'active' : '' }}" style="background-image: url('{{ $imageUrl }}');"></div>
+            @endforeach
+            
+            <div class="background-overlay"></div>
         </div>
         
         <div class="container">
@@ -2126,6 +2056,28 @@
                     }, 500);
                 }, 5000);
             });
+        });
+
+        // Portfolio Background Slideshow
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.background-slide');
+            let currentSlide = 0;
+            
+            if (slides.length > 1) {
+                function nextSlide() {
+                    // Remove active class from current slide
+                    slides[currentSlide].classList.remove('active');
+                    
+                    // Move to next slide
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    
+                    // Add active class to new slide
+                    slides[currentSlide].classList.add('active');
+                }
+                
+                // Change slide every 4 seconds
+                setInterval(nextSlide, 4000);
+            }
         });
     </script>
     
