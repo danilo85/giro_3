@@ -148,6 +148,14 @@
     @apply text-2xl mr-2;
 }
 
+.file-icon.image-preview {
+    @apply mr-3;
+}
+
+.preview-thumbnail {
+    @apply w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600;
+}
+
 .file-details {
     @apply flex-1;
 }
@@ -236,16 +244,31 @@ document.addEventListener('DOMContentLoaded', function() {
             fileDiv.className = 'file-preview';
             
             const isImage = file.type.startsWith('image/');
-            const icon = isImage ? 'fas fa-image text-blue-500' : 'fas fa-file text-gray-500';
+            
+            // Criar o conteúdo do preview
+            let previewContent = '';
+            if (isImage) {
+                const imageUrl = URL.createObjectURL(file);
+                previewContent = `
+                    <div class="file-icon image-preview">
+                        <img src="${imageUrl}" alt="${file.name}" class="preview-thumbnail">
+                    </div>
+                `;
+            } else {
+                const icon = 'fas fa-file text-gray-500';
+                previewContent = `
+                    <div class="file-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                `;
+            }
             
             fileDiv.innerHTML = `
                 <button type="button" class="remove-file" onclick="removeFile(${index})">
                     <i class="fas fa-times"></i>
                 </button>
                 <div class="file-info">
-                    <div class="file-icon">
-                        <i class="${icon}"></i>
-                    </div>
+                    ${previewContent}
                     <div class="file-details">
                         <div class="file-name">${file.name}</div>
                         <div class="file-size">${formatFileSize(file.size)}</div>
@@ -264,6 +287,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.removeFile = function(index) {
+        // Limpar URL do objeto se for uma imagem para evitar vazamento de memória
+        const file = selectedFiles[index];
+        if (file && file.type.startsWith('image/')) {
+            const existingImg = document.querySelector(`img[alt="${file.name}"]`);
+            if (existingImg) {
+                URL.revokeObjectURL(existingImg.src);
+            }
+        }
+        
         selectedFiles.splice(index, 1);
         updateFilesPreview();
         updateFileInput();

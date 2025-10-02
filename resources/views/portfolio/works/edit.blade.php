@@ -368,32 +368,114 @@
                 @if($work->images->count() > 0)
                     <div class="space-y-4">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white">Imagens Atuais</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-data="{ imagesToDelete: [] }">
-                            @foreach($work->images as $image)
-                                <div class="relative group" x-data="{ marked: false }">
-                                    <img src="{{ $image->url }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover rounded-lg" :class="marked ? 'opacity-50' : ''">
-                                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                                        <button type="button" @click="marked = !marked; toggleImageForDeletion({{ $image->id }})"
-                                                class="text-white hover:text-red-300" :class="marked ? 'text-red-400' : ''">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Arraste as imagens para reordenar, use os botões de seta ou defina a ordem numericamente</p>
+                        
+                        <div id="existing-images-container" class="space-y-3">
+                            @foreach($work->images->sortBy('sort_order') as $image)
+                                <div class="existing-image-item bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600" 
+                                     data-image-id="{{ $image->id }}" 
+                                     data-sort-order="{{ $image->sort_order }}" 
+                                     x-data="{ marked: false }">
+                                    <div class="flex items-center gap-4">
+                                        <!-- Drag Handle -->
+                                        <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M7 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
                                             </svg>
-                                        </button>
-                                    </div>
-                                    <div class="absolute top-2 left-2">
-                                        <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">{{ $loop->iteration }}</span>
-                                        @if($image->is_cover)
-                                            <span class="bg-green-600 text-white text-xs px-2 py-1 rounded ml-1">Capa</span>
-                                        @endif
-                                    </div>
-                                    <div x-show="marked" class="absolute top-2 right-2">
-                                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">Excluir</span>
+                                        </div>
+                                        
+                                        <!-- Image Thumbnail -->
+                                        <div class="relative">
+                                            <img src="{{ $image->url }}" alt="{{ $image->alt_text }}" 
+                                                 class="w-20 h-20 object-cover rounded-lg" 
+                                                 :class="marked ? 'opacity-50' : ''">
+                                            @if($image->is_cover)
+                                                <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs px-2 py-1 rounded">Capa</span>
+                                            @endif
+                                        </div>
+                                        
+                                        <!-- Order Controls -->
+                                        <div class="flex-1 flex items-center gap-4">
+                                            <!-- Order Number Input -->
+                                            <div class="flex items-center gap-2">
+                                                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
+                                                <input type="number" 
+                                                       class="order-input w-16 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded focus:ring-blue-500 focus:border-blue-500" 
+                                                       value="{{ $image->sort_order }}" 
+                                                       min="1" 
+                                                       data-image-id="{{ $image->id }}" 
+                                                       @change="updateImageOrder({{ $image->id }}, $event.target.value)">
+                                            </div>
+                                            
+                                            <!-- Arrow Buttons -->
+                                            <div class="flex flex-col gap-1">
+                                                <button type="button" 
+                                                        class="move-up-btn p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400" 
+                                                        @click="moveImageUp({{ $image->id }})" 
+                                                        title="Mover para cima">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                                    </svg>
+                                                </button>
+                                                <button type="button" 
+                                                        class="move-down-btn p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400" 
+                                                        @click="moveImageDown({{ $image->id }})" 
+                                                        title="Mover para baixo">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Image Info -->
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $image->original_name ?? 'Imagem ' . $loop->iteration }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $image->formatted_file_size ?? '' }}</p>
+                                        </div>
+                                        
+                                        <!-- Featured Button -->
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" 
+                                                    @click="setFeaturedImage({{ $image->id }})" 
+                                                    class="p-2 transition-colors" 
+                                                    :class="featuredImageId == {{ $image->id }} ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-yellow-500'" 
+                                                    :title="featuredImageId == {{ $image->id }} ? 'Imagem destacada' : 'Marcar como destacada'">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Delete Button -->
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" 
+                                                    @click="marked = !marked; toggleImageForDeletion({{ $image->id }})" 
+                                                    class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" 
+                                                    :class="marked ? 'text-red-600 dark:text-red-400' : ''" 
+                                                    title="Marcar para exclusão">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                            <div x-show="marked" class="text-xs text-red-600 dark:text-red-400 font-medium">Excluir</div>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
+                        
+                        <!-- Hidden inputs for image ordering -->
                         <input type="hidden" name="delete_images" id="delete_images" value="">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Clique nas imagens que deseja excluir</p>
+                        <input type="hidden" name="image_orders" id="image_orders" value="">
+                        <input type="hidden" name="featured_image_id" id="featured_image_id" value="{{ $work->featuredImage ? $work->featuredImage->id : '' }}">
+                        
+                        <div class="flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span>💡 Dicas:</span>
+                            <span>• Arraste pela alça para reordenar</span>
+                            <span>• Use as setas ↑↓ para mover</span>
+                            <span>• Digite a ordem diretamente no campo numérico</span>
+                        </div>
                     </div>
                 @endif
                 
@@ -542,9 +624,18 @@ function workForm() {
         currentStep: 1,
         selectedImages: [],
         imagesToDelete: [],
+        featuredImageId: {{ $work->featuredImage ? $work->featuredImage->id : 'null' }},
         form: {
             title: '{{ $work->title }}',
             slug: '{{ $work->slug }}'
+        },
+        
+        init() {
+            // Inicializar drag-and-drop para imagens existentes
+            this.$nextTick(() => {
+                this.initializeDragAndDrop();
+                this.updateImageOrders();
+            });
         },
         
         submitForm(event) {
@@ -681,6 +772,136 @@ function workForm() {
                 this.imagesToDelete.push(imageId);
             }
             document.getElementById('delete_images').value = this.imagesToDelete.join(',');
+        },
+        
+        setFeaturedImage(imageId) {
+            // Atualizar a variável reativa
+            this.featuredImageId = imageId;
+            
+            // Atualizar o campo hidden com o ID da imagem destacada
+            document.getElementById('featured_image_id').value = imageId;
+        },
+        
+        // Métodos de reordenação de imagens existentes
+        moveImageUp(imageId) {
+            const container = document.getElementById('existing-images-container');
+            const imageDiv = document.querySelector(`[data-image-id="${imageId}"]`);
+            const previousSibling = imageDiv.previousElementSibling;
+            
+            if (previousSibling) {
+                container.insertBefore(imageDiv, previousSibling);
+                this.updateImageOrders();
+            }
+        },
+        
+        moveImageDown(imageId) {
+            const container = document.getElementById('existing-images-container');
+            const imageDiv = document.querySelector(`[data-image-id="${imageId}"]`);
+            const nextSibling = imageDiv.nextElementSibling;
+            
+            if (nextSibling) {
+                container.insertBefore(nextSibling, imageDiv);
+                this.updateImageOrders();
+            }
+        },
+        
+        updateImageOrder(imageId, newOrder) {
+            const imageDiv = document.querySelector(`[data-image-id="${imageId}"]`);
+            const orderInput = imageDiv.querySelector('.image-order-input');
+            
+            if (orderInput) {
+                orderInput.value = newOrder;
+                this.reorderImagesByNumber();
+            }
+        },
+        
+        reorderImagesByNumber() {
+            const container = document.getElementById('existing-images-container');
+            const imageDivs = Array.from(container.children);
+            
+            // Ordenar por valor do input numérico
+            imageDivs.sort((a, b) => {
+                const orderA = parseInt(a.querySelector('.image-order-input').value) || 0;
+                const orderB = parseInt(b.querySelector('.image-order-input').value) || 0;
+                return orderA - orderB;
+            });
+            
+            // Reordenar no DOM
+            imageDivs.forEach(div => container.appendChild(div));
+            
+            this.updateImageOrders();
+        },
+        
+        updateImageOrders() {
+            const container = document.getElementById('existing-images-container');
+            const imageDivs = Array.from(container.children);
+            const orders = {};
+            
+            imageDivs.forEach((div, index) => {
+                const imageId = div.getAttribute('data-image-id');
+                const orderInput = div.querySelector('.image-order-input');
+                const newOrder = index + 1;
+                
+                if (orderInput) {
+                    orderInput.value = newOrder;
+                }
+                
+                orders[imageId] = newOrder;
+            });
+            
+            // Atualizar campo hidden com as novas ordens
+            document.getElementById('image_orders').value = JSON.stringify(orders);
+        },
+        
+        initializeDragAndDrop() {
+            const container = document.getElementById('existing-images-container');
+            if (!container) return;
+            
+            // Tornar os itens arrastáveis
+            const imageDivs = container.querySelectorAll('[data-image-id]');
+            imageDivs.forEach(div => {
+                div.draggable = true;
+                
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', div.getAttribute('data-image-id'));
+                    div.classList.add('opacity-50');
+                });
+                
+                div.addEventListener('dragend', (e) => {
+                    div.classList.remove('opacity-50');
+                });
+                
+                div.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    div.classList.add('border-blue-500', 'border-2');
+                });
+                
+                div.addEventListener('dragleave', (e) => {
+                    div.classList.remove('border-blue-500', 'border-2');
+                });
+                
+                div.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    div.classList.remove('border-blue-500', 'border-2');
+                    
+                    const draggedImageId = e.dataTransfer.getData('text/plain');
+                    const draggedDiv = document.querySelector(`[data-image-id="${draggedImageId}"]`);
+                    const targetDiv = e.currentTarget;
+                    
+                    if (draggedDiv && targetDiv && draggedDiv !== targetDiv) {
+                        const rect = targetDiv.getBoundingClientRect();
+                        const midpoint = rect.top + rect.height / 2;
+                        
+                        if (e.clientY < midpoint) {
+                            container.insertBefore(draggedDiv, targetDiv);
+                        } else {
+                            container.insertBefore(draggedDiv, targetDiv.nextSibling);
+                        }
+                        
+                        this.updateImageOrders();
+                    }
+                });
+            });
         }
     }
 }
@@ -810,6 +1031,21 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    
+    // Inicializar drag-and-drop para imagens existentes
+    // Aguardar Alpine.js estar pronto
+    setTimeout(function() {
+        const workFormElement = document.querySelector('[x-data*="workForm"]');
+        if (workFormElement && workFormElement._x_dataStack) {
+            const workFormData = workFormElement._x_dataStack[0];
+            if (workFormData.initializeDragAndDrop) {
+                workFormData.initializeDragAndDrop();
+            }
+            if (workFormData.updateImageOrders) {
+                workFormData.updateImageOrders();
+            }
+        }
+    }, 100);
 });
 
 // Featured Image Preview Functions

@@ -370,8 +370,18 @@ class PortfolioApiController extends Controller
     /**
      * Get images for a specific portfolio work
      */
-    public function getWorkImages(PortfolioWork $work)
+    public function getWorkImages($workId)
     {
+        // Buscar o trabalho pelo ID
+        $work = PortfolioWork::find($workId);
+        
+        if (!$work) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Trabalho não encontrado'
+            ], 404);
+        }
+        
         // Verificar se o trabalho está publicado
         if ($work->status !== 'published') {
             return response()->json([

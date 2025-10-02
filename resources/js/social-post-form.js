@@ -16,9 +16,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const textoFinalEditor = document.getElementById('texto_final_editor');
     const hashtagInput = document.getElementById('hashtagInput');
     const carouselTextsInput = document.getElementById('carouselTextsInput_editor');
+    const legendaEditor = document.getElementById('legenda_editor');
 
-    if (titleElement) titleElement.addEventListener('input', updatePreview);
+    if (titleElement) {
+        titleElement.addEventListener('input', updatePreview);
+        titleElement.addEventListener('input', updateTitleCounter);
+        // Initialize counter on page load
+        updateTitleCounter();
+    }
     if (contentElement) contentElement.addEventListener('input', updatePreview);
+    if (legendaEditor) {
+        legendaEditor.addEventListener('input', function() {
+            syncEditorContent('legenda_editor', 'legenda');
+            updatePreview();
+            updateContentCounter();
+        });
+        // Initialize counter on page load
+        updateContentCounter();
+    }
     if (textoFinalElement) textoFinalElement.addEventListener('input', updatePreview);
     if (textoFinalEditor) {
         textoFinalEditor.addEventListener('input', function() {
@@ -144,6 +159,50 @@ function formatTextFinal(command) {
         updatePreview();
     } catch (e) {
         console.error('Erro ao formatar texto final:', e);
+    }
+}
+
+// Character counter functions
+function updateTitleCounter() {
+    const titleElement = document.getElementById('titulo');
+    const counterElement = document.getElementById('titleCounter');
+    
+    if (!titleElement || !counterElement) return;
+    
+    const currentLength = titleElement.value.length;
+    const maxLength = 100;
+    
+    counterElement.textContent = `${currentLength}/${maxLength}`;
+    
+    // Change color when approaching limit (90% or more)
+    if (currentLength >= maxLength * 0.9) {
+        counterElement.classList.add('text-red-500');
+        counterElement.classList.remove('text-gray-500', 'dark:text-gray-400');
+    } else {
+        counterElement.classList.remove('text-red-500');
+        counterElement.classList.add('text-gray-500', 'dark:text-gray-400');
+    }
+}
+
+function updateContentCounter() {
+    const contentElement = document.getElementById('legenda_editor');
+    const counterElement = document.getElementById('contentCounter');
+    
+    if (!contentElement || !counterElement) return;
+    
+    // Get text content without HTML tags for accurate character count
+    const currentLength = contentElement.textContent.length || contentElement.innerText.length || 0;
+    const maxLength = 2200;
+    
+    counterElement.textContent = `${currentLength}/${maxLength}`;
+    
+    // Change color when approaching limit (90% or more)
+    if (currentLength >= maxLength * 0.9) {
+        counterElement.classList.add('text-red-500');
+        counterElement.classList.remove('text-gray-500', 'dark:text-gray-400');
+    } else {
+        counterElement.classList.remove('text-red-500');
+        counterElement.classList.add('text-gray-500', 'dark:text-gray-400');
     }
 }
 
@@ -327,7 +386,7 @@ function syncEditorContent(editorId, hiddenFieldId) {
     }
 }
 
-// Expose functions globally for HTML onclick handlers
+// Global exports
 window.insertEmoji = insertEmoji;
 window.insertEmojiToCarousel = insertEmojiToCarousel;
 window.insertEmojiToFinal = insertEmojiToFinal;
@@ -354,6 +413,8 @@ window.selectEmoji = selectEmoji;
 window.filterEmojis = filterEmojis;
 window.filterEmojisByCategory = filterEmojisByCategory;
 window.syncEditorContent = syncEditorContent;
+window.updateTitleCounter = updateTitleCounter;
+window.updateContentCounter = updateContentCounter;
 
 // Hashtag functions
 function handleHashtagSearch(e) {

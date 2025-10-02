@@ -53,43 +53,32 @@
 @endpush
 
 @section('content')
-<!-- Breadcrumb -->
-<nav class="bg-gray-50 py-4">
-    <div class="container mx-auto px-4">
-        <ol class="flex items-center space-x-2 text-sm">
-            <li><a href="{{ route('dashboard') }}" class="text-blue-600 hover:text-blue-700">Início</a></li>
-            <li class="text-gray-400">/</li>
-            <li><a href="{{ route('public.portfolio.public.index') }}" class="text-blue-600 hover:text-blue-700">Portfólio</a></li>
-            @if($work->category)
-                <li class="text-gray-400">/</li>
-                <li><a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" class="text-blue-600 hover:text-blue-700">{{ $work->category->name }}</a></li>
-            @endif
-            <li class="text-gray-400">/</li>
-            <li class="text-gray-700">{{ $work->title }}</li>
-        </ol>
-    </div>
-</nav>
+<div class="bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Back Button and Theme Toggle -->
+    <div class="bg-white dark:bg-gray-900 py-4 border-b border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 flex justify-between items-center">
+            <button onclick="history.back()" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
+                <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
 
-<!-- Hero Section -->
-<section class="py-12 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <!-- Category Badge -->
+        </div>
+    </div>
+
+    <!-- Modal-style Content Container -->
+    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-900 transition-colors duration-300">
+        <!-- Header Section -->
+        <div class="px-10 py-8 border-b border-gray-100 dark:border-gray-700 transition-colors duration-300">
             @if($work->category)
-                <div class="mb-6">
-                    <a href="{{ route('public.portfolio.public.category', $work->category->slug) }}" 
-                       class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium text-white hover:opacity-90 transition-opacity" 
-                       style="background-color: {{ $work->category->color }}">
-                        <i class="fas fa-tag mr-2"></i>
-                        {{ $work->category->name }}
-                    </a>
+                <div class="mb-4">
+                    <span class="text-blue-600 dark:text-blue-400 text-sm font-semibold uppercase tracking-wider">{{ $work->category->name }}</span>
                 </div>
             @endif
             
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{{ $work->title }}</h1>
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight transition-colors duration-300">{{ $work->title }}</h1>
             
-            <div class="flex flex-wrap items-center gap-6 text-gray-600 mb-8">
-                <!-- Authors -->
+            <div class="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-300 text-sm mb-6 transition-colors duration-300">
                 @if($work->authors->count() > 0)
                     <div class="flex items-center">
                         <i class="fas fa-user mr-2"></i>
@@ -97,13 +86,11 @@
                     </div>
                 @endif
                 
-                <!-- Date -->
                 <div class="flex items-center">
                     <i class="fas fa-calendar mr-2"></i>
                     <span>{{ $work->created_at->format('d/m/Y') }}</span>
                 </div>
                 
-                <!-- Client -->
                 @if($work->client)
                     <div class="flex items-center">
                         <i class="fas fa-building mr-2"></i>
@@ -112,143 +99,102 @@
                 @endif
             </div>
             
-            <p class="text-xl text-gray-700 leading-relaxed">{{ $work->description }}</p>
+            <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-300">{{ $work->description }}</p>
         </div>
-    </div>
-</section>
 
-<!-- Featured Image -->
-@if($work->featured_image)
-<section class="py-8">
-    <div class="container mx-auto px-4">
-        <div class="max-w-6xl mx-auto">
+        <!-- Featured Image -->
+        @if($work->featured_image)
+        <div class="modal-image-wrapper">
             <img src="{{ asset('storage/' . $work->featured_image) }}" 
                  alt="{{ $work->title }}" 
-                 class="w-full rounded-xl shadow-lg">
+                 class="modal-stacked-image w-full h-auto display-block">
         </div>
-    </div>
-</section>
-@endif
+        @endif
 
-<!-- Content -->
-<section class="py-12">
-    <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <!-- Main Content -->
-                <div class="lg:col-span-2">
-                    @if($work->content)
-                        <div class="prose prose-lg max-w-none">
-                            {!! $work->content !!}
-                        </div>
-                    @endif
-                    
-                    <!-- Gallery -->
-                    @if($work->images->count() > 0)
-                        <div class="mt-12">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-6">Galeria</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                @foreach($work->images as $image)
-                                    <div class="group cursor-pointer" onclick="openLightbox('{{ asset('storage/' . $image->path) }}', '{{ $image->alt_text }}')">
-                                        <img src="{{ asset('storage/' . $image->path) }}" 
-                                             alt="{{ $image->alt_text }}" 
-                                             class="w-full h-64 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
+        <!-- Gallery Images - Stacked Vertically -->
+        @if($work->images->count() > 0)
+            <div class="modal-images-stack">
+                @foreach($work->images as $image)
+                    <div class="modal-image-wrapper">
+                        <img src="{{ asset('storage/' . $image->path) }}" 
+                             alt="{{ $image->alt_text }}" 
+                             class="modal-stacked-image w-full h-auto display-block cursor-pointer"
+                             onclick="openLightbox('{{ asset('storage/' . $image->path) }}', '{{ $image->alt_text }}')">
+                        @if($image->alt_text)
+                            <div class="modal-image-caption">{{ $image->alt_text }}</div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        <!-- Project Information -->
+        <div class="modal-info px-10 py-8">
+            @if($work->content)
+                <div class="modal-content-text mb-8">
+                    {!! $work->content !!}
                 </div>
-                
-                <!-- Sidebar -->
-                <div class="lg:col-span-1">
-                    <div class="bg-gray-50 rounded-xl p-6 sticky top-8">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">Detalhes do Projeto</h3>
-                        
-                        <!-- Technologies -->
-                        @if($work->technologies && is_array($work->technologies))
-                            <div class="mb-6">
-                                <h4 class="font-medium text-gray-700 mb-2">Tecnologias</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($work->technologies as $tech)
-                                        <span class="px-3 py-1 bg-white text-gray-700 text-sm rounded-md border">
-                                            {{ trim($tech) }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                        
-                        <!-- Project URL -->
-                        @if($work->project_url)
-                            <div class="mb-6">
-                                <h4 class="font-medium text-gray-700 mb-2">Link do Projeto</h4>
-                                <a href="{{ $work->project_url }}" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
-                                    Visitar site
-                                    <i class="fas fa-external-link-alt ml-2 text-sm"></i>
-                                </a>
-                            </div>
-                        @endif
-                        
-                        <!-- Repository URL -->
-                        @if($work->repository_url)
-                            <div class="mb-6">
-                                <h4 class="font-medium text-gray-700 mb-2">Repositório</h4>
-                                <a href="{{ $work->repository_url }}" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
-                                    Ver código
-                                    <i class="fab fa-github ml-2"></i>
-                                </a>
-                            </div>
-                        @endif
-                        
-                        <!-- Share -->
-                        <div class="border-t pt-6">
-                            <h4 class="font-medium text-gray-700 mb-3">Compartilhar</h4>
-                            <div class="flex space-x-3">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
-                                   target="_blank" 
-                                   class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}&text={{ urlencode($work->title) }}" 
-                                   target="_blank" 
-                                   class="w-10 h-10 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('public.portfolio.public.work', $work->slug)) }}" 
-                                   target="_blank" 
-                                   class="w-10 h-10 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition-colors">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </a>
-                                <button onclick="copyToClipboard('{{ route('public.portfolio.public.work', $work->slug) }}')" 
-                                        class="w-10 h-10 bg-gray-600 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
-                                    <i class="fas fa-link"></i>
-                                </button>
-                            </div>
+            @endif
+
+            <!-- Project Details -->
+            <div class="space-y-6">
+                <!-- Technologies -->
+                @if($work->technologies && is_array($work->technologies))
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Tecnologias:</span>
+                        <div class="modal-tech-tags mt-2">
+                            @foreach($work->technologies as $tech)
+                                <span class="modal-tech-tag">{{ trim($tech) }}</span>
+                            @endforeach
                         </div>
+                    </div>
+                @endif
+                
+                <!-- Project URL -->
+                @if($work->project_url)
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Link do Projeto:</span>
+                        <a href="{{ $work->project_url }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="modal-detail-link">
+                            Visitar site
+                            <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                @endif
+                
+                <!-- Repository URL -->
+                @if($work->repository_url)
+                    <div class="modal-detail-item">
+                        <span class="modal-detail-label">Repositório:</span>
+                        <a href="{{ $work->repository_url }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="modal-detail-link">
+                            <i class="fab fa-github mr-2"></i>
+                            Ver código
+                        </a>
+                    </div>
+                @endif
+                
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
 <!-- Related Works -->
 @if($relatedWorks->count() > 0)
-<section class="py-16 bg-gray-50">
+<section class="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
     <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Projetos Relacionados</h2>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center transition-colors duration-300">Projetos Relacionados</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($relatedWorks as $relatedWork)
-                    <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                    <article class="bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                         <div class="relative overflow-hidden">
                             @if($relatedWork->featured_image)
                                 <img src="{{ asset('storage/' . $relatedWork->featured_image) }}" 
@@ -262,13 +208,13 @@
                         </div>
                         
                         <div class="p-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                 <a href="{{ route('public.portfolio.public.work', $relatedWork->slug) }}">
                                     {{ $relatedWork->title }}
                                 </a>
                             </h3>
                             
-                            <p class="text-gray-600 text-sm line-clamp-2">{{ $relatedWork->description }}</p>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 transition-colors duration-300">{{ $relatedWork->description }}</p>
                         </div>
                     </article>
                 @endforeach
@@ -278,26 +224,16 @@
 </section>
 @endif
 
-<!-- CTA Section -->
-<section class="bg-blue-600 text-white py-16">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Gostou deste projeto?</h2>
-        <p class="text-xl opacity-90 mb-8">Vamos criar algo incrível juntos</p>
-        <a href="{{ route('public.contact') }}" 
-           class="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
-            Solicitar orçamento
-            <i class="fas fa-arrow-right ml-2"></i>
-        </a>
-    </div>
-</section>
+
 
 <!-- Lightbox Modal -->
-<div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
+<div id="lightbox" class="fixed inset-0 bg-black bg-opacity-75 dark:bg-black dark:bg-opacity-85 hidden z-50 flex items-center justify-center p-4 transition-colors duration-300">
     <div class="relative max-w-4xl max-h-full">
-        <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white text-2xl hover:text-gray-300">
-            <i class="fas fa-times"></i>
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+            <i class="fas fa-times text-2xl"></i>
         </button>
         <img id="lightbox-image" src="" alt="" class="max-w-full max-h-full object-contain">
+        <div id="lightbox-caption" class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 text-white p-4 text-center transition-colors duration-300"></div>
     </div>
 </div>
 @endsection
@@ -309,6 +245,195 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Modal-style layout */
+.modal-images-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.modal-image-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+.modal-stacked-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.modal-image-caption {
+    padding: 12px 40px;
+    background-color: #f8f9fa;
+    color: #6b7280;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .modal-image-caption {
+    background-color: #374151;
+    color: #d1d5db;
+    border-bottom: 1px solid #4b5563;
+}
+
+.modal-info {
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+.dark .modal-info {
+    background-color: #111827;
+}
+
+.modal-content-text {
+    color: #4b5563;
+    line-height: 1.7;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.dark .modal-content-text {
+    color: #d1d5db;
+}
+
+.modal-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal-detail-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.dark .modal-detail-label {
+    color: #f3f4f6;
+}
+
+.modal-detail-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.modal-detail-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.dark .modal-detail-link {
+    color: #60a5fa;
+}
+
+.dark .modal-detail-link:hover {
+    color: #93c5fd;
+}
+
+.modal-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.modal-tech-tag {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .modal-tech-tag {
+    background-color: #374151;
+    color: #d1d5db;
+    border: 1px solid #4b5563;
+}
+
+/* Content styling */
+.modal-content-text h1, .modal-content-text h2, .modal-content-text h3, 
+.modal-content-text h4, .modal-content-text h5, .modal-content-text h6 {
+    color: #1f2937;
+    font-weight: 700;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    transition: color 0.3s ease;
+}
+
+.dark .modal-content-text h1, .dark .modal-content-text h2, .dark .modal-content-text h3,
+.dark .modal-content-text h4, .dark .modal-content-text h5, .dark .modal-content-text h6 {
+    color: #f9fafb;
+}
+
+.modal-content-text p {
+    color: #4b5563;
+    line-height: 1.75;
+    margin-bottom: 1em;
+    transition: color 0.3s ease;
+}
+
+.dark .modal-content-text p {
+    color: #d1d5db;
+}
+
+.modal-content-text a {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.modal-content-text a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.dark .modal-content-text a {
+    color: #60a5fa;
+}
+
+.dark .modal-content-text a:hover {
+    color: #93c5fd;
+}
+
+.modal-content-text ul, .modal-content-text ol {
+    color: #4b5563;
+    margin-bottom: 1em;
+    padding-left: 1.5em;
+    transition: color 0.3s ease;
+}
+
+.dark .modal-content-text ul, .dark .modal-content-text ol {
+    color: #d1d5db;
+}
+
+.modal-content-text blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #6b7280;
+    margin: 1.5em 0;
+    transition: all 0.3s ease;
+}
+
+.dark .modal-content-text blockquote {
+    border-left: 4px solid #4b5563;
+    color: #9ca3af;
 }
 
 .prose {
@@ -342,39 +467,95 @@
 .prose a:hover {
     color: #1d4ed8;
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-info {
+        padding: 20px;
+    }
+    
+    .modal-image-caption {
+        padding: 12px 20px;
+    }
+}
 </style>
 @endpush
 
 @push('scripts')
 <script>
-function openLightbox(src, alt) {
-    const lightbox = document.getElementById('lightbox');
-    const image = document.getElementById('lightbox-image');
+// Theme management
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    image.src = src;
-    image.alt = alt;
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+        updateThemeIcon(true);
+    } else {
+        document.documentElement.classList.remove('dark');
+        updateThemeIcon(false);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    if (isDark) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        updateThemeIcon(false);
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        updateThemeIcon(true);
+    }
+}
+
+function updateThemeIcon(isDark) {
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+    
+    if (isDark) {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+    } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+    }
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+});
+
+function openLightbox(imageSrc, caption) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    
+    lightboxImage.src = imageSrc;
+    lightboxCaption.textContent = caption || '';
     lightbox.classList.remove('hidden');
-    lightbox.classList.add('flex');
     document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
     document.body.style.overflow = 'auto';
 }
 
-// Close lightbox on ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+// Close lightbox when clicking outside the image
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) {
         closeLightbox();
     }
 });
 
-// Close lightbox on background click
-document.getElementById('lightbox').addEventListener('click', function(e) {
-    if (e.target === this) {
+// Close lightbox with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
         closeLightbox();
     }
 });

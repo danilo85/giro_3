@@ -101,7 +101,9 @@ class PortfolioController extends Controller
             'authors.*' => 'exists:autores,id',
             'author_roles' => 'nullable|array',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_orders' => 'nullable|string',
+            'delete_images' => 'nullable|string'
         ]);
 
         \Log::info('Iniciando criação de trabalho de portfólio', [
@@ -334,6 +336,59 @@ class PortfolioController extends Controller
                             $image->delete();
                         }
                     }
+                }
+            }
+
+            // Processar ordenação de imagens
+            \Log::info('Debug image_orders', [
+                'has_image_orders' => $request->filled('image_orders'),
+                'image_orders_raw' => $request->input('image_orders'),
+                'all_request' => $request->all()
+            ]);
+            
+            if ($request->filled('image_orders')) {
+                $imageOrders = json_decode($request->image_orders, true);
+                \Log::info('Processando ordenação de imagens', [
+                    'orders' => $imageOrders, 
+                    'work_id' => $work->id,
+                    'is_array' => is_array($imageOrders)
+                ]);
+                
+                if (is_array($imageOrders)) {
+                    foreach ($imageOrders as $imageId => $order) {
+                        $updated = PortfolioWorkImage::where('id', $imageId)
+                            ->where('portfolio_work_id', $work->id)
+                            ->update(['sort_order' => $order]);
+                        \Log::info('Atualizando ordem da imagem', [
+                            'image_id' => $imageId,
+                            'new_order' => $order,
+                            'updated' => $updated
+                        ]);
+                    }
+                }
+            }
+
+            // Processar imagem destacada
+            if ($request->filled('featured_image_id')) {
+                $featuredImageId = $request->input('featured_image_id');
+                \Log::info('Processando imagem destacada', [
+                    'featured_image_id' => $featuredImageId,
+                    'work_id' => $work->id
+                ]);
+
+                // Primeiro, remover o status de destacada de todas as imagens do trabalho
+                PortfolioWorkImage::where('portfolio_work_id', $work->id)
+                    ->update(['is_featured' => false]);
+
+                // Depois, marcar a imagem selecionada como destacada
+                if ($featuredImageId && $featuredImageId !== '0') {
+                    $updated = PortfolioWorkImage::where('id', $featuredImageId)
+                        ->where('portfolio_work_id', $work->id)
+                        ->update(['is_featured' => true]);
+                    \Log::info('Imagem marcada como destacada', [
+                        'image_id' => $featuredImageId,
+                        'updated' => $updated
+                    ]);
                 }
             }
 

@@ -149,6 +149,38 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the notifications for the user.
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Get the notification preferences for the user.
+     */
+    public function notificationPreference()
+    {
+        return $this->hasOne(NotificationPreference::class);
+    }
+
+    /**
+     * Get unread notifications for the user.
+     */
+    public function unreadNotifications()
+    {
+        return $this->notifications()->unread();
+    }
+
+    /**
+     * Get the count of unread notifications.
+     */
+    public function getUnreadNotificationsCountAttribute()
+    {
+        return $this->unreadNotifications()->count();
+    }
+
+    /**
      * Get the user who approved this user.
      */
     public function approvedBy()

@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             SocialAccountSeeder::class,
             AssetSeeder::class,
             FileSeeder::class,
+            NotificationSeeder::class,
+            NotificationLogSeeder::class,
         ]);
     }
 }

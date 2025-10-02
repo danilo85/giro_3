@@ -117,7 +117,7 @@
                 </div>
             </div>
 
-            <!-- Coluna 2: Personalização de Cores -->
+            <!-- Coluna 2: Personalização de Cores e Gradientes -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mr-3">
@@ -128,126 +128,226 @@
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">Personalização de Cores</h2>
                 </div>
                 
-                <!-- Seletor de Nova Cor -->
-                <div class="space-y-8 mb-6">
-                    <div>
-                        <label for="colorPicker" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Escolher Nova Cor</label>
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                            <div class="space-y-3">
-                                <div class="flex items-center space-x-3">
-                                    <input type="color" id="colorPicker" value="#FFD700" class="w-14 h-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
-                                    <input type="text" id="colorHex" value="#FFD700" class="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm font-mono bg-white dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="#FFD700">
+                <!-- Interface com Abas -->
+                <div class="color-tabs-container">
+                    <!-- Navegação das Abas -->
+                    <div class="flex border-b border-gray-200 dark:border-gray-600 mb-6">
+                        <button id="solidColorsTab" class="tab-button active flex-1 py-3 px-4 text-sm font-semibold text-center border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 transition-all duration-200 hover:text-blue-700 dark:hover:text-blue-300">
+                            <span class="flex items-center justify-center gap-2">
+                                <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                                Cores Sólidas
+                            </span>
+                        </button>
+                        <button id="gradientsTab" class="tab-button flex-1 py-3 px-4 text-sm font-semibold text-center border-b-2 border-transparent text-gray-500 dark:text-gray-400 transition-all duration-200 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300">
+                            <span class="flex items-center justify-center gap-2">
+                                <div class="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                                Gradientes
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <!-- Conteúdo da Aba: Cores Sólidas -->
+                    <!-- Toggle entre Cor Sólida e Gradiente (mantido para compatibilidade) -->
+                    <div class="hidden">
+                        <input type="radio" name="backgroundType" value="solid" id="solidColorRadio" checked>
+                        <input type="radio" name="backgroundType" value="gradient" id="gradientRadio">
+                    </div>
+                    
+                    <div id="solidColorsContent" class="tab-content active">
+                        
+                        <!-- Seletor de Nova Cor -->
+                        <div class="space-y-6 mb-6">
+                            <div>
+                                <label for="colorPicker" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Escolher Nova Cor</label>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <input type="color" id="colorPicker" value="#FFD700" class="w-14 h-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
+                                            <input type="text" id="colorHex" value="#FFD700" class="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm font-mono bg-white dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="#FFD700">
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <button id="saveColorBtn" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                                💾 Salvar Cor
+                                            </button>
+                                            <button id="setDefaultColorBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 dark:from-yellow-700 dark:to-yellow-800 dark:hover:from-yellow-800 dark:hover:to-yellow-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                                ⭐ Definir como Padrão
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <button id="saveColorBtn" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
-                                        💾 Salvar Cor
-                                    </button>
-                                    <button id="setDefaultColorBtn" class="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 dark:from-yellow-700 dark:to-yellow-800 dark:hover:from-yellow-800 dark:hover:to-yellow-900 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
-                                        ⭐ Definir como Padrão
-                                    </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Cores Salvas -->
+                        <div id="savedColorsSection">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Cores Salvas</label>
+                            
+                            @if(isset($postColors) && $postColors->count() > 0)
+                            <div class="mb-4">
+                                <h4 class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-3 flex items-center">
+                                    <span class="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-2"></span>
+                                    Cores deste post
+                                </h4>
+                                <div class="grid grid-cols-8 gap-2">
+                                    @foreach($postColors as $color)
+                                    <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
+                                        <div class="w-10 h-10 rounded-xl border-3 border-blue-400 cursor-pointer hover:border-blue-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
+                                             style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
+                                             title="{{ $color->color_name ?? 'Cor personalizada' }} (Post específico)">
+                                            <!-- Badge de post específico -->
+                                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
+                                                <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                            </div>
+                                            <!-- Efeito de brilho -->
+                                            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
+                                        </div>
+                                        <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
+                                                data-color-id="{{ $color->id }}" title="Excluir cor">
+                                            ×
+                                        </button>
+                                    </div>
+                                    @endforeach
                                 </div>
+                            </div>
+                            @endif
+                            
+                            <div id="savedColorsList">
+                                @if(isset($defaultColors) && $defaultColors->count() > 0)
+                                <div class="mb-4">
+                                    <h4 class="text-xs font-semibold text-yellow-600 dark:text-yellow-400 mb-3 flex items-center">
+                                        <span class="w-2 h-2 bg-yellow-500 dark:bg-yellow-400 rounded-full mr-2"></span>
+                                        Cores padrão
+                                    </h4>
+                                    <div class="grid grid-cols-8 gap-2">
+                                        @foreach($defaultColors as $color)
+                                        <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
+                                            <div class="w-10 h-10 rounded-md border-3 border-yellow-400 cursor-pointer hover:border-yellow-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
+                                                 style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
+                                                 title="{{ $color->color_name ?? 'Cor padrão' }} (Padrão)">
+                                                <!-- Efeito de brilho -->
+                                                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
+                                            </div>
+                                            <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
+                                                    data-color-id="{{ $color->id }}" title="Excluir cor">
+                                                ×
+                                            </button>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                @if(isset($globalColors) && $globalColors->count() > 0)
+                                <div class="mb-4">
+                                    <h4 class="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-3 flex items-center">
+                                        <span class="w-2 h-2 bg-gray-500 dark:bg-gray-400 rounded-full mr-2"></span>
+                                        Cores globais
+                                    </h4>
+                                    <div class="grid grid-cols-8 gap-2">
+                                        @foreach($globalColors as $color)
+                                        <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
+                                            <div class="w-10 h-10 rounded-md border-3 border-gray-400 cursor-pointer hover:border-gray-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
+                                                 style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
+                                                 title="{{ $color->color_name ?? 'Cor global' }} (Global)">
+                                                <!-- Efeito de brilho -->
+                                                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
+                                            </div>
+                                            <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
+                                                    data-color-id="{{ $color->id }}" title="Excluir cor">
+                                                ×
+                                            </button>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                @if((!isset($postColors) || $postColors->count() == 0) && (!isset($defaultColors) || $defaultColors->count() == 0) && (!isset($globalColors) || $globalColors->count() == 0))
+                                    <div class="text-center py-8">
+                                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <svg class="w-8 h-8 text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Nenhuma cor salva ainda</p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500">Escolha uma cor e clique em "Salvar Cor"</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Cores Salvas -->
-                <div id="savedColorsSection">
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">🎨 Cores Salvas</label>
-                        
-                        @if(isset($postColors) && $postColors->count() > 0)
-                        <div class="mb-4">
-                            <h4 class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-3 flex items-center">
-                                <span class="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-2"></span>
-                                Cores deste post
-                            </h4>
-                            <div class="grid grid-cols-8 gap-2">
-                                @foreach($postColors as $color)
-                                <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
-                                    <div class="w-10 h-10 rounded-xl border-3 border-blue-400 cursor-pointer hover:border-blue-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
-                                         style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
-                                         title="{{ $color->color_name ?? 'Cor personalizada' }} (Post específico)">
-                                        <!-- Badge de post específico -->
-                                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
-                                            <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                            </svg>
-                                        </div>
-                                        <!-- Efeito de brilho -->
-                                        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
+                    
+                    <!-- Conteúdo da Aba: Gradientes -->
+                    <div id="gradientsContent" class="tab-content hidden">
+                        <!-- Controles de Gradiente -->
+                        <div id="gradientSettings" class="space-y-6">
+                            <!-- Cores do Gradiente -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">🎨 Cor 1</label>
+                                    <div class="flex items-center space-x-3">
+                                        <input type="color" id="gradientColor1" value="#FF6B6B" class="w-12 h-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
+                                        <input type="text" id="gradientColor1Hex" value="#FF6B6B" class="flex-1 px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm font-mono bg-white dark:bg-gray-800 dark:text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
                                     </div>
-                                    <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
-                                            data-color-id="{{ $color->id }}" title="Excluir cor">
-                                        ×
-                                    </button>
                                 </div>
-                                @endforeach
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">🎨 Cor 2</label>
+                                    <div class="flex items-center space-x-3">
+                                        <input type="color" id="gradientColor2" value="#4ECDC4" class="w-12 h-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow">
+                                        <input type="text" id="gradientColor2Hex" value="#4ECDC4" class="flex-1 px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm font-mono bg-white dark:bg-gray-800 dark:text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Direção do Gradiente -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">📐 Direção do Gradiente</label>
+                                <select id="gradientDirection" class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 dark:text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all">
+                                    <option value="horizontal">→ Linear Horizontal (Esquerda → Direita)</option>
+                                    <option value="vertical">↓ Linear Vertical (Cima → Baixo)</option>
+                                    <option value="diagonal-down">↘ Linear Diagonal (↘)</option>
+                                    <option value="diagonal-up">↙ Linear Diagonal (↙)</option>
+                                    <option value="radial">⚪ Radial (Centro → Bordas)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Preview do Gradiente -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">👁️ Preview</label>
+                                <div id="gradientPreview" class="w-full h-16 rounded-lg border-2 border-gray-300 dark:border-gray-600 shadow-inner bg-gradient-to-r from-red-400 to-blue-400 transition-all duration-300"></div>
+                            </div>
+                            
+                            <!-- Botões de Ação -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <button id="applyGradientBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    ✨ Aplicar Gradiente
+                                </button>
+                                <button id="saveGradientPresetBtn" class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    💾 Salvar Preset
+                                </button>
+                                <button id="resetGradientBtn" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                                    🔄 Resetar
+                                </button>
                             </div>
                         </div>
-                        @endif
                         
-                        <div id="savedColorsList">
-                            @if(isset($defaultColors) && $defaultColors->count() > 0)
-                            <div class="mb-4">
-                                <h4 class="text-xs font-semibold text-yellow-600 dark:text-yellow-400 mb-3 flex items-center">
-                                    <span class="w-2 h-2 bg-yellow-500 dark:bg-yellow-400 rounded-full mr-2"></span>
-                                    Cores padrão
-                                </h4>
-                                <div class="grid grid-cols-8 gap-2">
-                                    @foreach($defaultColors as $color)
-                                    <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
-                                        <div class="w-10 h-10 rounded-md border-3 border-yellow-400 cursor-pointer hover:border-yellow-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
-                                             style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
-                                             title="{{ $color->color_name ?? 'Cor padrão' }} (Padrão)">
-                                            <!-- Efeito de brilho -->
-                                            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
-                                        </div>
-                                        <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
-                                                data-color-id="{{ $color->id }}" title="Excluir cor">
-                                            ×
-                                        </button>
-                                    </div>
-                                    @endforeach
-                                </div>
+                        <!-- Presets de Gradientes Salvos -->
+                        <div id="gradientPresetsSection" class="mt-6">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">💎 Presets Salvos</label>
+                            <div id="gradientPresetsList" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                                <!-- Presets serão carregados dinamicamente -->
                             </div>
-                            @endif
-                            
-                            @if(isset($globalColors) && $globalColors->count() > 0)
-                            <div class="mb-4">
-                                <h4 class="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-3 flex items-center">
-                                    <span class="w-2 h-2 bg-gray-500 dark:bg-gray-400 rounded-full mr-2"></span>
-                                    Cores globais
-                                </h4>
-                                <div class="grid grid-cols-8 gap-2">
-                                    @foreach($globalColors as $color)
-                                    <div class="saved-color-item relative group" data-color-id="{{ $color->id }}" data-color="{{ $color->color_hex }}">
-                                        <div class="w-10 h-10 rounded-md border-3 border-gray-400 cursor-pointer hover:border-gray-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
-                                             style="background: linear-gradient(135deg, {{ $color->color_hex }} 0%, {{ $color->color_hex }}dd 100%)" 
-                                             title="{{ $color->color_name ?? 'Cor global' }} (Global)">
-                                            <!-- Efeito de brilho -->
-                                            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
-                                        </div>
-                                        <button class="delete-color-btn absolute -top-2 -left-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
-                                                data-color-id="{{ $color->id }}" title="Excluir cor">
-                                            ×
-                                        </button>
-                                    </div>
-                                    @endforeach
+                            <div id="noGradientPresets" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                                    </svg>
                                 </div>
+                                <p class="text-sm">Nenhum preset salvo ainda</p>
+                                <p class="text-xs">Crie um gradiente e clique em "Salvar Preset"</p>
                             </div>
-                            @endif
-                            
-                            @if((!isset($postColors) || $postColors->count() == 0) && (!isset($defaultColors) || $defaultColors->count() == 0) && (!isset($globalColors) || $globalColors->count() == 0))
-                                <div class="text-center py-8">
-                                    <div class="w-16 h-16 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <svg class="w-8 h-8 text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
-                                        </svg>
-                                    </div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Nenhuma cor salva ainda</p>
-                                    <p class="text-xs text-gray-400 dark:text-gray-500">Escolha uma cor e clique em "Salvar Cor"</p>
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -399,7 +499,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tamanho da Fonte</label>
                                     <div class="flex items-center space-x-3">
-                                        <input type="range" id="globalFontSize" min="16" max="60" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                                        <input type="range" id="globalFontSize" min="16" max="120" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
                             <span id="globalFontSizeValue" class="text-sm font-mono text-blue-600 dark:text-blue-400 w-12">54px</span>
                                     </div>
                                 </div>
@@ -415,6 +515,15 @@
                                         <option value="700">Negrito (Bold)</option>
                                         <option value="800">Extra-negrito</option>
                                     </select>
+                                </div>
+                                
+                                <!-- Espaçamento Entre Linhas Global -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Espaçamento Entre Linhas</label>
+                                    <div class="flex items-center space-x-3">
+                                        <input type="range" id="globalLineHeight" min="0.8" max="3.0" step="0.1" value="1.2" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                                        <span id="globalLineHeightValue" class="text-sm font-mono text-blue-600 dark:text-blue-400 w-12">1.2x</span>
+                                    </div>
                                 </div>
                                 
                                 <!-- Quebra de Texto Global -->
@@ -508,7 +617,7 @@
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Tamanho da Fonte</label>
                                     <div class="flex items-center space-x-2">
-                                        <input type="range" id="fontSize_{{ $index }}" min="16" max="60" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                                        <input type="range" id="fontSize_{{ $index }}" min="16" max="120" value="54" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
                                     <span id="fontSizeValue_{{ $index }}" class="text-xs font-mono text-blue-600 dark:text-blue-400 w-8">54</span>
                                     </div>
                                 </div>
@@ -524,6 +633,15 @@
                                         <option value="700">Negrito (Bold)</option>
                                         <option value="800">Extra-negrito</option>
                                     </select>
+                                </div>
+                                
+                                <!-- Espaçamento Entre Linhas -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Espaçamento Entre Linhas</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="range" id="lineHeight_{{ $index }}" min="0.8" max="3.0" step="0.1" value="1.2" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                                        <span id="lineHeightValue_{{ $index }}" class="text-xs font-mono text-blue-600 dark:text-blue-400 w-8">1.2</span>
+                                    </div>
                                 </div>
                                 
                                 <!-- Quebra de Texto -->
@@ -635,13 +753,95 @@
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM carregado, aguardando inicialização completa...');
+    
+    // Inicializar sistema de abas
+    initializeColorTabs();
 });
+
+// Sistema de Abas para Cores e Gradientes
+function initializeColorTabs() {
+    console.log('Inicializando sistema de abas...');
+    
+    const solidColorsTab = document.getElementById('solidColorsTab');
+    const gradientsTab = document.getElementById('gradientsTab');
+    const solidColorsContent = document.getElementById('solidColorsContent');
+    const gradientsContent = document.getElementById('gradientsContent');
+    
+    if (!solidColorsTab || !gradientsTab || !solidColorsContent || !gradientsContent) {
+        console.error('Elementos das abas não encontrados');
+        return;
+    }
+    
+    // Função para alternar abas
+    function switchTab(activeTab, activeContent, inactiveTab, inactiveContent) {
+        // Atualizar classes dos botões das abas
+        activeTab.classList.add('active', 'border-blue-500', 'text-blue-600');
+        activeTab.classList.remove('border-transparent', 'text-gray-500');
+        
+        inactiveTab.classList.remove('active', 'border-blue-500', 'text-blue-600');
+        inactiveTab.classList.add('border-transparent', 'text-gray-500');
+        
+        // Atualizar classes do conteúdo
+        activeContent.classList.remove('hidden');
+        activeContent.classList.add('active');
+        
+        inactiveContent.classList.add('hidden');
+        inactiveContent.classList.remove('active');
+        
+        // Atualizar radio buttons para compatibilidade
+        const solidRadio = document.getElementById('solidColorRadio');
+        const gradientRadio = document.getElementById('gradientRadio');
+        
+        if (activeTab === solidColorsTab) {
+            if (solidRadio) solidRadio.checked = true;
+            if (gradientRadio) gradientRadio.checked = false;
+            // Atualizar estado do sistema
+            isGradientMode = false;
+            console.log('Modo alterado para: Cores Sólidas');
+        } else {
+            if (solidRadio) solidRadio.checked = false;
+            if (gradientRadio) gradientRadio.checked = true;
+            // Atualizar estado do sistema
+            isGradientMode = true;
+            console.log('Modo alterado para: Gradientes');
+        }
+        
+        // Chamar funções de atualização se existirem
+        if (typeof updateRadioButtons === 'function') {
+            updateRadioButtons();
+        }
+        
+        // Regenerar imagens com o novo modo
+        if (typeof generateAllImages === 'function') {
+            generateAllImages();
+        }
+        
+        console.log('Aba alterada para:', activeTab === solidColorsTab ? 'Cores Sólidas' : 'Gradientes');
+    }
+    
+    // Event listeners para as abas
+    solidColorsTab.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab(solidColorsTab, solidColorsContent, gradientsTab, gradientsContent);
+    });
+    
+    gradientsTab.addEventListener('click', function(e) {
+        e.preventDefault();
+        switchTab(gradientsTab, gradientsContent, solidColorsTab, solidColorsContent);
+    });
+    
+    // Inicializar com a aba de cores sólidas ativa
+    switchTab(solidColorsTab, solidColorsContent, gradientsTab, gradientsContent);
+    
+    console.log('Sistema de abas inicializado com sucesso');
+}
 
 // Dados do post - declaração global
 let postData;
 
 try {
     console.log('=== SCRIPT INICIADO ===');
+    console.log('=== SISTEMA DE CACHE DE TEXTOS ATIVO ===');
     // Dados do post
     postData = {
         titulo: {!! json_encode(strip_tags($socialPost->titulo, '<b><i><u><s><sub><sup>')) !!},
@@ -684,6 +884,21 @@ let currentFormat = 'stories';
 let currentBackgroundColor = postColor ? postColor.color_hex : (defaultColor ? defaultColor.color_hex : '#FFD700');
 let currentPostColorId = postColor ? postColor.id : null;
 
+// Debug da cor inicial
+console.log('=== INICIALIZAÇÃO DE CORES ===');
+console.log('postColor:', postColor);
+console.log('defaultColor:', defaultColor);
+console.log('currentBackgroundColor inicial:', currentBackgroundColor);
+
+// Variáveis de gradiente
+let isGradientMode = false;
+let currentGradient = {
+    color1: '#FF6B6B',
+    color2: '#4ECDC4',
+    direction: 'horizontal'
+};
+let gradientPresets = [];
+
 // Teste de execução do script
 window.addEventListener('load', function() {
     console.log('=== WINDOW LOAD - SCRIPT EXECUTANDO ===');
@@ -697,12 +912,16 @@ console.log('Título do post:', postData.titulo);
 document.addEventListener('DOMContentLoaded', function() {
     console.log('=== PÁGINA CARREGADA ===');
     console.log('JavaScript funcionando - iniciando geração de imagens...');
+    console.log('🔧 TESTE DE GRADIENTES - Verificando estado inicial');
+    console.log('isGradientMode inicial:', isGradientMode);
+    console.log('currentGradient inicial:', currentGradient);
     
     // Aguardar carregamento da fonte Libre Franklin
     document.fonts.ready.then(function() {
         console.log('Fontes carregadas - iniciando aplicação');
         initializeFormatSelector();
         initializeColorSelector();
+        initializeGradientControls();
         initializeJustifyControls();
         generateAllImages();
         setupDownloadButtons();
@@ -717,6 +936,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Erro no carregamento das fontes - iniciando mesmo assim');
         initializeFormatSelector();
         initializeColorSelector();
+        initializeGradientControls();
         initializeJustifyControls();
         generateAllImages();
         setupDownloadButtons();
@@ -859,6 +1079,551 @@ function initializeFormatSelector() {
     formatOptions[0].classList.add('border-blue-500', 'bg-blue-50', 'dark:border-blue-500', 'dark:bg-blue-900');
 }
 
+// ===== FUNÇÕES DE GRADIENTE =====
+
+// Criar gradiente no canvas
+function createGradient(ctx, canvas, color1, color2, direction) {
+    let gradient;
+    
+    switch (direction) {
+        case 'horizontal':
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            break;
+        case 'vertical':
+            gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            break;
+        case 'diagonal-down':
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            break;
+        case 'diagonal-up':
+            gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
+            break;
+        case 'radial':
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.max(canvas.width, canvas.height) / 2;
+            gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+            break;
+        default:
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    }
+    
+    gradient.addColorStop(0, color1);
+    gradient.addColorStop(1, color2);
+    
+    return gradient;
+}
+
+// Aplicar gradiente como fundo
+function applyGradientBackground(ctx, canvas) {
+    console.log('=== APPLY GRADIENT BACKGROUND ===');
+    console.log('isGradientMode:', isGradientMode);
+    console.log('currentBackgroundColor:', currentBackgroundColor);
+    console.log('currentGradient:', currentGradient);
+    console.log('canvas dimensions:', canvas.width, 'x', canvas.height);
+    
+    if (isGradientMode) {
+        console.log('🎨 Aplicando GRADIENTE');
+        try {
+            const gradient = createGradient(ctx, canvas, currentGradient.color1, currentGradient.color2, currentGradient.direction);
+            ctx.fillStyle = gradient;
+            console.log('✅ Gradiente criado com sucesso');
+        } catch (error) {
+            console.error('❌ Erro ao criar gradiente:', error);
+            ctx.fillStyle = '#FFD700'; // Fallback
+        }
+    } else {
+        console.log('🎨 Aplicando COR SÓLIDA');
+        // Garantir que sempre temos uma cor válida
+        const color = currentBackgroundColor || '#FFD700';
+        ctx.fillStyle = color;
+        console.log('Cor aplicada:', color);
+    }
+    
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    console.log('=== FIM APPLY GRADIENT BACKGROUND ===');
+}
+
+// Atualizar preview do gradiente
+function updateGradientPreview() {
+    const preview = document.getElementById('gradientPreview');
+    if (!preview) return;
+    
+    let gradientCSS;
+    const color1 = currentGradient.color1;
+    const color2 = currentGradient.color2;
+    
+    switch (currentGradient.direction) {
+        case 'horizontal':
+            gradientCSS = `linear-gradient(to right, ${color1}, ${color2})`;
+            break;
+        case 'vertical':
+            gradientCSS = `linear-gradient(to bottom, ${color1}, ${color2})`;
+            break;
+        case 'diagonal-down':
+            gradientCSS = `linear-gradient(to bottom right, ${color1}, ${color2})`;
+            break;
+        case 'diagonal-up':
+            gradientCSS = `linear-gradient(to top right, ${color1}, ${color2})`;
+            break;
+        case 'radial':
+            gradientCSS = `radial-gradient(circle, ${color1}, ${color2})`;
+            break;
+        default:
+            gradientCSS = `linear-gradient(to right, ${color1}, ${color2})`;
+    }
+    
+    preview.style.background = gradientCSS;
+}
+
+// Aplicar gradiente selecionado (removida função duplicada que causava recursão)
+
+// Salvar preset de gradiente
+function saveGradientPreset() {
+    const preset = {
+        id: Date.now(),
+        color1: currentGradient.color1,
+        color2: currentGradient.color2,
+        direction: currentGradient.direction,
+        name: `Gradiente ${gradientPresets.length + 1}`
+    };
+    
+    gradientPresets.push(preset);
+    saveGradientPresetsToStorage();
+    renderGradientPresets();
+    
+    console.log('Preset de gradiente salvo:', preset);
+}
+
+// Carregar presets de gradientes do localStorage
+function loadGradientPresetsFromStorage() {
+    try {
+        const saved = localStorage.getItem('gradientPresets');
+        if (saved) {
+            gradientPresets = JSON.parse(saved);
+            renderGradientPresets();
+        }
+    } catch (error) {
+        console.error('Erro ao carregar presets de gradientes:', error);
+        gradientPresets = [];
+    }
+}
+
+// Salvar presets de gradientes no localStorage
+function saveGradientPresetsToStorage() {
+    try {
+        localStorage.setItem('gradientPresets', JSON.stringify(gradientPresets));
+    } catch (error) {
+        console.error('Erro ao salvar presets de gradientes:', error);
+    }
+}
+
+// Renderizar lista de presets
+function renderGradientPresets() {
+    const presetsList = document.getElementById('gradientPresetsList');
+    const noPresets = document.getElementById('noGradientPresets');
+    
+    if (!presetsList || !noPresets) return;
+    
+    if (gradientPresets.length === 0) {
+        presetsList.innerHTML = '';
+        noPresets.style.display = 'block';
+        return;
+    }
+    
+    noPresets.style.display = 'none';
+    presetsList.innerHTML = gradientPresets.map(preset => `
+        <div class="gradient-preset-item relative group cursor-pointer" data-preset-id="${preset.id}">
+            <div class="w-12 h-12 rounded-lg border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 transition-all duration-300 transform hover:scale-110 relative overflow-hidden" 
+                 style="background: ${getGradientCSS(preset)}" 
+                 title="${preset.name}">
+                <!-- Efeito de brilho -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 transform -skew-x-12 translate-x-full group-hover:-translate-x-full"></div>
+            </div>
+            <button class="delete-preset-btn absolute -top-2 -right-2 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg font-bold" 
+                    data-preset-id="${preset.id}" title="Excluir preset">
+                ×
+            </button>
+        </div>
+    `).join('');
+    
+    // Adicionar eventos aos presets
+    setupGradientPresetEvents();
+}
+
+// Obter CSS do gradiente para preview
+function getGradientCSS(preset) {
+    switch (preset.direction) {
+        case 'horizontal':
+            return `linear-gradient(to right, ${preset.color1}, ${preset.color2})`;
+        case 'vertical':
+            return `linear-gradient(to bottom, ${preset.color1}, ${preset.color2})`;
+        case 'diagonal-down':
+            return `linear-gradient(to bottom right, ${preset.color1}, ${preset.color2})`;
+        case 'diagonal-up':
+            return `linear-gradient(to top right, ${preset.color1}, ${preset.color2})`;
+        case 'radial':
+            return `radial-gradient(circle, ${preset.color1}, ${preset.color2})`;
+        default:
+            return `linear-gradient(to right, ${preset.color1}, ${preset.color2})`;
+    }
+}
+
+// Configurar eventos dos presets
+function setupGradientPresetEvents() {
+    // Clique para aplicar preset
+    document.querySelectorAll('.gradient-preset-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-preset-btn')) return;
+            
+            const presetId = parseInt(this.dataset.presetId);
+            const preset = gradientPresets.find(p => p.id === presetId);
+            
+            if (preset) {
+                currentGradient = {
+                    color1: preset.color1,
+                    color2: preset.color2,
+                    direction: preset.direction
+                };
+                
+                updateGradientInputs();
+                updateGradientPreview();
+                
+                if (isGradientMode) {
+                    generateAllImages();
+                }
+            }
+        });
+    });
+    
+    // Clique para deletar preset
+    document.querySelectorAll('.delete-preset-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const presetId = parseInt(this.dataset.presetId);
+            deleteGradientPreset(presetId);
+        });
+    });
+}
+
+// Deletar preset de gradiente
+function deleteGradientPreset(presetId) {
+    gradientPresets = gradientPresets.filter(p => p.id !== presetId);
+    saveGradientPresetsToStorage();
+    renderGradientPresets();
+}
+
+// Atualizar inputs de gradiente
+function updateGradientInputs() {
+    const color1Input = document.getElementById('gradientColor1');
+    const color1Hex = document.getElementById('gradientColor1Hex');
+    const color2Input = document.getElementById('gradientColor2');
+    const color2Hex = document.getElementById('gradientColor2Hex');
+    const directionSelect = document.getElementById('gradientDirection');
+    
+    if (color1Input) color1Input.value = currentGradient.color1;
+    if (color1Hex) color1Hex.value = currentGradient.color1;
+    if (color2Input) color2Input.value = currentGradient.color2;
+    if (color2Hex) color2Hex.value = currentGradient.color2;
+    if (directionSelect) directionSelect.value = currentGradient.direction;
+}
+
+// Resetar gradiente para valores padrão
+function resetGradient() {
+    currentGradient = {
+        color1: '#FF6B6B',
+        color2: '#4ECDC4',
+        direction: 'horizontal'
+    };
+    
+    updateGradientInputs();
+    updateGradientPreview();
+    
+    if (isGradientMode) {
+        generateAllImages();
+    }
+}
+
+// Inicializar controles de gradiente
+function initializeGradientControls() {
+    console.log('=== INICIALIZANDO CONTROLES DE GRADIENTE ===');
+    
+    try {
+        // Toggle entre cor sólida e gradiente
+        const solidRadio = document.getElementById('solidColorRadio');
+        const gradientRadio = document.getElementById('gradientRadio');
+        const gradientSettings = document.getElementById('gradientSettings');
+        const gradientPresetsSection = document.getElementById('gradientPresetsSection');
+        
+        if (!solidRadio) {
+            console.warn('initializeGradientControls: Elemento solidColorRadio não encontrado');
+        }
+        
+        if (!gradientRadio) {
+            console.warn('initializeGradientControls: Elemento gradientRadio não encontrado');
+        }
+        
+        if (!gradientSettings) {
+            console.warn('initializeGradientControls: Elemento gradientSettings não encontrado');
+        }
+        
+        if (!gradientPresetsSection) {
+            console.warn('initializeGradientControls: Elemento gradientPresetsSection não encontrado');
+        }
+        
+        if (solidRadio && gradientRadio) {
+            console.log('initializeGradientControls: Configurando event listeners para radio buttons');
+            
+            solidRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    console.log('initializeGradientControls: Modo sólido selecionado');
+                    isGradientMode = false;
+                    
+                    if (gradientSettings) {
+                        gradientSettings.classList.add('opacity-50', 'pointer-events-none');
+                    }
+                    if (gradientPresetsSection) {
+                        gradientPresetsSection.classList.add('opacity-50', 'pointer-events-none');
+                    }
+                    
+                    // Atualizar visual do radio button
+                    updateRadioButtons();
+                    generateAllImages();
+                }
+            });
+            
+            gradientRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    console.log('initializeGradientControls: Modo gradiente selecionado');
+                    isGradientMode = true;
+                    
+                    if (gradientSettings) {
+                        gradientSettings.classList.remove('opacity-50', 'pointer-events-none');
+                    }
+                    if (gradientPresetsSection) {
+                        gradientPresetsSection.classList.remove('opacity-50', 'pointer-events-none');
+                    }
+                    
+                    // Atualizar visual do radio button
+                    updateRadioButtons();
+                    generateAllImages();
+                }
+            });
+        } else {
+            console.warn('initializeGradientControls: Radio buttons não encontrados, pulando configuração');
+        }
+    
+        // Controles de cor
+        const color1Input = document.getElementById('gradientColor1');
+        const color1Hex = document.getElementById('gradientColor1Hex');
+        const color2Input = document.getElementById('gradientColor2');
+        const color2Hex = document.getElementById('gradientColor2Hex');
+        
+        if (color1Input && color1Hex) {
+            console.log('initializeGradientControls: Configurando controles de cor 1');
+            color1Input.addEventListener('input', function() {
+                currentGradient.color1 = this.value;
+                color1Hex.value = this.value;
+                updateGradientPreview();
+                if (isGradientMode) {
+                    // Usar timeout para evitar múltiplas chamadas rápidas
+                    clearTimeout(window.gradientUpdateTimeout);
+                    window.gradientUpdateTimeout = setTimeout(() => {
+                        generateAllImages();
+                    }, 100);
+                }
+            });
+            
+            color1Hex.addEventListener('input', function() {
+                if (isValidHexColor(this.value)) {
+                    currentGradient.color1 = this.value;
+                    color1Input.value = this.value;
+                    updateGradientPreview();
+                    if (isGradientMode) {
+                        clearTimeout(window.gradientUpdateTimeout);
+                        window.gradientUpdateTimeout = setTimeout(() => {
+                            generateAllImages();
+                        }, 100);
+                    }
+                }
+            });
+        } else {
+            console.warn('initializeGradientControls: Controles de cor 1 não encontrados');
+        }
+        
+        if (color2Input && color2Hex) {
+            console.log('initializeGradientControls: Configurando controles de cor 2');
+            color2Input.addEventListener('input', function() {
+                currentGradient.color2 = this.value;
+                color2Hex.value = this.value;
+                updateGradientPreview();
+                if (isGradientMode) {
+                    clearTimeout(window.gradientUpdateTimeout);
+                    window.gradientUpdateTimeout = setTimeout(() => {
+                        generateAllImages();
+                    }, 100);
+                }
+            });
+            
+            color2Hex.addEventListener('input', function() {
+                if (isValidHexColor(this.value)) {
+                    currentGradient.color2 = this.value;
+                    color2Input.value = this.value;
+                    updateGradientPreview();
+                    if (isGradientMode) {
+                        clearTimeout(window.gradientUpdateTimeout);
+                        window.gradientUpdateTimeout = setTimeout(() => {
+                            generateAllImages();
+                        }, 100);
+                    }
+                }
+            });
+        } else {
+            console.warn('initializeGradientControls: Controles de cor 2 não encontrados');
+        }
+        
+        // Direção do gradiente
+        const directionSelect = document.getElementById('gradientDirection');
+        if (directionSelect) {
+            console.log('initializeGradientControls: Configurando seletor de direção');
+            directionSelect.addEventListener('change', function() {
+            currentGradient.direction = this.value;
+            updateGradientPreview();
+            if (isGradientMode) {
+                clearTimeout(window.gradientUpdateTimeout);
+                window.gradientUpdateTimeout = setTimeout(() => {
+                    generateAllImages();
+                }, 100);
+            }
+        });
+        } else {
+            console.warn('initializeGradientControls: Seletor de direção não encontrado');
+        }
+        
+        // Botões de ação
+        const applyBtn = document.getElementById('applyGradientBtn');
+        const saveBtn = document.getElementById('saveGradientPresetBtn');
+        const resetBtn = document.getElementById('resetGradientBtn');
+        
+        if (applyBtn) {
+            console.log('initializeGradientControls: Configurando botão aplicar');
+            applyBtn.addEventListener('click', function() {
+                if (isGradientMode) {
+                    generateAllImages();
+                }
+            });
+        } else {
+            console.warn('initializeGradientControls: Botão aplicar não encontrado');
+        }
+        
+        if (saveBtn) {
+            console.log('initializeGradientControls: Configurando botão salvar');
+            saveBtn.addEventListener('click', saveGradientPreset);
+        } else {
+            console.warn('initializeGradientControls: Botão salvar não encontrado');
+        }
+        
+        if (resetBtn) {
+            console.log('initializeGradientControls: Configurando botão reset');
+            resetBtn.addEventListener('click', resetGradient);
+        } else {
+            console.warn('initializeGradientControls: Botão reset não encontrado');
+        }
+        
+        // Toggle da seção
+        const toggleBtn = document.getElementById('toggleGradientSection');
+        const gradientControls = document.getElementById('gradientControls');
+        const chevron = document.getElementById('gradientChevron');
+        
+        if (toggleBtn && gradientControls && chevron) {
+            console.log('initializeGradientControls: Configurando toggle da seção');
+            toggleBtn.addEventListener('click', function() {
+                const isHidden = gradientControls.style.display === 'none';
+                
+                if (isHidden) {
+                    gradientControls.style.display = 'block';
+                    chevron.style.transform = 'rotate(0deg)';
+                } else {
+                    gradientControls.style.display = 'none';
+                    chevron.style.transform = 'rotate(-90deg)';
+                }
+            });
+        } else {
+            console.warn('initializeGradientControls: Elementos de toggle não encontrados');
+        }
+        
+        // Inicializar valores
+        console.log('initializeGradientControls: Inicializando valores');
+        updateGradientInputs();
+        updateGradientPreview();
+        loadGradientPresetsFromStorage();
+        updateRadioButtons();
+        
+        console.log('initializeGradientControls: Inicialização concluída com sucesso');
+        
+    } catch (error) {
+        console.error('initializeGradientControls: Erro durante inicialização:', error);
+    }
+}
+
+// Atualizar visual dos radio buttons
+function updateRadioButtons() {
+    console.log('updateRadioButtons: Iniciando atualização dos radio buttons');
+    
+    const solidRadio = document.getElementById('solidColorRadio');
+    const gradientRadio = document.getElementById('gradientRadio');
+    
+    if (!solidRadio) {
+        console.warn('updateRadioButtons: Elemento solidColorRadio não encontrado');
+        return;
+    }
+    
+    if (!gradientRadio) {
+        console.warn('updateRadioButtons: Elemento gradientRadio não encontrado');
+        return;
+    }
+    
+    // Buscar os indicadores visuais corretamente
+    const solidContainer = solidRadio.parentElement;
+    const gradientContainer = gradientRadio.parentElement;
+    
+    if (!solidContainer || !gradientContainer) {
+        console.warn('updateRadioButtons: Containers dos radio buttons não encontrados');
+        return;
+    }
+    
+    const solidIndicator = solidContainer.querySelector('.relative .absolute');
+    const gradientIndicator = gradientContainer.querySelector('.relative .absolute');
+    
+    if (!solidIndicator) {
+        console.warn('updateRadioButtons: Indicador visual do radio solid não encontrado');
+        return;
+    }
+    
+    if (!gradientIndicator) {
+        console.warn('updateRadioButtons: Indicador visual do radio gradient não encontrado');
+        return;
+    }
+    
+    console.log('updateRadioButtons: Todos os elementos encontrados, atualizando visual');
+    
+    if (solidRadio.checked) {
+        solidIndicator.classList.add('scale-100');
+        solidIndicator.classList.remove('scale-0');
+        gradientIndicator.classList.add('scale-0');
+        gradientIndicator.classList.remove('scale-100');
+        console.log('updateRadioButtons: Modo sólido ativado');
+    } else {
+        gradientIndicator.classList.add('scale-100');
+        gradientIndicator.classList.remove('scale-0');
+        solidIndicator.classList.add('scale-0');
+        solidIndicator.classList.remove('scale-100');
+        console.log('updateRadioButtons: Modo gradiente ativado');
+    }
+}
+
+// ===== FIM DAS FUNÇÕES DE GRADIENTE =====
+
 // Gerar todas as imagens
 function generateAllImages() {
     console.log('=== GENERATEALLIMAGES INICIADA ===');
@@ -895,6 +1660,7 @@ function initializeCarouselEditorConfig() {
             globalSettings: {
                 fontSize: 54,
                 fontWeight: '600',
+                lineHeight: 1.2,
                 textWrap: 'auto',
                 textAlignment: 'center',
                 uppercase: false,
@@ -915,6 +1681,7 @@ function initializeCarouselEditorConfig() {
             postData.carouselTexts.forEach((text, index) => {
                 window.carouselEditorConfig.individualSettings[index] = {
                     fontSize: window.carouselEditorConfig.globalSettings.fontSize,
+                    lineHeight: window.carouselEditorConfig.globalSettings.lineHeight,
                     textWrap: window.carouselEditorConfig.globalSettings.textWrap,
                     textAlignment: window.carouselEditorConfig.globalSettings.textAlignment,
                     uppercase: window.carouselEditorConfig.globalSettings.uppercase,
@@ -931,6 +1698,7 @@ function initializeCarouselEditorConfig() {
             if (!window.carouselEditorConfig.individualSettings[index]) {
                 window.carouselEditorConfig.individualSettings[index] = {
                     fontSize: window.carouselEditorConfig.globalSettings.fontSize,
+                    lineHeight: window.carouselEditorConfig.globalSettings.lineHeight,
                     textWrap: window.carouselEditorConfig.globalSettings.textWrap,
                     textAlignment: window.carouselEditorConfig.globalSettings.textAlignment,
                     uppercase: window.carouselEditorConfig.globalSettings.uppercase,
@@ -1319,9 +2087,8 @@ function generateTitleImage() {
     canvas.width = config.width;
     canvas.height = config.height;
     
-    // Fundo com cor selecionada
-    ctx.fillStyle = currentBackgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Fundo com cor selecionada ou gradiente
+    applyGradientBackground(ctx, canvas);
     
     // Adicionar imagem de fundo primeiro
     addBackgroundImage(ctx, config, function() {
@@ -1546,6 +2313,7 @@ function generateCarouselImageWithSettings(index, customSettings = null) {
     
     const settings = customSettings || {
         fontSize: editorSettings.fontSize || window.carouselEditorConfig.globalSettings.fontSize,
+        lineHeight: editorSettings.lineHeight || window.carouselEditorConfig.globalSettings.lineHeight,
         textWrap: editorSettings.textWrap || window.carouselEditorConfig.globalSettings.textWrap,
         textAlignment: editorSettings.textAlignment || window.carouselEditorConfig.globalSettings.textAlignment,
         uppercase: editorSettings.uppercase !== undefined ? editorSettings.uppercase : window.carouselEditorConfig.globalSettings.uppercase,
@@ -1557,9 +2325,8 @@ function generateCarouselImageWithSettings(index, customSettings = null) {
     canvas.width = config.width;
     canvas.height = config.height;
     
-    // Fundo com cor selecionada
-    ctx.fillStyle = currentBackgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Fundo com cor selecionada ou gradiente
+    applyGradientBackground(ctx, canvas);
     
     // Adicionar imagem de fundo primeiro
     addBackgroundImage(ctx, config, function() {
@@ -1656,11 +2423,11 @@ function generateCarouselImageContent(ctx, config, canvas, index, settings) {
         });
     }
     
-    // Calcular altura total
-    const baseLineHeight = baseFontSize * 1.2;
+    // Calcular altura total usando lineHeight das configurações
+    const baseLineHeight = baseFontSize * (settings.lineHeight || 1.2);
     const totalHeight = allLines.reduce((height, line) => {
         if (line.isSpace) return height + baseLineHeight * 0.5;
-        return height + (line.fontSize * 1.2);
+        return height + (line.fontSize * (settings.lineHeight || 1.2));
     }, 0);
     
     // Sempre centralizar verticalmente
@@ -1692,7 +2459,7 @@ function generateCarouselImageContent(ctx, config, canvas, index, settings) {
         }
         
         ctx.font = `${line.fontWeight} ${line.fontSize}px Libre Franklin, Arial, sans-serif`;
-        const lineHeight = line.fontSize * 1.2;
+        const lineHeight = line.fontSize * (settings.lineHeight || 1.2);
         
         // Calcular posição X baseada no alinhamento
         let x;
@@ -1769,9 +2536,8 @@ function generateCtaImageWithCanvas(canvas) {
     canvas.width = config.width;
     canvas.height = config.height;
     
-    // Fundo com cor selecionada
-    ctx.fillStyle = currentBackgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Fundo com cor selecionada ou gradiente
+    applyGradientBackground(ctx, canvas);
     
     // Adicionar imagem de fundo primeiro
     addBackgroundImage(ctx, config, function() {
@@ -2158,6 +2924,12 @@ function initializeCarouselModals() {
     // Carregar configurações do cache
     loadCarouselSettingsFromCache();
     
+    // Carregar configurações globais do cache
+    loadGlobalSettingsFromCache();
+    
+    // Carregar textos do cache
+    loadAllTextsFromCache();
+    
     // Verificar quantos modais existem no DOM
     const allModals = document.querySelectorAll('[id^="carouselModal"]');
     console.log('Modais encontrados no DOM:', allModals.length);
@@ -2335,6 +3107,29 @@ function setupGlobalControls() {
     if (globalFontSize && globalFontSizeValue) {
         globalFontSize.addEventListener('input', function() {
             globalFontSizeValue.textContent = this.value + 'px';
+            
+            // Aplicar automaticamente a todos os slides
+            window.carouselEditorConfig.globalSettings.fontSize = parseInt(this.value);
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
+        });
+    }
+    
+    // Line Height Global
+    const globalLineHeight = document.getElementById('globalLineHeight');
+    const globalLineHeightValue = document.getElementById('globalLineHeightValue');
+    if (globalLineHeight && globalLineHeightValue) {
+        globalLineHeight.addEventListener('input', function() {
+            globalLineHeightValue.textContent = this.value;
+            
+            // Aplicar automaticamente a todos os slides
+            window.carouselEditorConfig.globalSettings.lineHeight = parseFloat(this.value);
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
         });
     }
     
@@ -2359,6 +3154,42 @@ function setupGlobalControls() {
         });
     }
     
+    // Font Weight Global
+    const globalFontWeight = document.getElementById('globalFontWeight');
+    if (globalFontWeight) {
+        globalFontWeight.addEventListener('change', function() {
+            window.carouselEditorConfig.globalSettings.fontWeight = this.value;
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
+        });
+    }
+    
+    // Text Wrap Global
+    const globalTextWrap = document.getElementById('globalTextWrap');
+    if (globalTextWrap) {
+        globalTextWrap.addEventListener('change', function() {
+            window.carouselEditorConfig.globalSettings.textWrap = this.value;
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
+        });
+    }
+    
+    // Text Alignment Global
+    const globalTextAlignment = document.getElementById('globalTextAlignment');
+    if (globalTextAlignment) {
+        globalTextAlignment.addEventListener('change', function() {
+            window.carouselEditorConfig.globalSettings.textAlignment = this.value;
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
+        });
+    }
+    
     // Uppercase Toggle Global
     const globalUppercase = document.getElementById('globalUppercase');
     if (globalUppercase) {
@@ -2366,6 +3197,13 @@ function setupGlobalControls() {
             this.classList.toggle('bg-blue-500');
             this.classList.toggle('text-white');
             this.classList.toggle('bg-gray-200');
+            
+            // Atualizar configuração global
+            window.carouselEditorConfig.globalSettings.uppercase = this.classList.contains('bg-blue-500');
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
         });
     }
     
@@ -2376,6 +3214,13 @@ function setupGlobalControls() {
             this.classList.toggle('bg-blue-500');
             this.classList.toggle('text-white');
             this.classList.toggle('bg-gray-200');
+            
+            // Atualizar configuração global
+            window.carouselEditorConfig.globalSettings.numbering = this.classList.contains('bg-blue-500');
+            applyGlobalSettingsToAll();
+            
+            // Salvar no cache
+            saveGlobalSettingsToCache();
         });
     }
 }
@@ -2384,6 +3229,7 @@ function setupGlobalControls() {
 function applyGlobalSettingsToAll() {
     const globalSettings = {
         fontSize: parseInt(document.getElementById('globalFontSize').value),
+        lineHeight: parseFloat(document.getElementById('globalLineHeight').value),
         fontWeight: document.getElementById('globalFontWeight').value,
         textWrap: document.getElementById('globalTextWrap').value,
         textAlignment: document.getElementById('globalTextAlignment').value,
@@ -2441,6 +3287,14 @@ function updateIndividualModalControls(index, settings) {
         fontSizeValue.textContent = settings.fontSize;
     }
     
+    // Atualizar line height
+    const lineHeightSlider = modal.querySelector(`#lineHeight_${index}`);
+    const lineHeightValue = modal.querySelector(`#lineHeightValue_${index}`);
+    if (lineHeightSlider && lineHeightValue) {
+        lineHeightSlider.value = settings.lineHeight;
+        lineHeightValue.textContent = settings.lineHeight;
+    }
+    
     // Atualizar font weight
     const fontWeightSelect = modal.querySelector(`#fontWeight_${index}`);
     if (fontWeightSelect) {
@@ -2477,9 +3331,21 @@ function resetAllCarouselSettings() {
     // Resetar configurações individuais
     carouselModalConfig.settings = {};
     
+    // Resetar textos dos slides para os valores originais
+    if (postData.carouselTexts && postData.carouselTexts.length > 0) {
+        postData.carouselTexts.forEach((originalText, index) => {
+            const customTextArea = document.getElementById(`customText_${index}`);
+            if (customTextArea) {
+                customTextArea.value = originalText;
+            }
+        });
+    }
+    
     // Resetar controles globais
     document.getElementById('globalFontSize').value = 54;
     document.getElementById('globalFontSizeValue').textContent = '54px';
+    document.getElementById('globalLineHeight').value = 1.2;
+    document.getElementById('globalLineHeightValue').textContent = '1.2';
     document.getElementById('globalFontWeight').value = '600';
     document.getElementById('globalTextWrap').value = 'auto';
     document.getElementById('globalTextAlignment').value = 'center';
@@ -2502,6 +3368,26 @@ function resetAllCarouselSettings() {
     
     // Limpar cache
     localStorage.removeItem('carouselSettings');
+    localStorage.removeItem('carouselGlobalSettings');
+    localStorage.removeItem('carouselTexts');
+    localStorage.removeItem('gradientPresets');
+    
+    // Resetar gradientes
+    isGradientMode = false;
+    currentGradient = {
+        color1: '#FF6B6B',
+        color2: '#4ECDC4',
+        direction: 'horizontal'
+    };
+    gradientPresets = [];
+    
+    // Atualizar interface de gradientes
+    const solidRadio = document.getElementById('solidColorRadio');
+    if (solidRadio) solidRadio.checked = true;
+    updateRadioButtons();
+    updateGradientInputs();
+    updateGradientPreview();
+    renderGradientPresets();
     
     // Configurações resetadas silenciosamente
 }
@@ -2608,12 +3494,214 @@ function loadCarouselSettingsFromCache() {
     }
 }
 
-// Salvar configurações no cache
+// Carregar configurações globais do cache
+function loadGlobalSettingsFromCache() {
+    try {
+        const cached = localStorage.getItem('carouselGlobalSettings');
+        if (cached) {
+            const globalSettings = JSON.parse(cached);
+            
+            // Aplicar aos controles globais
+            if (globalSettings.fontSize) {
+                const fontSizeSlider = document.getElementById('globalFontSize');
+                const fontSizeValue = document.getElementById('globalFontSizeValue');
+                if (fontSizeSlider && fontSizeValue) {
+                    fontSizeSlider.value = globalSettings.fontSize;
+                    fontSizeValue.textContent = globalSettings.fontSize + 'px';
+                }
+            }
+            
+            if (globalSettings.lineHeight) {
+                const lineHeightSlider = document.getElementById('globalLineHeight');
+                const lineHeightValue = document.getElementById('globalLineHeightValue');
+                if (lineHeightSlider && lineHeightValue) {
+                    lineHeightSlider.value = globalSettings.lineHeight;
+                    lineHeightValue.textContent = globalSettings.lineHeight;
+                }
+            }
+            
+            if (globalSettings.fontWeight) {
+                const fontWeightSelect = document.getElementById('globalFontWeight');
+                if (fontWeightSelect) {
+                    fontWeightSelect.value = globalSettings.fontWeight;
+                }
+            }
+            
+            if (globalSettings.textWrap) {
+                const textWrapSelect = document.getElementById('globalTextWrap');
+                if (textWrapSelect) {
+                    textWrapSelect.value = globalSettings.textWrap;
+                }
+            }
+            
+            if (globalSettings.textAlignment) {
+                const textAlignmentSelect = document.getElementById('globalTextAlignment');
+                if (textAlignmentSelect) {
+                    textAlignmentSelect.value = globalSettings.textAlignment;
+                }
+            }
+            
+            if (globalSettings.padding) {
+                const paddingSlider = document.getElementById('globalPadding');
+                const paddingValue = document.getElementById('globalPaddingValue');
+                if (paddingSlider && paddingValue) {
+                    paddingSlider.value = globalSettings.padding;
+                    paddingValue.textContent = globalSettings.padding + 'px';
+                }
+            }
+            
+            if (globalSettings.uppercase !== undefined) {
+                const uppercaseBtn = document.getElementById('globalUppercase');
+                if (uppercaseBtn) {
+                    if (globalSettings.uppercase) {
+                        uppercaseBtn.classList.add('bg-blue-500', 'text-white');
+                        uppercaseBtn.classList.remove('bg-gray-200');
+                    } else {
+                        uppercaseBtn.classList.remove('bg-blue-500', 'text-white');
+                        uppercaseBtn.classList.add('bg-gray-200');
+                    }
+                }
+            }
+            
+            if (globalSettings.numbering !== undefined) {
+                const numberingBtn = document.getElementById('globalNumbering');
+                if (numberingBtn) {
+                    if (globalSettings.numbering) {
+                        numberingBtn.classList.add('bg-blue-500', 'text-white');
+                        numberingBtn.classList.remove('bg-gray-200');
+                    } else {
+                        numberingBtn.classList.remove('bg-blue-500', 'text-white');
+                        numberingBtn.classList.add('bg-gray-200');
+                    }
+                }
+            }
+            
+            // Atualizar window.carouselEditorConfig.globalSettings
+            if (window.carouselEditorConfig) {
+                window.carouselEditorConfig.globalSettings = {
+                    ...window.carouselEditorConfig.globalSettings,
+                    ...globalSettings
+                };
+            }
+            
+            console.log('Configurações globais carregadas do cache:', globalSettings);
+        }
+    } catch (e) {
+        console.error('Erro ao carregar configurações globais do cache:', e);
+    }
+}
+
+// Salvar configurações individuais no cache
 function saveCarouselSettingsToCache() {
     try {
         localStorage.setItem('carouselSettings', JSON.stringify(carouselModalConfig.settings));
+        console.log('Configurações individuais salvas no cache');
     } catch (e) {
-        // Silenciar erro de cache
+        console.error('Erro ao salvar configurações individuais:', e);
+    }
+}
+
+// Salvar configurações globais no cache
+function saveGlobalSettingsToCache() {
+    try {
+        const globalSettings = {
+            fontSize: parseInt(document.getElementById('globalFontSize')?.value || 54),
+            lineHeight: parseFloat(document.getElementById('globalLineHeight')?.value || 1.2),
+            fontWeight: document.getElementById('globalFontWeight')?.value || '600',
+            textWrap: document.getElementById('globalTextWrap')?.value || 'auto',
+            textAlignment: document.getElementById('globalTextAlignment')?.value || 'center',
+            padding: parseInt(document.getElementById('globalPadding')?.value || 30),
+            uppercase: document.getElementById('globalUppercase')?.classList.contains('bg-blue-500') || false,
+            numbering: document.getElementById('globalNumbering')?.classList.contains('bg-blue-500') || false
+        };
+        
+        localStorage.setItem('carouselGlobalSettings', JSON.stringify(globalSettings));
+        console.log('Configurações globais salvas no cache:', globalSettings);
+    } catch (e) {
+        console.error('Erro ao salvar configurações globais:', e);
+    }
+}
+
+// Salvar todos os textos no cache
+function saveAllTextsToCache() {
+    console.log('=== SALVANDO TODOS OS TEXTOS NO CACHE ===');
+    try {
+        const textsData = {
+            titulo: postData.titulo || '',
+            slides: []
+        };
+        
+        // Coletar textos dos slides
+        if (postData.carouselTexts && postData.carouselTexts.length > 0) {
+            textsData.slides = postData.carouselTexts.slice(); // Cópia do array
+        }
+        
+        // Também verificar textareas customText se existirem
+        for (let i = 0; i < 10; i++) { // Verificar até 10 slides
+            const customTextArea = document.getElementById(`customText_${i}`);
+            if (customTextArea) {
+                if (!textsData.slides[i]) {
+                    textsData.slides[i] = '';
+                }
+                textsData.slides[i] = customTextArea.value || '';
+            }
+        }
+        
+        localStorage.setItem('carouselTexts', JSON.stringify(textsData));
+        console.log('Todos os textos salvos no cache:', textsData);
+    } catch (e) {
+        console.error('Erro ao salvar textos no cache:', e);
+    }
+}
+
+// Carregar todos os textos do cache
+function loadAllTextsFromCache() {
+    console.log('=== CARREGANDO TODOS OS TEXTOS DO CACHE ===');
+    try {
+        const cached = localStorage.getItem('carouselTexts');
+        if (cached) {
+            const textsData = JSON.parse(cached);
+            
+            // Restaurar título
+            if (textsData.titulo) {
+                postData.titulo = textsData.titulo;
+                console.log('Título restaurado do cache:', textsData.titulo);
+            }
+            
+            // Restaurar textos dos slides
+            if (textsData.slides && Array.isArray(textsData.slides)) {
+                // Atualizar postData.carouselTexts
+                if (!postData.carouselTexts) {
+                    postData.carouselTexts = [];
+                }
+                
+                textsData.slides.forEach((text, index) => {
+                    if (text !== undefined && text !== null) {
+                        postData.carouselTexts[index] = text;
+                        
+                        // Atualizar textarea se existir
+                        const customTextArea = document.getElementById(`customText_${index}`);
+                        if (customTextArea) {
+                            customTextArea.value = text;
+                        }
+                        
+                        // Atualizar configurações do modal se existirem
+                        if (carouselModalConfig.settings && carouselModalConfig.settings[index]) {
+                            carouselModalConfig.settings[index].customText = text;
+                        }
+                        
+                        // Atualizar configurações do editor se existirem
+                        if (window.carouselEditorConfig && window.carouselEditorConfig.individualSettings && window.carouselEditorConfig.individualSettings[index]) {
+                            window.carouselEditorConfig.individualSettings[index].customText = text;
+                        }
+                    }
+                });
+                
+                console.log('Textos dos slides restaurados do cache:', textsData.slides);
+            }
+        }
+    } catch (e) {
+        console.error('Erro ao carregar textos do cache:', e);
     }
 }
 
@@ -2626,6 +3714,7 @@ function initializeModalControls() {
         if (!carouselModalConfig.settings[index]) {
             carouselModalConfig.settings[index] = {
                 fontSize: 54,
+                lineHeight: 1.2,
                 fontWeight: '600',
                 textWrap: 'auto',
                 textAlignment: 'center',
@@ -2682,6 +3771,22 @@ function setupModalEventListeners(index) {
             const value = parseInt(this.value);
             carouselModalConfig.settings[index].fontSize = value;
             fontSizeValue.textContent = value + 'px';
+            applySettingsRealTime(index);
+            saveCarouselSettingsToCache();
+        });
+    }
+    
+    // Line Height
+    const lineHeightSlider = document.getElementById(`lineHeight_${index}`);
+    const lineHeightValue = document.getElementById(`lineHeightValue_${index}`);
+    if (lineHeightSlider && lineHeightValue) {
+        lineHeightSlider.value = carouselModalConfig.settings[index].lineHeight || 1.2;
+        lineHeightValue.textContent = carouselModalConfig.settings[index].lineHeight || 1.2;
+        
+        lineHeightSlider.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            carouselModalConfig.settings[index].lineHeight = value;
+            lineHeightValue.textContent = value;
             applySettingsRealTime(index);
             saveCarouselSettingsToCache();
         });
@@ -2763,6 +3868,7 @@ function setupModalEventListeners(index) {
             }
             applySettingsRealTime(index);
             saveCarouselSettingsToCache();
+            saveAllTextsToCache(); // Salvar textos no cache
         });
     }
     
@@ -2872,9 +3978,8 @@ function generateSingleCarouselImage(index, settings) {
     canvas.width = format.width;
     canvas.height = format.height;
     
-    // Aplicar fundo usando a cor atual selecionada
-    ctx.fillStyle = currentBackgroundColor || '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Aplicar fundo usando a cor atual selecionada ou gradiente
+    applyGradientBackground(ctx, canvas);
     
     // Adicionar imagem de fundo primeiro
     addBackgroundImage(ctx, format, function() {
@@ -2932,21 +4037,29 @@ function generateCarouselContent(ctx, format, canvas, index, settings) {
     
     console.log(`Posição calculada: x=${x}, y=${y}, textAlignment: ${settings.textAlignment}`);
     
+    // Calcular lineHeight usando as configurações
+    const lineHeight = fontSize * (settings.lineHeight || 1.2);
+    
     // Desenhar texto com quebra se necessário
     if (settings.textWrap === 'auto' && text.length > 0) {
         console.log('Desenhando texto com quebra automática');
-        drawWrappedText(ctx, text, x, y, canvas.width - (padding * 2), fontSize * 1.4, settings.textAlignment);
+        drawWrappedText(ctx, text, x, y, canvas.width - (padding * 2), lineHeight, settings.textAlignment);
     } else if (text.length > 0) {
         console.log('Desenhando texto simples');
         if (settings.textAlignment === 'justify') {
             // Para texto simples justificado, usar a função de quebra
-            drawWrappedText(ctx, text, x, y, canvas.width - (padding * 2), fontSize * 1.4, settings.textAlignment);
+            drawWrappedText(ctx, text, x, y, canvas.width - (padding * 2), lineHeight, settings.textAlignment);
         } else {
             ctx.fillText(text, x, y);
         }
     } else {
         console.log('Nenhum texto para desenhar');
     }
+    
+    // Adicionar seta de navegação com posição fixa
+    addNavigationArrow(ctx, format, function() {
+        console.log(`Seta adicionada ao slide ${index}`);
+    });
     
     console.log(`Imagem gerada para slide ${index} com texto: "${text}"`);
 }
@@ -3070,7 +4183,7 @@ function initializeGlobalCarouselControls() {
     if (globalFontWeight) {
         globalFontWeight.addEventListener('change', function() {
             window.carouselEditorConfig.globalSettings.fontWeight = this.value;
-            updateCarouselPreview();
+            applyGlobalSettingsToAll();
         });
     }
     
@@ -3086,7 +4199,7 @@ function initializeGlobalCarouselControls() {
     if (globalTextAlignment) {
         globalTextAlignment.addEventListener('change', function() {
             window.carouselEditorConfig.globalSettings.textAlignment = this.value;
-            updateCarouselPreview();
+            applyGlobalSettingsToAll();
         });
     }
     
@@ -3152,7 +4265,7 @@ function generateIndividualSlideEditors() {
                     <div>
                         <label class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Fonte</label>
                         <div class="flex items-center space-x-1">
-                            <input type="range" id="fontSize_${index}" min="16" max="60" value="${window.carouselEditorConfig.individualSettings[index].fontSize}" class="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded">
+                            <input type="range" id="fontSize_${index}" min="16" max="120" value="${window.carouselEditorConfig.individualSettings[index].fontSize}" class="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded">
                     <span id="fontSizeValue_${index}" class="text-xs w-6 text-gray-900 dark:text-white">${window.carouselEditorConfig.individualSettings[index].fontSize}</span>
                         </div>
                     </div>
@@ -3256,6 +4369,11 @@ function addIndividualSlideListeners(index) {
     if (customText) {
         customText.addEventListener('input', function() {
             window.carouselEditorConfig.individualSettings[index].customText = this.value;
+            // Atualizar também o postData.carouselTexts
+            if (postData.carouselTexts && postData.carouselTexts[index] !== undefined) {
+                postData.carouselTexts[index] = this.value;
+            }
+            saveAllTextsToCache(); // Salvar textos no cache
         });
     }
 }
@@ -3896,6 +5014,93 @@ function showNotification(message, type = 'info') {
 </div>
 
 <style>
+/* Sistema de Abas */
+.color-tabs-container {
+    position: relative;
+}
+
+.tab-button {
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    outline: none;
+}
+
+.tab-button:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.tab-button.active {
+    color: #2563eb !important;
+    border-color: #2563eb !important;
+}
+
+.tab-button:not(.active) {
+    color: #6b7280 !important;
+    border-color: transparent !important;
+}
+
+.tab-button:not(.active):hover {
+    color: #374151 !important;
+    border-color: #d1d5db !important;
+}
+
+/* Dark mode para abas */
+.dark .tab-button.active {
+    color: #60a5fa !important;
+    border-color: #60a5fa !important;
+}
+
+.dark .tab-button:not(.active) {
+    color: #9ca3af !important;
+}
+
+.dark .tab-button:not(.active):hover {
+    color: #d1d5db !important;
+    border-color: #4b5563 !important;
+}
+
+/* Conteúdo das abas */
+.tab-content {
+    transition: all 0.3s ease;
+}
+
+.tab-content.hidden {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Indicadores visuais das abas */
+.tab-button span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.tab-button .w-4.h-4 {
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover .w-4.h-4 {
+    transform: scale(1.1);
+}
+
 /* Slider personalizado */
 .slider-thumb::-webkit-slider-thumb {
     appearance: none;

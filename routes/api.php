@@ -54,7 +54,7 @@ Route::prefix('portfolio')->name('api.portfolio.')->group(function () {
     Route::get('/works/{work:slug}/related', [PortfolioApiController::class, 'getRelatedWorks'])->name('works.related');
     
     // Imagens de um trabalho específico
-    Route::get('/{work}/images', [PortfolioApiController::class, 'getWorkImages'])->name('work.images');
+    Route::get('/works/{workId}/images', [PortfolioApiController::class, 'getWorkImages'])->name('work.images');
     
     // Portfólio de um usuário específico (autor)
     Route::get('/users/{user}/works', [PortfolioApiController::class, 'userPortfolio'])->name('users.works');

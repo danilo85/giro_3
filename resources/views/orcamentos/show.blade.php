@@ -58,7 +58,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações do Cliente</h3>
                 
                 <!-- Layout responsivo: flex em desktop, stack em mobile/tablet -->
-                <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Avatar -->
                     <div class="flex-shrink-0 self-center md:self-start">
                         @if($orcamento->cliente->avatar)

@@ -14,5 +14,9 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'api/*',
         'storage/*',
+        'notifications/api/*',
+        'public/orcamento/*/aprovar',
+        'public/orcamento/*/rejeitar',
+        'public/orcamento/*/analisar',
     ];
 }

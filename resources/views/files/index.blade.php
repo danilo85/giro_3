@@ -222,7 +222,7 @@
                         <!-- File Header -->
                         <div class="p-4">
                             <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center space-x-3">
+                                <div class="flex items-center gap-2">
                                     @php
                                         $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
                                         $iconConfig = [
@@ -274,7 +274,7 @@
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate" title="{{ $file->original_name }}">{{ $file->original_name }}</h3>
+                                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white" title="{{ $file->original_name }}">{{ Str::limit($file->original_name, 20) }}</h3>
                                         <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
                                             <span>{{ $file->fileSizeFormatted }}</span>
                                             <span>&bull;</span>

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -50,13 +52,13 @@ Route::get('/maintenance', function () {
 // Public home page
 Route::get('/', function () {
     $user = \App\Models\User::with('logos')->find(1);
-    
+
     $portfolioWorks = \App\Models\PortfolioWork::with(['category', 'images', 'clientRelation', 'featuredImage'])
         ->where('status', 'published')
         ->where('user_id', 1)
         ->orderBy('created_at', 'desc')
         ->get();
-    
+
     $portfolioCategories = \App\Models\PortfolioCategory::where('is_active', true)
         ->whereHas('portfolioWorks', function ($query) {
             $query->where('user_id', 1)->where('status', 'published');
@@ -65,7 +67,7 @@ Route::get('/', function () {
         ->get()
         ->unique('name')
         ->values();
-    
+
     return view('welcome', compact('user', 'portfolioWorks', 'portfolioCategories'));
 })->name('home');
 
@@ -523,8 +525,30 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
     Route::resource('file-categories', FileCategoryController::class)->except(['show']);
     Route::get('/file-categories/api', [FileCategoryController::class, 'api'])->name('file-categories.api');
 
+    // Notification System Routes (Sistema de Notificações)
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        // Main notification dashboard
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index'])->name('index');
 
+        // Notification preferences
+        Route::get('/preferences', [\App\Http\Controllers\NotificationController::class, 'preferences'])->name('preferences');
+        Route::post('/preferences', [\App\Http\Controllers\NotificationController::class, 'updatePreferences'])->name('preferences.update');
 
+        // Notification logs
+        Route::get('/logs', [\App\Http\Controllers\NotificationLogController::class, 'index'])->name('logs.index');
+        Route::get('/logs/{log}', [\App\Http\Controllers\NotificationLogController::class, 'show'])->name('logs.show');
+        Route::post('/logs/{log}/retry', [\App\Http\Controllers\NotificationLogController::class, 'retry'])->name('logs.retry');
+
+        // Individual notification management
+        Route::get('/{notification}', [\App\Http\Controllers\NotificationController::class, 'show'])->name('show');
+        Route::patch('/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('mark-read');
+        Route::patch('/{notification}/unread', [\App\Http\Controllers\NotificationController::class, 'markAsUnread'])->name('mark-unread');
+        Route::delete('/{notification}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('destroy');
+
+        // Bulk actions
+        Route::patch('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+        Route::post('/bulk-action', [\App\Http\Controllers\NotificationController::class, 'bulkAction'])->name('bulk-action');
+    });
 
     // Debug Routes (apenas para desenvolvimento)
     Route::prefix('debug')->name('debug.')->group(function () {
@@ -535,6 +559,9 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         Route::get('/session-check', function () {
             return view('debug.session-check');
         })->name('session-check');
+
+        // Include test logs route
+        include __DIR__ . '/test-logs.php';
 
         Route::post('/test-csrf', function () {
             return response()->json([
@@ -569,6 +596,16 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         });
     });
 }); // Fechamento do middleware ['auth', 'conditional.verified']
+
+// Notification API Routes (require auth but not email verification)
+Route::middleware(['auth'])->prefix('notifications/api')->name('notifications.api.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('get');
+    Route::get('/unread-count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('unread-count');
+    Route::get('/logs/{notification}', [\App\Http\Controllers\NotificationLogController::class, 'getLogsForNotification'])->name('logs.for-notification');
+    Route::get('/logs/stats', [\App\Http\Controllers\NotificationLogController::class, 'getStats'])->name('logs.stats');
+});
+
+
 
 // API Routes for Budget Module (outside auth middleware for AJAX calls)
 Route::prefix('api/budget')->name('api.budget.')->group(function () {
@@ -650,7 +687,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/contato', function () {
         return view('contact');
     })->name('contact');
-    
+
     // Rota para processar formulário de contato
     Route::post('/contato', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
@@ -662,4 +699,112 @@ Route::prefix('public')->name('public.')->group(function () {
 
 // File upload routes moved to RouteServiceProvider (without any middleware)
 
-// Debug routes (only in development) - REMOVIDO
+// Temporary routes were removed - notification tables successfully created
+
+// Debug routes (only in development)
+Route::get('/debug-users-clients', function () {
+    $users = \App\Models\User::all();
+    $clientes = \App\Models\Cliente::with('user')->get();
+    
+    // Buscar clientes para cada usuário manualmente
+    foreach ($users as $user) {
+        $user->clientes_count = \App\Models\Cliente::where('user_id', $user->id)->count();
+        $user->clientes_list = \App\Models\Cliente::where('user_id', $user->id)->get();
+    }
+    
+    return view('debug.users-clients', compact('users', 'clientes'));
+})->name('debug.users-clients');
+
+// Debug route for notification testing
+Route::get('/debug-notification-test', function () {
+    $currentUser = auth()->user();
+    
+    // Get all notification preferences
+    $notificationPreferences = \App\Models\NotificationPreference::with('user')->get();
+    
+    // Get all budgets with their status and client info
+    $orcamentos = \App\Models\Orcamento::with(['cliente.user'])->get();
+    
+    // Get recent notifications
+    $recentNotifications = \App\Models\Notification::with(['user'])
+        ->orderBy('created_at', 'desc')
+        ->limit(20)
+        ->get();
+    
+    // Get recent log entries (last 50 lines)
+    $logPath = storage_path('logs/laravel.log');
+    $logLines = [];
+    if (file_exists($logPath)) {
+        $logContent = file_get_contents($logPath);
+        $logLines = array_slice(explode("\n", $logContent), -50);
+    }
+    
+    return view('debug.notification-test', compact(
+        'currentUser', 
+        'notificationPreferences', 
+        'orcamentos', 
+        'recentNotifications',
+        'logLines'
+    ));
+})->name('debug.notification-test');
+
+// Debug route to manually change budget status
+Route::post('/debug-change-budget-status', function (\Illuminate\Http\Request $request) {
+    $orcamentoId = $request->input('orcamento_id');
+    $newStatus = $request->input('new_status');
+    
+    \Log::info("DEBUG: Iniciando mudança de status", [
+        'orcamento_id' => $orcamentoId,
+        'new_status' => $newStatus,
+        'user_id' => auth()->id()
+    ]);
+    
+    $orcamento = \App\Models\Orcamento::find($orcamentoId);
+    
+    if (!$orcamento) {
+        return redirect()->back()->with('error', 'Orçamento não encontrado');
+    }
+    
+    $oldStatus = $orcamento->status;
+    
+    \Log::info("DEBUG: Status anterior", [
+        'orcamento_id' => $orcamentoId,
+        'old_status' => $oldStatus,
+        'new_status' => $newStatus
+    ]);
+    
+    // Update the status
+    $orcamento->status = $newStatus;
+    $orcamento->save();
+    
+    \Log::info("DEBUG: Status atualizado", [
+        'orcamento_id' => $orcamentoId,
+        'status_saved' => $orcamento->status
+    ]);
+    
+    return redirect()->back()->with('success', "Status do orçamento #{$orcamentoId} alterado de '{$oldStatus}' para '{$newStatus}'");
+})->name('debug.change-budget-status');
+
+// Rota para habilitar notificações de orçamento
+Route::get('/enable-budget-notifications', function () {
+    $userId = auth()->id() ?? 1; // Usar usuário autenticado ou 1 para debug
+    
+    // Buscar as preferências de notificação do usuário
+    $preferences = \App\Models\NotificationPreference::getOrCreateForUser($userId);
+    
+    if ($preferences) {
+        // Habilitar notificações de orçamento
+        $preferences->budget_notifications = true;
+        $preferences->save();
+        
+        \Log::info("DEBUG: Notificações de orçamento habilitadas", [
+            'user_id' => $userId,
+            'preferences_id' => $preferences->id,
+            'budget_notifications' => $preferences->budget_notifications
+        ]);
+        
+        return redirect('/debug-notification-test')->with('success', 'Notificações de orçamento habilitadas com sucesso!');
+    }
+    
+    return redirect('/debug-notification-test')->with('error', 'Não foi possível encontrar as preferências do usuário.');
+})->name('enable.budget.notifications');

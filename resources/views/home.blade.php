@@ -151,8 +151,8 @@
                     </a>
                     @endif
                     @if($user->website_url)
-                    <a href="{{ $user->website_url }}" target="_blank" class="text-gray-600 hover:text-purple-600 transition duration-300">
-                        <i class="fas fa-globe text-lg"></i>
+                    <a href="{{ $user->website_url }}" target="_blank" class="text-gray-600 hover:text-blue-600 transition duration-300">
+                        <i class="fab fa-behance text-lg"></i>
                     </a>
                     @endif
                 </div>
@@ -392,35 +392,29 @@
                 <!-- Images will be inserted here by JavaScript -->
             </div>
             
-            <!-- Botão de Download (se tiver URL) -->
+            <!-- Conteúdo Completo - Movido para depois das imagens -->
+            <div id="fullContentSection" class="hidden p-6 border-b border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Descrição Completa</h3>
+                <div id="modalFullContent" class="text-gray-700 leading-relaxed prose prose-sm max-w-none"></div>
+            </div>
+            
+            <!-- Botão de Download Centralizado (se tiver URL) -->
             <div id="downloadSection" class="hidden p-6 text-center border-b border-gray-200">
-                <a id="downloadButton" href="#" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                <a id="downloadButton" href="#" target="_blank" class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-lg">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Download
+                    Acessar Projeto
                 </a>
             </div>
             
-            <!-- Project Details -->
+            <!-- Project Details - Removida seção de cliente -->
             <div class="p-6 bg-gray-50">
                 <div class="space-y-4">
-                    <!-- Client -->
-                    <div id="clientSection" class="hidden">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Cliente</h3>
-                        <p id="modalClient" class="text-lg text-gray-900"></p>
-                    </div>
-                    
                     <!-- Date -->
                     <div>
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Data</h3>
                         <p id="modalDate" class="text-lg text-gray-900"></p>
-                    </div>
-                    
-                    <!-- Conteúdo Completo -->
-                    <div id="fullContentSection" class="hidden">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Descrição Completa</h3>
-                        <div id="modalFullContent" class="text-gray-700 leading-relaxed prose prose-sm max-w-none"></div>
                     </div>
                 </div>
             </div>
@@ -521,14 +515,7 @@ function openPortfolioModal(element) {
         technologiesSection.classList.add('hidden');
     }
     
-    // Handle client section
-    const clientSection = document.getElementById('clientSection');
-    if (client && client.trim() !== '') {
-        document.getElementById('modalClient').textContent = client;
-        clientSection.classList.remove('hidden');
-    } else {
-        clientSection.classList.add('hidden');
-    }
+    // Client section removed - no longer needed
     
     // Handle project URL section (botão de download)
     const downloadSection = document.getElementById('downloadSection');

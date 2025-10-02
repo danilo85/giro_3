@@ -8,7 +8,19 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        //
+    ];
+
+    /**
      * Define the application's command schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @return void
      */
     protected function schedule(Schedule $schedule): void
     {
@@ -17,6 +29,9 @@ class Kernel extends ConsoleKernel
         
         // Limpar links compartilhados expirados diariamente às 3:00 AM
         $schedule->command('files:cleanup-expired-links')->dailyAt('03:00');
+        
+        // Verificar datas de vencimento de pagamentos diariamente às 9:00 AM
+        $schedule->command('payments:check-due-dates')->dailyAt('09:00');
     }
 
     /**

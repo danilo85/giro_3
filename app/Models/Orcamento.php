@@ -158,6 +158,14 @@ class Orcamento extends Model
     }
 
     /**
+     * Relacionamento com Notificações
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'data->orcamento_id');
+    }
+
+    /**
      * Scope para filtrar por status
      */
     public function scopeByStatus($query, $status)

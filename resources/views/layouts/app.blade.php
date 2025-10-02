@@ -833,6 +833,107 @@
                          </div>
                      </div>
 
+                     <!-- Notifications Section -->
+                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_notificacoes') || 'true') }" 
+                          x-init="$watch('open', value => localStorage.setItem('sidebar_notificacoes', JSON.stringify(value)))">
+                         <!-- Botão do módulo quando não colapsado -->
+                         <button @click="open = !open" 
+                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
+                                 x-transition:enter="transition ease-in-out duration-150"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in-out duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95">
+                             <span class="flex items-center">
+                                 <i class="fas fa-bell w-5 h-5 mr-2"></i>
+                                 Notificações
+                             </span>
+                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                             </svg>
+                         </button>
+                         
+                         <!-- Links individuais quando colapsado -->
+                         <div class="space-y-1" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
+                             <a href="{{ route('notifications.index') }}" 
+                                class="{{ request()->routeIs('notifications.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors relative"
+                                title="Dashboard">
+                                 <i class="fas fa-bell {{ request()->routeIs('notifications.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                                 <!-- Unread count badge -->
+                                 <span id="unread-count-collapsed" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
+                             </a>
+
+                             <a href="{{ route('notifications.preferences') }}" 
+                                class="{{ request()->routeIs('notifications.preferences') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Preferências">
+                                 <i class="fas fa-cog {{ request()->routeIs('notifications.preferences') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                             </a>
+
+                             <a href="{{ route('notifications.logs.index') }}" 
+                                class="{{ request()->routeIs('notifications.logs.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Logs">
+                                 <i class="fas fa-list-alt {{ request()->routeIs('notifications.logs.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                             </a>
+                         </div>
+                         
+                         <!-- Links expandidos quando não colapsado -->
+                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
+                              x-show="open && (!$store.sidebar.collapsed || $store.sidebar.isMobile)" 
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0 transform scale-95"
+                              x-transition:enter-end="opacity-100 transform scale-100"
+                              x-transition:leave="transition ease-in duration-150"
+                              x-transition:leave-start="opacity-100 transform scale-100"
+                              x-transition:leave-end="opacity-0 transform scale-95">
+                             <a href="{{ route('notifications.index') }}" 
+                                class="{{ request()->routeIs('notifications.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors relative"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-bell {{ request()->routeIs('notifications.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Dashboard</span>
+                                 <!-- Unread count badge -->
+                                 <span id="unread-count-expanded" class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
+                             </a>
+
+                             <a href="{{ route('notifications.preferences') }}" 
+                                class="{{ request()->routeIs('notifications.preferences') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-cog {{ request()->routeIs('notifications.preferences') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Preferências</span>
+                             </a>
+
+                             <a href="{{ route('notifications.logs.index') }}" 
+                                class="{{ request()->routeIs('notifications.logs.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-list-alt {{ request()->routeIs('notifications.logs.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Logs</span>
+                             </a>
+
+                         </div>
+                     </div>
+
                      <!-- Admin Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_administracao') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_administracao', JSON.stringify(value)))">
@@ -1156,6 +1257,168 @@
                 loadingScreen.style.opacity = '1';
             }
         });
+    </script>
+    
+    <!-- Notification Count Script -->
+    <script>
+        // Global variable to track if a request is in progress
+        let notificationRequestInProgress = false;
+        let notificationAbortController = null;
+
+        // Function to update unread notification count with improved error handling
+        async function updateUnreadCount() {
+            // Check if user is authenticated first
+            @guest
+                // User is not authenticated, hide badges and return
+                hideNotificationBadges();
+                return;
+            @endguest
+
+            // Only proceed if user is authenticated
+            @auth
+            // Prevent multiple simultaneous requests
+            if (notificationRequestInProgress) {
+                console.log('Notification count request already in progress, skipping');
+                return;
+            }
+
+            try {
+                notificationRequestInProgress = true;
+
+                // Check if CSRF token exists
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    console.warn('CSRF token not found, skipping notification count update');
+                    return;
+                }
+
+                // Create abort controller for this request
+                notificationAbortController = new AbortController();
+
+                const response = await fetch('{{ route("notifications.api.unread-count") }}', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin', // Include cookies for authentication
+                    cache: 'no-cache',
+                    signal: notificationAbortController.signal // Add abort signal
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && typeof data.count !== 'undefined') {
+                        updateNotificationBadges(data.count);
+                    } else {
+                        console.warn('Invalid response format from notification API:', data);
+                        hideNotificationBadges();
+                    }
+                } else if (response.status === 401) {
+                    // User session expired, hide badges
+                    console.warn('User session expired, hiding notification badges');
+                    hideNotificationBadges();
+                } else if (response.status === 403) {
+                    // Forbidden, likely CSRF token issue
+                    console.warn('CSRF token validation failed, hiding notification badges');
+                    hideNotificationBadges();
+                } else {
+                    // Other HTTP errors
+                    console.warn('HTTP error while fetching notification count:', response.status, response.statusText);
+                    hideNotificationBadges();
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Notification count request was cancelled');
+                } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    console.warn('Network error while fetching notification count:', error.message);
+                    hideNotificationBadges();
+                } else {
+                    console.error('Error in updateUnreadCount function:', error);
+                    hideNotificationBadges();
+                }
+            } finally {
+                notificationRequestInProgress = false;
+                notificationAbortController = null;
+            }
+            @endauth
+        }
+        
+        // Helper function to update notification badges
+        function updateNotificationBadges(count) {
+            const collapsedBadge = document.getElementById('unread-count-collapsed');
+            const expandedBadge = document.getElementById('unread-count-expanded');
+            
+            if (count > 0) {
+                const displayCount = count > 99 ? '99+' : count.toString();
+                if (collapsedBadge) {
+                    collapsedBadge.textContent = displayCount;
+                    collapsedBadge.classList.remove('hidden');
+                }
+                if (expandedBadge) {
+                    expandedBadge.textContent = displayCount;
+                    expandedBadge.classList.remove('hidden');
+                }
+            } else {
+                hideNotificationBadges();
+            }
+        }
+        
+        // Helper function to hide notification badges
+        function hideNotificationBadges() {
+            const collapsedBadge = document.getElementById('unread-count-collapsed');
+            const expandedBadge = document.getElementById('unread-count-expanded');
+            
+            if (collapsedBadge) {
+                collapsedBadge.classList.add('hidden');
+            }
+            if (expandedBadge) {
+                expandedBadge.classList.add('hidden');
+            }
+        }
+        
+        // Update count on page load (only if authenticated)
+        @auth
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add a small delay to ensure the page is fully loaded
+            setTimeout(updateUnreadCount, 500);
+        });
+        
+        // Update count every 30 seconds (only if authenticated)
+        let notificationInterval = setInterval(updateUnreadCount, 30000);
+        
+        // Update count when returning to the page (only if authenticated)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Cancel any ongoing request first
+                if (notificationAbortController) {
+                    notificationAbortController.abort();
+                }
+                
+                // Clear existing interval and create a new one to reset timing
+                clearInterval(notificationInterval);
+                
+                // Wait a bit before making the request to avoid conflicts
+                setTimeout(() => {
+                    updateUnreadCount();
+                    notificationInterval = setInterval(updateUnreadCount, 30000);
+                }, 100);
+            }
+        });
+        
+        // Clean up interval and cancel requests when page is unloaded
+        window.addEventListener('beforeunload', function() {
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+            }
+            if (notificationAbortController) {
+                notificationAbortController.abort();
+            }
+        });
+        @endauth
     </script>
     
     @stack('scripts')
