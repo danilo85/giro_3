@@ -306,7 +306,7 @@
                                     </div>
                                     
                                     <!-- Description -->
-                                    <p class="editable-description text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 {{ $entry->completed ? 'line-through' : '' }}">
+                                    <p id="description-{{ $entry->id }}" class="editable-description text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 {{ $entry->completed ? 'line-through' : '' }}">
                                         {{ $entry->description }}
                                     </p>
                                     
@@ -1044,13 +1044,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     const title = document.getElementById(`title-${entryId}`);
                     const description = document.getElementById(`description-${entryId}`);
                     
-                    if (title && title.classList && description && description.classList) {
+                    // Fallback: se não encontrar pelos IDs, tentar por classes dentro do card
+                    const titleFallback = entryCard ? entryCard.querySelector('.editable-title') : null;
+                    const descriptionFallback = entryCard ? entryCard.querySelector('.editable-description') : null;
+                    
+                    const titleElement = title || titleFallback;
+                    const descriptionElement = description || descriptionFallback;
+                    
+                    console.log('Atualizando visual:', {
+                        entryId,
+                        isCompleted,
+                        titleFound: !!titleElement,
+                        descriptionFound: !!descriptionElement
+                    });
+                    
+                    if (titleElement && titleElement.classList) {
                         if (isCompleted) {
-                            title.classList.add('line-through');
-                            description.classList.add('line-through');
+                            titleElement.classList.add('line-through');
                         } else {
-                            title.classList.remove('line-through');
-                            description.classList.remove('line-through');
+                            titleElement.classList.remove('line-through');
+                        }
+                    }
+                    
+                    if (descriptionElement && descriptionElement.classList) {
+                        if (isCompleted) {
+                            descriptionElement.classList.add('line-through');
+                        } else {
+                            descriptionElement.classList.remove('line-through');
                         }
                     }
                     

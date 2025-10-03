@@ -655,7 +655,7 @@ Route::prefix('api/budget')->name('api.budget.')->group(function () {
 
 //Route::prefix('public')->name('public.')->group(function () {
 // Public Routes for Budget Module (Rotas Públicas)
-Route::prefix('public')->name('public.')->group(function () {
+Route::name('public.')->group(function () {
     // Rotas públicas para orçamentos
     Route::get('/orcamento/{token}', [OrcamentoController::class, 'showPublic'])->name('orcamentos.public');
     Route::patch('/orcamento/{token}/aprovar', [OrcamentoController::class, 'aprovarPublico'])->name('orcamentos.public.aprovar');
@@ -669,7 +669,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/extrato/{cliente_id}/{token}', [ExtratoController::class, 'show'])->name('extrato.public');
 
     // Rotas públicas do portfólio
-    Route::prefix('portfolio')->name('portfolio.public.')->group(function () {
+    Route::prefix('portfolio')->name('portfolio.')->group(function () {
         // Página principal do portfólio
         Route::get('/', [PortfolioApiController::class, 'index'])->name('index');
 
@@ -677,7 +677,7 @@ Route::prefix('public')->name('public.')->group(function () {
         Route::get('/categoria/{category:slug}', [PortfolioApiController::class, 'category'])->name('category');
 
         // Página de trabalho específico
-        Route::get('/trabalho/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work');
+        Route::get('/trabalho/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('public.work');
 
         // Página de autor específico
         Route::get('/autor/{author:slug}', [PortfolioApiController::class, 'authorPortfolio'])->name('author');
@@ -705,32 +705,32 @@ Route::prefix('public')->name('public.')->group(function () {
 Route::get('/debug-users-clients', function () {
     $users = \App\Models\User::all();
     $clientes = \App\Models\Cliente::with('user')->get();
-    
+
     // Buscar clientes para cada usuário manualmente
     foreach ($users as $user) {
         $user->clientes_count = \App\Models\Cliente::where('user_id', $user->id)->count();
         $user->clientes_list = \App\Models\Cliente::where('user_id', $user->id)->get();
     }
-    
+
     return view('debug.users-clients', compact('users', 'clientes'));
 })->name('debug.users-clients');
 
 // Debug route for notification testing
 Route::get('/debug-notification-test', function () {
     $currentUser = auth()->user();
-    
+
     // Get all notification preferences
     $notificationPreferences = \App\Models\NotificationPreference::with('user')->get();
-    
+
     // Get all budgets with their status and client info
     $orcamentos = \App\Models\Orcamento::with(['cliente.user'])->get();
-    
+
     // Get recent notifications
     $recentNotifications = \App\Models\Notification::with(['user'])
         ->orderBy('created_at', 'desc')
         ->limit(20)
         ->get();
-    
+
     // Get recent log entries (last 50 lines)
     $logPath = storage_path('logs/laravel.log');
     $logLines = [];
@@ -738,11 +738,11 @@ Route::get('/debug-notification-test', function () {
         $logContent = file_get_contents($logPath);
         $logLines = array_slice(explode("\n", $logContent), -50);
     }
-    
+
     return view('debug.notification-test', compact(
-        'currentUser', 
-        'notificationPreferences', 
-        'orcamentos', 
+        'currentUser',
+        'notificationPreferences',
+        'orcamentos',
         'recentNotifications',
         'logLines'
     ));
@@ -752,59 +752,59 @@ Route::get('/debug-notification-test', function () {
 Route::post('/debug-change-budget-status', function (\Illuminate\Http\Request $request) {
     $orcamentoId = $request->input('orcamento_id');
     $newStatus = $request->input('new_status');
-    
+
     \Log::info("DEBUG: Iniciando mudança de status", [
         'orcamento_id' => $orcamentoId,
         'new_status' => $newStatus,
         'user_id' => auth()->id()
     ]);
-    
+
     $orcamento = \App\Models\Orcamento::find($orcamentoId);
-    
+
     if (!$orcamento) {
         return redirect()->back()->with('error', 'Orçamento não encontrado');
     }
-    
+
     $oldStatus = $orcamento->status;
-    
+
     \Log::info("DEBUG: Status anterior", [
         'orcamento_id' => $orcamentoId,
         'old_status' => $oldStatus,
         'new_status' => $newStatus
     ]);
-    
+
     // Update the status
     $orcamento->status = $newStatus;
     $orcamento->save();
-    
+
     \Log::info("DEBUG: Status atualizado", [
         'orcamento_id' => $orcamentoId,
         'status_saved' => $orcamento->status
     ]);
-    
+
     return redirect()->back()->with('success', "Status do orçamento #{$orcamentoId} alterado de '{$oldStatus}' para '{$newStatus}'");
 })->name('debug.change-budget-status');
 
 // Rota para habilitar notificações de orçamento
 Route::get('/enable-budget-notifications', function () {
     $userId = auth()->id() ?? 1; // Usar usuário autenticado ou 1 para debug
-    
+
     // Buscar as preferências de notificação do usuário
     $preferences = \App\Models\NotificationPreference::getOrCreateForUser($userId);
-    
+
     if ($preferences) {
         // Habilitar notificações de orçamento
         $preferences->budget_notifications = true;
         $preferences->save();
-        
+
         \Log::info("DEBUG: Notificações de orçamento habilitadas", [
             'user_id' => $userId,
             'preferences_id' => $preferences->id,
             'budget_notifications' => $preferences->budget_notifications
         ]);
-        
+
         return redirect('/debug-notification-test')->with('success', 'Notificações de orçamento habilitadas com sucesso!');
     }
-    
+
     return redirect('/debug-notification-test')->with('error', 'Não foi possível encontrar as preferências do usuário.');
 })->name('enable.budget.notifications');

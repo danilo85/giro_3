@@ -1332,9 +1332,19 @@ function renderCreditCardInvoices(invoices) {
  }
  
  async function payInvoice(creditCardId, month, year, button) {
+     // Prevenir cliques duplos
+     if (button.disabled) {
+         return;
+     }
+     
      const originalText = button.textContent;
+     const originalClass = button.className;
+     
+     // Desabilitar todos os botões de fatura durante o processamento
+     disableAllInvoiceButtons(true);
+     
      button.textContent = 'Pagando...';
-     button.disabled = true;
+     button.className = 'btn-toggle-invoice px-4 py-2 text-sm font-medium rounded-lg transition-colors bg-gray-400 text-white cursor-not-allowed';
      
      try {
          const response = await fetch('/api/financial/credit-card-invoices/pay', {
@@ -1361,24 +1371,41 @@ function renderCreditCardInvoices(invoices) {
          
          if (data.success) {
              showToast('Fatura paga com sucesso!', 'success');
-             // Recarregar faturas e transações
-             await loadCreditCardInvoices();
-             await loadTransactions();
+             // Reload automático da página para garantir estado atualizado
+             setTimeout(() => {
+                 window.location.reload();
+             }, 1000); // 1 segundo para mostrar o toast
          } else {
              throw new Error(data.message || 'Erro ao pagar fatura');
          }
      } catch (error) {
          console.error('Erro ao pagar fatura:', error);
          showToast('Erro ao pagar fatura: ' + error.message, 'error');
+         
+         // Restaurar estado original apenas em caso de erro
          button.textContent = originalText;
+         button.className = originalClass;
          button.disabled = false;
+         
+         // Reabilitar outros botões em caso de erro
+         disableAllInvoiceButtons(false);
      }
  }
  
  async function undoInvoicePayment(creditCardId, month, year, button) {
+     // Prevenir cliques duplos
+     if (button.disabled) {
+         return;
+     }
+     
      const originalText = button.textContent;
+     const originalClass = button.className;
+     
+     // Desabilitar todos os botões de fatura durante o processamento
+     disableAllInvoiceButtons(true);
+     
      button.textContent = 'Desfazendo...';
-     button.disabled = true;
+     button.className = 'btn-toggle-invoice px-4 py-2 text-sm font-medium rounded-lg transition-colors bg-gray-400 text-white cursor-not-allowed';
      
      try {
          const response = await fetch('/api/financial/credit-card-invoices/undo-payment', {
@@ -1405,19 +1432,38 @@ function renderCreditCardInvoices(invoices) {
          
          if (data.success) {
              showToast('Pagamento da fatura desfeito com sucesso!', 'success');
-             // Recarregar faturas e transações
-             await loadCreditCardInvoices();
-             await loadTransactions();
+             // Reload automático da página para garantir estado atualizado
+             setTimeout(() => {
+                 window.location.reload();
+             }, 1000); // 1 segundo para mostrar o toast
          } else {
              throw new Error(data.message || 'Erro ao desfazer pagamento');
          }
      } catch (error) {
          console.error('Erro ao desfazer pagamento:', error);
          showToast('Erro ao desfazer pagamento: ' + error.message, 'error');
+         
+         // Restaurar estado original apenas em caso de erro
          button.textContent = originalText;
+         button.className = originalClass;
          button.disabled = false;
+         
+         // Reabilitar outros botões em caso de erro
+         disableAllInvoiceButtons(false);
      }
  }
+
+function disableAllInvoiceButtons(disable) {
+    const allInvoiceButtons = document.querySelectorAll('.btn-toggle-invoice');
+    allInvoiceButtons.forEach(btn => {
+        btn.disabled = disable;
+        if (disable) {
+            btn.style.pointerEvents = 'none';
+        } else {
+            btn.style.pointerEvents = 'auto';
+        }
+    });
+}
  
 function clearAllFilters() {
     // Limpar filtros globais

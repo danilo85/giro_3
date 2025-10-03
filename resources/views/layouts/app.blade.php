@@ -183,19 +183,6 @@
                 
                 <!-- Navigation -->
                  <nav class="flex-1 px-2 space-y-1 overflow-y-auto" :class="$store.sidebar.isMobile ? 'py-2' : 'py-4'">
-                     <!-- Collapse Button (Desktop only) -->
-                     <div class="flex justify-end mb-4" x-show="!$store.sidebar.isMobile">
-                         <button @click="$store.sidebar.toggle()" 
-                                 class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                 :class="{ 'mx-auto': $store.sidebar.collapsed }">
-                             <svg class="w-5 h-5 transform transition-transform" 
-                                  :class="{ 'rotate-180': $store.sidebar.collapsed }" 
-                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
-                             </svg>
-                         </button>
-                     </div>
-                     
                      <!-- User Avatar and Info -->
                      <div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700" :class="{ 'justify-center': $store.sidebar.collapsed && !$store.sidebar.isMobile, 'px-4': $store.sidebar.isMobile }">
                          <a href="{{ route('dashboard') }}" class="flex flex-col items-center">
@@ -738,31 +725,46 @@
                              </svg>
                          </button>
                          
-                         <!-- Links individuais quando colapsado -->
-                         <div class="space-y-1" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
-                             <a href="{{ route('assets.index') }}" 
-                                class="{{ request()->routeIs('assets.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Dashboard">
-                                 <i class="fas fa-images {{ request()->routeIs('assets.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('assets.images') }}" 
-                                class="{{ request()->routeIs('assets.images') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Imagens">
-                                 <i class="fas fa-image {{ request()->routeIs('assets.images') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('assets.fonts') }}" 
-                                class="{{ request()->routeIs('assets.fonts') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Fontes">
-                                 <i class="fas fa-font {{ request()->routeIs('assets.fonts') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('assets.upload') }}" 
-                                class="{{ request()->routeIs('assets.upload') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Upload">
-                                 <i class="fas fa-upload {{ request()->routeIs('assets.upload') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
+                         <!-- Ícone principal quando colapsado com tooltip -->
+                         <div class="relative" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile" x-data="{ showTooltip: false }">
+                             <button @mouseenter="showTooltip = true" @mouseleave="showTooltip = false"
+                                     class="w-full flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors text-purple-600 hover:bg-purple-50 hover:text-purple-900 dark:text-purple-400 dark:hover:bg-purple-900 dark:hover:text-purple-100">
+                                 <i class="fas fa-images w-6 h-6"></i>
+                             </button>
+                             
+                             <!-- Tooltip com sub-itens -->
+                             <div x-show="showTooltip" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95"
+                                  class="absolute left-full top-0 ml-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                 <div class="px-3 py-2 text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
+                                     Asset Library
+                                 </div>
+                                 <a href="{{ route('assets.index') }}" 
+                                    class="{{ request()->routeIs('assets.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-images w-4 h-4 mr-3"></i>
+                                     Dashboard
+                                 </a>
+                                 <a href="{{ route('assets.images') }}" 
+                                    class="{{ request()->routeIs('assets.images') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-image w-4 h-4 mr-3"></i>
+                                     Imagens
+                                 </a>
+                                 <a href="{{ route('assets.fonts') }}" 
+                                    class="{{ request()->routeIs('assets.fonts') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-font w-4 h-4 mr-3"></i>
+                                     Fontes
+                                 </a>
+                                 <a href="{{ route('assets.upload') }}" 
+                                    class="{{ request()->routeIs('assets.upload') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-upload w-4 h-4 mr-3"></i>
+                                     Upload
+                                 </a>
+                             </div>
                          </div>
                          
                          <!-- Links expandidos quando não colapsado -->
@@ -834,7 +836,7 @@
                      </div>
 
                      <!-- Notifications Section -->
-                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_notificacoes') || 'true') }" 
+                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_notificacoes') || 'true'), showTooltip: false }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_notificacoes', JSON.stringify(value)))">
                          <!-- Botão do módulo quando não colapsado -->
                          <button @click="open = !open" 
@@ -855,27 +857,46 @@
                              </svg>
                          </button>
                          
-                         <!-- Links individuais quando colapsado -->
-                         <div class="space-y-1" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
-                             <a href="{{ route('notifications.index') }}" 
-                                class="{{ request()->routeIs('notifications.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors relative"
-                                title="Dashboard">
-                                 <i class="fas fa-bell {{ request()->routeIs('notifications.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                         <!-- Ícone principal quando colapsado com tooltip -->
+                         <div class="relative" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
+                             <button @mouseenter="showTooltip = true" 
+                                     @mouseleave="showTooltip = false"
+                                     class="{{ request()->routeIs('notifications.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors relative w-full">
+                                 <i class="fas fa-bell {{ request()->routeIs('notifications.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
                                  <!-- Unread count badge -->
                                  <span id="unread-count-collapsed" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden"></span>
-                             </a>
-
-                             <a href="{{ route('notifications.preferences') }}" 
-                                class="{{ request()->routeIs('notifications.preferences') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Preferências">
-                                 <i class="fas fa-cog {{ request()->routeIs('notifications.preferences') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('notifications.logs.index') }}" 
-                                class="{{ request()->routeIs('notifications.logs.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Logs">
-                                 <i class="fas fa-list-alt {{ request()->routeIs('notifications.logs.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
+                             </button>
+                             
+                             <!-- Tooltip com sub-itens -->
+                             <div x-show="showTooltip" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95"
+                                  class="absolute left-full top-0 ml-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
+                                  @mouseenter="showTooltip = true" 
+                                  @mouseleave="showTooltip = false">
+                                 <div class="px-3 py-2 text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
+                                     Notificações
+                                 </div>
+                                 <a href="{{ route('notifications.index') }}" 
+                                    class="{{ request()->routeIs('notifications.index') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-3 py-2 text-sm font-medium transition-colors">
+                                     <i class="fas fa-bell {{ request()->routeIs('notifications.index') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-4 h-4 mr-3"></i>
+                                     Dashboard
+                                 </a>
+                                 <a href="{{ route('notifications.preferences') }}" 
+                                    class="{{ request()->routeIs('notifications.preferences') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-3 py-2 text-sm font-medium transition-colors">
+                                     <i class="fas fa-cog {{ request()->routeIs('notifications.preferences') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-4 h-4 mr-3"></i>
+                                     Preferências
+                                 </a>
+                                 <a href="{{ route('notifications.logs.index') }}" 
+                                    class="{{ request()->routeIs('notifications.logs.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-3 py-2 text-sm font-medium transition-colors">
+                                     <i class="fas fa-list-alt {{ request()->routeIs('notifications.logs.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-4 h-4 mr-3"></i>
+                                     Logs
+                                 </a>
+                             </div>
                          </div>
                          
                          <!-- Links expandidos quando não colapsado -->
@@ -956,44 +977,58 @@
                              </svg>
                          </button>
                          
-                         <!-- Links individuais quando colapsado -->
-                         <div class="space-y-1" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
-                             @if(auth()->check() && auth()->user()->is_admin)
-                             <a href="{{ route('users.index') }}" 
-                                class="{{ request()->routeIs('users.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Usuários">
-                                 <i class="fas fa-users {{ request()->routeIs('users.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('admin.user-approvals.index') }}" 
-                                class="{{ request()->routeIs('admin.user-approvals.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Aprovação de Usuários">
-                                 <i class="fas fa-user-check {{ request()->routeIs('admin.user-approvals.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-
-                             <a href="{{ route('admin.temp-file-settings.index') }}" 
-                                class="{{ request()->routeIs('admin.temp-file-settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Arquivos Temporários">
-                                 <i class="fas fa-clock {{ request()->routeIs('admin.temp-file-settings.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
-                             </a>
-                             @endif
-
-                             <a href="{{ route('profile.show') }}" 
-                                class="{{ request()->routeIs('profile.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Perfil">
-                                 <svg class="{{ request()->routeIs('profile.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                 </svg>
-                             </a>
-
-                             <a href="{{ route('settings.index') }}" 
-                                class="{{ request()->routeIs('settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
-                                title="Configurações">
-                                 <svg class="{{ request()->routeIs('settings.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                 </svg>
-                             </a>
+                         <!-- Ícone principal quando colapsado com tooltip -->
+                         <div class="relative" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile" x-data="{ showTooltip: false }">
+                             <button @mouseenter="showTooltip = true" @mouseleave="showTooltip = false"
+                                     class="w-full flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors text-orange-600 hover:bg-orange-50 hover:text-orange-900 dark:text-orange-400 dark:hover:bg-orange-900 dark:hover:text-orange-100">
+                                 <i class="fas fa-cogs w-6 h-6"></i>
+                             </button>
+                             
+                             <!-- Tooltip com sub-itens -->
+                             <div x-show="showTooltip" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95"
+                                  class="absolute left-full top-0 ml-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                 <div class="px-3 py-2 text-xs font-semibold text-orange-700 dark:text-orange-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
+                                     Administração
+                                 </div>
+                                 @if(auth()->check() && auth()->user()->is_admin)
+                                 <a href="{{ route('users.index') }}" 
+                                    class="{{ request()->routeIs('users.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-users w-4 h-4 mr-3"></i>
+                                     Usuários
+                                 </a>
+                                 <a href="{{ route('admin.user-approvals.index') }}" 
+                                    class="{{ request()->routeIs('admin.user-approvals.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-user-check w-4 h-4 mr-3"></i>
+                                     Aprovação de Usuários
+                                 </a>
+                                 <a href="{{ route('admin.temp-file-settings.index') }}" 
+                                    class="{{ request()->routeIs('admin.temp-file-settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <i class="fas fa-clock w-4 h-4 mr-3"></i>
+                                     Arquivos Temporários
+                                 </a>
+                                 @endif
+                                 <a href="{{ route('profile.show') }}" 
+                                    class="{{ request()->routeIs('profile.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                     </svg>
+                                     Perfil
+                                 </a>
+                                 <a href="{{ route('settings.index') }}" 
+                                    class="{{ request()->routeIs('settings.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700' }} flex items-center px-3 py-2 text-sm">
+                                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                     </svg>
+                                     Configurações
+                                 </a>
+                             </div>
                          </div>
                          
                          <!-- Links expandidos quando não colapsado -->

@@ -18,6 +18,7 @@ class Orcamento extends Model
 
     protected $fillable = [
         'cliente_id',
+        'modelo_proposta_id',
         'titulo',
         'descricao',
         'valor_total',
@@ -82,6 +83,14 @@ class Orcamento extends Model
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    /**
+     * Relacionamento com Modelo de Proposta
+     */
+    public function modeloProposta(): BelongsTo
+    {
+        return $this->belongsTo(ModeloProposta::class);
     }
 
     /**

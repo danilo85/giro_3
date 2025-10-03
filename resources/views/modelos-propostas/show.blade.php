@@ -174,7 +174,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Usos</p>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-white mt-2">{{ $modelo->orcamentos_count ?? 0 }} vezes</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white mt-2">{{ $modelo->usos ?? 0 }} vezes</p>
                         </div>
                         <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
                             <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

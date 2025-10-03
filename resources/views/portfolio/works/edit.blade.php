@@ -376,7 +376,97 @@
                                      data-image-id="{{ $image->id }}" 
                                      data-sort-order="{{ $image->sort_order }}" 
                                      x-data="{ marked: false }">
-                                    <div class="flex items-center gap-4">
+                                    <!-- Mobile Layout (below 600px) -->
+                                    <div class="flex flex-col gap-3 sm:hidden">
+                                        <!-- Top Row: Image + Basic Info -->
+                                        <div class="flex items-center gap-3">
+                                            <!-- Drag Handle -->
+                                            <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M7 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
+                                                </svg>
+                                            </div>
+                                            
+                                            <!-- Image Thumbnail (smaller for mobile) -->
+                                            <div class="relative">
+                                                <img src="{{ $image->url }}" alt="{{ $image->alt_text }}" 
+                                                     class="w-12 h-12 object-cover rounded-lg" 
+                                                     :class="marked ? 'opacity-50' : ''">
+                                                @if($image->is_cover)
+                                                    <span class="absolute -top-1 -right-1 bg-green-600 text-white text-xs px-1 py-0.5 rounded text-[10px]">Capa</span>
+                                                @endif
+                                            </div>
+                                            
+                                            <!-- Image Info -->
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $image->original_name ?? 'Imagem ' . $loop->iteration }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $image->formatted_file_size ?? '' }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Bottom Row: Controls -->
+                                        <div class="flex items-center justify-between gap-2">
+                                            <!-- Order Controls -->
+                                            <div class="flex items-center gap-2">
+                                                <label class="text-xs font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
+                                                <input type="number" 
+                                                       class="order-input w-12 px-1 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded focus:ring-blue-500 focus:border-blue-500" 
+                                                       value="{{ $image->sort_order }}" 
+                                                       min="1" 
+                                                       data-image-id="{{ $image->id }}" 
+                                                       @change="updateImageOrder({{ $image->id }}, $event.target.value)">
+                                                
+                                                <!-- Arrow Buttons -->
+                                                <div class="flex gap-1">
+                                                    <button type="button" 
+                                                            class="move-up-btn p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400" 
+                                                            @click="moveImageUp({{ $image->id }})" 
+                                                            title="Mover para cima">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button type="button" 
+                                                            class="move-down-btn p-1 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400" 
+                                                            @click="moveImageDown({{ $image->id }})" 
+                                                            title="Mover para baixo">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="flex items-center gap-1">
+                                                <!-- Featured Button -->
+                                                <button type="button" 
+                                                        @click="setFeaturedImage({{ $image->id }})" 
+                                                        class="p-1.5 transition-colors" 
+                                                        :class="featuredImageId == {{ $image->id }} ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-yellow-500'" 
+                                                        :title="featuredImageId == {{ $image->id }} ? 'Imagem destacada' : 'Marcar como destacada'">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                                    </svg>
+                                                </button>
+                                                
+                                                <!-- Delete Button -->
+                                                <button type="button" 
+                                                        @click="marked = !marked; toggleImageForDeletion({{ $image->id }})" 
+                                                        class="p-1.5 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" 
+                                                        :class="marked ? 'text-red-600 dark:text-red-400' : ''" 
+                                                        title="Marcar para exclusão">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                                <div x-show="marked" class="text-xs text-red-600 dark:text-red-400 font-medium">Excluir</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Desktop Layout (600px and above) -->
+                                    <div class="hidden sm:flex items-center gap-4">
                                         <!-- Drag Handle -->
                                         <div class="drag-handle cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

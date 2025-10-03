@@ -13,11 +13,10 @@
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Adicione uma nova receita ou despesa</p>
             </div>
             <div class="mt-4 sm:mt-0">
-                <a href="{{ route('financial.transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('financial.transactions.index') }}" class="inline-flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors" title="Voltar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Voltar
                 </a>
             </div>
         </div>
@@ -95,7 +94,7 @@
                 <!-- Conta/Cartão -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Conta/Cartão *</label>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Conta Bancária</label>
                             <select id="bank_id" name="bank_id"

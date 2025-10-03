@@ -402,11 +402,11 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Histórico de Alterações</h3>
                     <div class="space-y-3 max-h-64 overflow-y-auto">
                         @foreach($orcamento->historico->sortByDesc('created_at') as $historico)
-                            <div class="flex items-start space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
+                            <div class="flex items-start p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
                                 <div class="flex-shrink-0">
                                     <div class="h-2 w-2 bg-blue-600 rounded-full mt-2"></div>
                                 </div>
-                                <div class="flex-1">
+                                <div class="flex-1 ml-6 sm:ml-4">
                                     <p class="text-sm text-gray-900 dark:text-white">{{ $historico->acao }}</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $historico->created_at->format('d/m/Y H:i') }}</p>
                                     @if($historico->observacoes)

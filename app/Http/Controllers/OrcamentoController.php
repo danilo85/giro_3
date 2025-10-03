@@ -149,6 +149,7 @@ class OrcamentoController extends Controller
             // Validação para cliente existente
             $validatedData = $request->validate([
                 'cliente_id' => 'required|exists:clientes,id',
+                'modelo_proposta_id' => 'nullable|exists:modelos_propostas,id',
                 'titulo' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
                 'valor_total' => 'required|numeric|min:0',
@@ -185,6 +186,7 @@ class OrcamentoController extends Controller
             
             $orcamento = Orcamento::create([
                 'cliente_id' => $clienteIdFinal,
+                'modelo_proposta_id' => $request->modelo_proposta_id,
                 'titulo' => $request->titulo,
                 'descricao' => $request->descricao,
                 'valor_total' => $request->valor_total,
@@ -220,6 +222,15 @@ class OrcamentoController extends Controller
                 $autores = Autor::forUser(Auth::id())->whereIn('id', $autoresIds)->pluck('id');
                 $orcamento->autores()->attach($autores);
                 \Log::info('Autores associados', ['autores' => $autoresIds]);
+            }
+
+            // Incrementar contador do modelo de proposta se foi usado
+            if ($request->modelo_proposta_id) {
+                $modeloProposta = \App\Models\ModeloProposta::find($request->modelo_proposta_id);
+                if ($modeloProposta) {
+                    $modeloProposta->incrementarUso();
+                    \Log::info('Contador do modelo de proposta incrementado', ['modelo_id' => $request->modelo_proposta_id]);
+                }
             }
 
             // Registrar no histórico
@@ -315,6 +326,7 @@ class OrcamentoController extends Controller
             
             // Validação para novo cliente
             $request->validate([
+                'modelo_proposta_id' => 'nullable|exists:modelos_propostas,id',
                 'titulo' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
                 'valor_total' => 'required|numeric|min:0',
@@ -329,6 +341,7 @@ class OrcamentoController extends Controller
             // Validação para cliente existente
             $request->validate([
                 'cliente_id' => 'required|exists:clientes,id',
+                'modelo_proposta_id' => 'nullable|exists:modelos_propostas,id',
                 'titulo' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
                 'valor_total' => 'required|numeric|min:0',
@@ -360,6 +373,7 @@ class OrcamentoController extends Controller
 
             $orcamento->update([
                 'cliente_id' => $clienteId,
+                'modelo_proposta_id' => $request->modelo_proposta_id,
                 'titulo' => $request->titulo,
                 'descricao' => $request->descricao,
                 'valor_total' => $request->valor_total,

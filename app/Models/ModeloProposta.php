@@ -22,7 +22,8 @@ class ModeloProposta extends Model
         'observacoes',
         'valor_padrao',
         'prazo_padrao',
-        'ativo'
+        'ativo',
+        'usos'
     ];
 
     protected $casts = [
@@ -79,5 +80,14 @@ class ModeloProposta extends Model
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);
+    }
+
+    /**
+     * Incrementar contador de usos
+     */
+    public function incrementarUso()
+    {
+        $this->increment('usos');
+        return $this;
     }
 }
