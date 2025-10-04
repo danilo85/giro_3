@@ -59,7 +59,7 @@
                         
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                                <a href="{{ route('public.portfolio.work', $work->slug) }}">
+                                <a href="{{ route('public.portfolio.public.work', $work->slug) }}">
                                     {{ $work->title }}
                                 </a>
                             </h3>
@@ -85,8 +85,8 @@
                                 </div>
                             @endif
                             
-                            <a href="{{ route('public.portfolio.work', $work->slug) }}" 
-                               class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
+                            <a href="{{ route('public.portfolio.public.work', $work->slug) }}" 
+               class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                                 Ver projeto
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>

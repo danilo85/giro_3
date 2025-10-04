@@ -1443,7 +1443,7 @@
                      data-client="{{ $work->client ?? '' }}"
                      data-date="{{ $work->date ? $work->date->format('Y') : '' }}"
                      data-url="{{ $work->url ?? '' }}"
-                     data-technologies="{{ $work->technologies ? implode(',', $work->technologies) : '' }}"
+                     data-technologies="{{ $work->technologies ? implode(',', is_array($work->technologies) ? $work->technologies : [$work->technologies]) : '' }}"
                      data-content="{{ $work->content ?? '' }}"
                      onclick="openPortfolioModal(this)">
                     
