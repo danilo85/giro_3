@@ -80,8 +80,8 @@ class CheckPaymentDueDates extends Command
         
         // Buscar orçamentos aprovados com vencimento na data alvo
         $orcamentos = Orcamento::where('status', Orcamento::STATUS_APROVADO)
-            ->whereDate('data_vencimento', $targetDate)
-            ->whereColumn('valor_pago', '<', 'valor_total') // Ainda tem saldo devedor
+            ->whereDate('data_validade', $targetDate)
+            ->whereRaw('valor_total > COALESCE((SELECT SUM(valor) FROM pagamentos WHERE orcamento_id = orcamentos.id), 0)') // Ainda tem saldo devedor
             ->with(['cliente.user', 'pagamentos'])
             ->get();
             
@@ -165,7 +165,7 @@ class CheckPaymentDueDates extends Command
                 'orcamento_id' => $orcamento->id,
                 'orcamento_numero' => $orcamento->numero ?? $orcamento->id,
                 'days_until_due' => $days,
-                'due_date' => $orcamento->data_vencimento->format('Y-m-d'),
+                'due_date' => $orcamento->data_validade->format('Y-m-d'),
                 'valor_total' => $orcamento->valor_total,
                 'valor_pago' => $orcamento->valor_pago,
                 'saldo_restante' => $saldoRestante,
@@ -209,7 +209,7 @@ class CheckPaymentDueDates extends Command
     {
         $numero = $orcamento->numero ?? "#{$orcamento->id}";
         $valor = 'R$ ' . number_format($saldoRestante, 2, ',', '.');
-        $dataVencimento = $orcamento->data_vencimento->format('d/m/Y');
+        $dataVencimento = $orcamento->data_validade->format('d/m/Y');
         
         switch ($days) {
             case 0:
