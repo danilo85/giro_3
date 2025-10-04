@@ -4,7 +4,23 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <!-- Mobile Layout -->
+        <div class="flex flex-col space-y-4 md:hidden">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Criar Novo Trabalho</h1>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">Adicione um novo trabalho ao seu portfólio</p>
+            </div>
+            <div class="flex justify-start">
+                <a href="{{ route('portfolio.works.index') }}" 
+                   class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar ao Portfólio
+                </a>
+            </div>
+        </div>
+        
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Criar Novo Trabalho</h1>
@@ -657,9 +673,9 @@ function saveState(editorId) {
 
 // Formatação de texto
 function formatText(command) {
-    saveState('conteudo-completo-editor');
+    saveState('content-editor');
     document.execCommand(command, false, null);
-    updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+    updateHiddenInput('content-editor', 'content');
 }
 
 // Mostrar modal de link
@@ -674,7 +690,7 @@ function insertLinkFromModal() {
     const linkUrl = document.getElementById('linkUrl').value;
     
     if (linkText && linkUrl) {
-        saveState('conteudo-completo-editor');
+        saveState('content-editor');
         
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
@@ -691,7 +707,7 @@ function insertLinkFromModal() {
             selection.removeAllRanges();
         }
         
-        updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+        updateHiddenInput('content-editor', 'content');
     }
     
     // Fechar modal
@@ -702,18 +718,18 @@ function insertLinkFromModal() {
 
 // Inserir quebra de linha
 function insertLineBreak() {
-    saveState('conteudo-completo-editor');
+    saveState('content-editor');
     document.execCommand('insertHTML', false, '<br>');
-    updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+    updateHiddenInput('content-editor', 'content');
 }
 
 // Desfazer edição
 function undoEdit() {
     if (historyIndex > 0) {
         historyIndex--;
-        const editor = document.getElementById('conteudo-completo-editor');
+        const editor = document.getElementById('content-editor');
         editor.innerHTML = editorHistory[historyIndex];
-        updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+        updateHiddenInput('content-editor', 'content');
     }
 }
 
@@ -729,22 +745,22 @@ function updateHiddenInput(editorId, hiddenInputId) {
 
 // Inicialização do editor
 document.addEventListener('DOMContentLoaded', function() {
-    const editor = document.getElementById('conteudo-completo-editor');
+    const editor = document.getElementById('content-editor');
     
     if (editor) {
         // Salvar estado inicial
-        saveState('conteudo-completo-editor');
+        saveState('content-editor');
         
         // Atualizar campo hidden quando o conteúdo mudar
         editor.addEventListener('input', function() {
-            updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+            updateHiddenInput('content-editor', 'content');
         });
         
         // Sincronizar antes do envio do formulário
         const form = editor.closest('form');
         if (form) {
             form.addEventListener('submit', function() {
-                updateHiddenInput('conteudo-completo-editor', 'conteudo_completo');
+                updateHiddenInput('content-editor', 'content');
             });
         }
     }
@@ -806,13 +822,13 @@ function removeFeaturedImagePreview() {
     @apply bg-gray-100 dark:bg-gray-500;
 }
 
-#conteudo-completo-editor:empty:before {
+#content-editor:empty:before {
     content: attr(placeholder);
     color: #9CA3AF;
     pointer-events: none;
 }
 
-#conteudo-completo-editor:focus:before {
+#content-editor:focus:before {
     content: '';
 }
 </style>

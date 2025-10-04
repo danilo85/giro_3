@@ -104,23 +104,26 @@
     <!-- Timeline -->
     <div>
         @if($entries->count() > 0)
-            <div class="max-w-4xl mx-auto mt-10 px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto mt-10 px-4 xl:px-6">
                 <!-- Timeline Container -->
                 <div class="relative">
-                    <!-- Vertical Line - Responsive positioning -->
-                    <div class="absolute left-4 sm:left-4 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+                    <!-- Vertical Line for Mobile - Simple and behind cards -->
+                    <div class="block xl:hidden absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600 z-0"></div>
+                    
+                    <!-- Vertical Line for Desktop only - Full width -->
+                    <div class="hidden xl:block absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600 z-0"></div>
                     
                     @foreach($entries as $entry)
                         <div class="relative mb-8 group">
                             <!-- Mobile Layout -->
-                            <div class="block sm:hidden">
+                            <div class="block xl:hidden">
                                 <!-- Timeline Dot for Mobile -->
-                                <div class="absolute left-3 top-2">
-                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10 relative"></div>
+                                <div class="absolute left-3 top-2 z-20">
+                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm"></div>
                                 </div>
                                 
                                 <!-- Content for Mobile -->
-                                <div class="ml-10">
+                                <div class="ml-12">
                                     <!-- Date/Time for Mobile -->
                                     <div class="mb-3">
                                         <div class="text-sm font-bold text-gray-900 dark:text-white">
@@ -134,10 +137,10 @@
                             </div>
                             
                             <!-- Desktop Layout -->
-                            <div class="hidden sm:block">
+                            <div class="hidden xl:block">
                                 <!-- Timeline Dot for Desktop -->
                                 <div class="absolute left-3 top-2">
-                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-10 relative"></div>
+                                    <div class="w-3 h-3 bg-gray-800 dark:bg-gray-200 rounded-full border-2 border-white dark:border-gray-800 shadow-sm z-20 relative"></div>
                                 </div>
                                 
                                 <!-- Date/Time for Desktop -->
@@ -152,8 +155,8 @@
                             </div>
                             
                             <!-- Content Column -->
-                            <div class="flex-1 ml-10 sm:ml-10">
-                                <div class="rounded-lg border p-4 shadow-sm hover:shadow-md transition-all duration-200
+            <div class="flex-1 ml-12 xl:ml-10 relative z-10">
+                <div class="rounded-lg border p-4 shadow-sm hover:shadow-md transition-all duration-200 relative z-10 bg-white dark:bg-gray-800"
                                     @switch($entry->type)
                                         @case('project_start')
                                             border-emerald-400 dark:border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20
@@ -195,8 +198,8 @@
                                             border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800
                                     @endswitch" data-entry-id="{{ $entry->id }}">
                                     <!-- Header with Title, Type, Checkbox and Actions -->
-                                    <div class="flex items-start justify-between mb-2">
-                                        <div class="flex items-start gap-3 flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-2">
+                                        <div class="flex items-start gap-3 flex-1 min-w-0">
                                             <!-- Checkbox -->
                                             <div class="flex-shrink-0 mt-1">
                                                 <input type="checkbox" 
@@ -206,16 +209,16 @@
                                             </div>
                                             
                                             <!-- Title -->
-                            <div class="entry-content flex-1" data-entry-id="{{ $entry->id }}">
-                                <h3 id="title-{{ $entry->id }}" class="editable-title text-lg font-semibold text-gray-900 dark:text-white {{ $entry->completed ? 'line-through' : '' }}">
+                            <div class="entry-content flex-1 min-w-0" data-entry-id="{{ $entry->id }}">
+                                <h3 id="title-{{ $entry->id }}" class="editable-title text-lg font-semibold text-gray-900 dark:text-white {{ $entry->completed ? 'line-through' : '' }} break-words">
                                     {{ $entry->title }}
                                 </h3>
                             </div>
                                         </div>
                                         
-                                        <div class="flex items-center gap-2 ml-4">
+                                        <div class="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0">
                                             <!-- Type Badge -->
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium flex-shrink-0
                                                 @switch($entry->type)
                                                     @case('project_start') bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 ring-1 ring-emerald-300 dark:ring-emerald-700 @break
                                                     @case('milestone') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 @break
@@ -281,10 +284,10 @@
                                             </span>
                                             
                                             <!-- Action Buttons -->
-                                            <div class="flex items-center gap-1 transition-opacity duration-200">
+                                            <div class="flex items-center gap-1 transition-opacity duration-200 flex-shrink-0">
                                                 <!-- Edit Button -->
                                                 <button type="button" 
-                                                        class="edit-modal-btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors" 
+                                                        class="edit-modal-btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors flex-shrink-0" 
                                                         data-entry-id="{{ $entry->id }}"
                                                         title="Editar entrada">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +297,7 @@
                                                 
                                                 <!-- Delete Button -->
                                                 <button type="button" 
-                                                        class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors delete-btn" 
+                                                        class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors delete-btn flex-shrink-0" 
                                                         data-entry-id="{{ $entry->id }}"
                                                         title="Excluir">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,14 +317,14 @@
                                     <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-3">
                                         @if($entry->user)
                                             <div class="flex items-center mr-4">
-                                                <div class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold mr-2">
+                                                <div class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold mr-2 flex-shrink-0">
                                                     {{ strtoupper(substr($entry->user->name, 0, 1)) }}
                                                 </div>
                                                 <span>{{ $entry->user->name }}</span>
                                             </div>
                                         @else
                                             <div class="flex items-center mr-4">
-                                                <div class="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs font-semibold mr-2">
+                                                <div class="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs font-semibold mr-2 flex-shrink-0">
                                                     ?
                                                 </div>
                                                 <span>Usuário não encontrado</span>
@@ -330,7 +333,7 @@
                                         
                                         @if($orcamento->cliente)
                                             <div class="flex items-center">
-                                                <div class="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-white text-xs font-semibold mr-2">
+                                                <div class="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-teal-600 flex items-center justify-center text-white text-xs font-semibold mr-2 flex-shrink-0">
                                                     {{ strtoupper(substr($orcamento->cliente->nome, 0, 1)) }}
                                                 </div>
                                                 <span>Cliente: {{ $orcamento->cliente->nome }}</span>

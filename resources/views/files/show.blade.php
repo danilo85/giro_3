@@ -6,31 +6,64 @@
 @include('components.error-modal')
 <div class="container mx-auto px-4 py-6">
     <!-- Header -->
-    <div class="flex items-center mb-6">
-        <a href="{{ route('files.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mr-4">
-            <i class="fas fa-arrow-left text-xl"></i>
-        </a>
-        <div class="flex-1">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $file->original_name }}</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Detalhes e opções de compartilhamento</p>
+    <div class="mb-6">
+        <!-- Mobile Layout -->
+        <div class="flex flex-col space-y-4 md:hidden">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $file->original_name }}</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Detalhes e opções de compartilhamento</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('files.index') }}" class="inline-flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar aos Arquivos
+                </a>
+                <a href="{{ route('files.download', $file) }}" 
+                   target="_blank"
+                   class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                   title="Download">
+                    <i class="fas fa-download"></i>
+                </a>
+                <button onclick="shareFile()" 
+                        class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                        title="Compartilhar">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button onclick="deleteFile()" 
+                        class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                        title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
-        <div class="flex space-x-2">
-            <a href="{{ route('files.download', $file) }}" 
-               target="_blank"
-               class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
-               title="Download">
-                <i class="fas fa-download"></i>
+        
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center">
+            <a href="{{ route('files.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 mr-4">
+                <i class="fas fa-arrow-left text-xl"></i>
             </a>
-            <button onclick="shareFile()" 
-                    class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
-                    title="Compartilhar">
-                <i class="fas fa-share-alt"></i>
-            </button>
-            <button onclick="deleteFile()" 
-                    class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
-                    title="Excluir">
-                <i class="fas fa-trash"></i>
-            </button>
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $file->original_name }}</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Detalhes e opções de compartilhamento</p>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{{ route('files.download', $file) }}" 
+                   target="_blank"
+                   class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                   title="Download">
+                    <i class="fas fa-download"></i>
+                </a>
+                <button onclick="shareFile()" 
+                        class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                        title="Compartilhar">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button onclick="deleteFile()" 
+                        class="p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors" 
+                        title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
     </div>
 

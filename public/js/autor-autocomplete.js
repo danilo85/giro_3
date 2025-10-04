@@ -230,10 +230,19 @@ class AutorAutocomplete {
     
     addAutorToContainer(autor, type) {
         const autorCard = document.createElement('div');
-        autorCard.className = 'relative bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow';
+        
+        // Calcular a posição atual para alternância de cores
+        const currentPosition = this.container.children.length;
+        const isEven = currentPosition % 2 === 0;
+        
+        // Aplicar alternância de cores
+        const backgroundClass = isEven ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700';
+        const textClass = 'text-gray-900 dark:text-white';
+        
+        autorCard.className = `relative ${backgroundClass} border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow`;
         autorCard.setAttribute('data-autor-id', autor.id);
         
-        const bgColor = type === 'existing' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
+        const bgColor = type === 'existing' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
         const label = type === 'existing' ? 'Existente' : 'Novo';
         const inputValue = type === 'existing' ? autor.id : 'new:' + autor.nome;
         
@@ -246,7 +255,7 @@ class AutorAutocomplete {
                 </div>
                 
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">${autor.nome}</p>
+                    <p class="text-sm font-medium ${textClass} truncate">${autor.nome}</p>
                     <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${bgColor}">
                         ${label}
                     </span>
@@ -268,6 +277,27 @@ class AutorAutocomplete {
         if (autorCard) {
             autorCard.remove();
             this.selectedAutores = this.selectedAutores.filter(id => id !== autorId.toString());
+            // Recalcular cores após remoção
+            this.updateAlternatingColors();
+        }
+    }
+    
+    updateAlternatingColors() {
+        const autorCards = this.container.children;
+        
+        for (let i = 0; i < autorCards.length; i++) {
+            const card = autorCards[i];
+            const isEven = i % 2 === 0;
+            
+            // Remover classes de cor antigas
+            card.classList.remove('bg-gray-50', 'dark:bg-gray-800', 'bg-gray-100', 'dark:bg-gray-700');
+            
+            // Aplicar novas classes baseadas na posição atual
+            if (isEven) {
+                card.classList.add('bg-gray-50', 'dark:bg-gray-800');
+            } else {
+                card.classList.add('bg-gray-100', 'dark:bg-gray-700');
+            }
         }
     }
     

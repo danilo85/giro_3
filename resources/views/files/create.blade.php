@@ -6,7 +6,22 @@
 <div class="min-h-screen bg-white dark:bg-gray-900">
     <!-- Header -->
     <div class="container mx-auto px-4 py-6">
-        <div class="flex items-center mb-6">
+        <!-- Mobile Layout -->
+        <div class="flex flex-col space-y-4 md:hidden mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Upload de Arquivo</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Faça upload de seus arquivos de forma segura</p>
+            </div>
+            <div class="flex justify-start">
+                <a href="{{ route('files.index') }}" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar aos Arquivos
+                </a>
+            </div>
+        </div>
+        
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center mb-6">
             <a href="{{ route('files.index') }}" class="text-gray-600 hover:text-gray-800 mr-4">
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>

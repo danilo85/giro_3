@@ -133,7 +133,6 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-900 dark:text-white">Pendente</h4>
-                                        <p class="text-xs text-gray-600 dark:text-gray-400">Aguardando pagamento</p>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +146,6 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-900 dark:text-white">Pago</h4>
-                                        <p class="text-xs text-gray-600 dark:text-gray-400">Já foi pago</p>
                                     </div>
                                 </div>
                             </div>

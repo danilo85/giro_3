@@ -89,7 +89,7 @@
         .assinatura-linha {
             border-top: 2px solid #333;
             width: 300px;
-            margin: 40px auto 10px;
+            margin: 10px auto 10px;
         }
         
         .assinatura-nome {
@@ -170,7 +170,7 @@
             
             .assinatura-linha {
                 width: 250px;
-                margin: 30px auto 10px;
+                margin: 10px auto 10px;
             }
         }
         
@@ -273,7 +273,7 @@
         
         <div class="assinatura-section">
             @if(optional($pagamento->orcamento->cliente->user)->assinatura_digital)
-                <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: 5px;">
+                <img src="{{ asset('storage/' . $pagamento->orcamento->cliente->user->assinatura_digital) }}" alt="Assinatura Digital" style="max-height: 80px; max-width: 200px; margin-bottom: -5px;">
                 
                 <div class="assinatura-linha"></div>
                 <div class="assinatura-nome">{{ $pagamento->orcamento->cliente->user->name }}</div>

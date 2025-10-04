@@ -7,7 +7,25 @@
 
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <!-- Mobile Layout -->
+        <div class="sm:hidden">
+            <div class="flex flex-col space-y-4">
+                <div class="w-full">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>
+                    <p class="mt-1 text-gray-600 dark:text-gray-400">Adicione um novo modelo de proposta ao sistema</p>
+                </div>
+                <div class="flex justify-start">
+                    <a href="{{ route('modelos-propostas.index') }}" 
+                       class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="hidden sm:flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Modelo de Proposta</h1>

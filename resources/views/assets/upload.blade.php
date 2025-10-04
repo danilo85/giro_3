@@ -4,27 +4,55 @@
 
 @section('content')
 <div class="min-h-screen bg-white dark:bg-gray-900">
-    <!-- Navigation Tags -->
-    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center space-x-2 py-3">
-                <a href="{{ route('assets.index') }}" 
-                   class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
-                    <i class="fas fa-arrow-left mr-1"></i>
-                    Assets
-                </a>
-                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                    <i class="fas fa-upload mr-1"></i>
-                    Upload
-                </span>
-            </div>
+    <!-- Tags de Navegação Rápida -->
+    <div class="mb-6">
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('assets.index')}}" class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v4"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 5v4"></path>
+                </svg>
+                Dashboard
+            </a>
+            <a href="{{ route('assets.images') }}" class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Imagens
+            </a>
+            <a href="{{ route('assets.fonts') }}" class="px-3 py-1 text-sm font-medium rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707L16.414 6.414A1 1 0 0015.586 6H7a2 2 0 00-2 2v11a2 2 0 002 2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m-7 0h10"></path>
+                </svg>
+                Fontes
+            </a>
+            <span class="px-3 py-1 text-sm font-medium rounded-full bg-blue-600 text-white">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                Upload
+            </span>
         </div>
     </div>
 
     <!-- Header -->
     <div class="container mx-auto px-4 py-6">
-        <div class="flex items-center mb-6">
+        <!-- Mobile Layout -->
+        <div class="flex flex-col space-y-4 mb-6 md:hidden">
+            <div class="w-full">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Upload de Assets</h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Adicione novos assets à sua biblioteca de forma segura</p>
+            </div>
+            <a href="{{ route('assets.index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-800">
+                <i class="fas fa-arrow-left text-xl mr-2"></i>
+                Voltar aos Assets
+            </a>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center mb-6">
             <a href="{{ route('assets.index') }}" class="text-gray-600 hover:text-gray-800 mr-4">
                 <i class="fas fa-arrow-left text-xl"></i>
             </a>

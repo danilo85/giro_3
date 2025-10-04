@@ -50,21 +50,29 @@
 
                     <!-- Cliente -->
                     <div>
-                        <label for="cliente_autocomplete" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Cliente *
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                            Buscar e selecionar clientes *
                         </label>
-                        <div class="relative">
-                            <input type="text" 
-                                   id="cliente_autocomplete" 
-                                   name="cliente_autocomplete"
-                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" 
-                                   placeholder="Digite o nome do cliente..."
-                                   autocomplete="off">
-                            <input type="hidden" 
-                                   id="cliente_id" 
-                                   name="cliente_id" 
-                                   value="{{ old('cliente_id') }}">
+                        
+                        <!-- Campo de busca com autocomplete -->
+                        <div class="mb-4">
+                            <div class="relative">
+                                <input type="text" 
+                                       id="cliente_autocomplete" 
+                                       placeholder="Digite o nome do cliente para buscar ou criar novo..."
+                                       class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                                <input type="hidden" 
+                                       id="cliente_id" 
+                                       name="cliente_id" 
+                                       value="{{ old('cliente_id') }}">
+                            </div>
                         </div>
+                        
+                        <!-- Container para clientes selecionados -->
+                        <div id="clientes_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+                            <!-- Clientes selecionados aparecerão aqui -->
+                        </div>
+                        
                         <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                             <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -74,6 +82,15 @@
                         @error('cliente_id')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                        @error('clientes')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        <div class="mt-2">
+                            <a href="{{ route('clientes.create') }}" 
+                               class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                + Cadastrar novo cliente
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Modelo de Proposta -->
@@ -120,35 +137,35 @@
                     <!-- Editor de Texto Rico -->
                     <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden @error('descricao') border-red-500 @enderror">
                         <!-- Barra de Ferramentas -->
-                        <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 p-2 flex flex-wrap gap-1">
-                            <button type="button" onclick="formatText('bold')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Negrito">
+                        <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 p-2 sm:p-3 flex flex-wrap gap-1 sm:gap-2">
+                            <button type="button" onclick="formatText('bold')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Negrito">
                                 <i class="fas fa-bold"></i>
                             </button>
-                            <button type="button" onclick="formatText('italic')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Itálico">
+                            <button type="button" onclick="formatText('italic')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Itálico">
                                 <i class="fas fa-italic"></i>
                             </button>
-                            <button type="button" onclick="formatText('underline')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Sublinhado">
+                            <button type="button" onclick="formatText('underline')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Sublinhado">
                                 <i class="fas fa-underline"></i>
                             </button>
-                            <button type="button" onclick="formatText('strikeThrough')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Riscado">
+                            <button type="button" onclick="formatText('strikeThrough')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Riscado">
                                 <i class="fas fa-strikethrough"></i>
                             </button>
-                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                            <button type="button" onclick="formatText('insertUnorderedList')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Lista com marcadores">
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1 hidden xs:block"></div>
+                            <button type="button" onclick="formatText('insertUnorderedList')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Lista com marcadores">
                                 <i class="fas fa-list-ul"></i>
                             </button>
-                            <button type="button" onclick="formatText('insertOrderedList')" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Lista numerada">
+                            <button type="button" onclick="formatText('insertOrderedList')" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Lista numerada">
                                 <i class="fas fa-list-ol"></i>
                             </button>
-                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                            <button type="button" onclick="showLinkModal()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Inserir link">
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1 hidden sm:block"></div>
+                            <button type="button" onclick="showLinkModal()" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Inserir link">
                                 <i class="fas fa-link"></i>
                             </button>
-                            <button type="button" onclick="insertLineBreak()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Quebra de linha">
+                            <button type="button" onclick="insertLineBreak()" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Quebra de linha">
                                 <i class="fas fa-level-down-alt"></i>
                             </button>
-                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                            <button type="button" onclick="undoEdit()" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Desfazer">
+                            <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1 hidden sm:block"></div>
+                            <button type="button" onclick="undoEdit()" class="min-w-[36px] min-h-[36px] p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-600 dark:text-gray-300" title="Desfazer">
                                 <i class="fas fa-undo"></i>
                             </button>
                         </div>
@@ -358,7 +375,7 @@
                 </a>
                 <button type="submit" 
                         class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                    Criar Orçamento
+                    Criar
                 </button>
             </div>
         </form>

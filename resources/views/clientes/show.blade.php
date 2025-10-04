@@ -8,25 +8,23 @@
     <!-- Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <img class="h-12 w-12 sm:h-16 sm:w-16 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600" 
+                     src="{{ $cliente->avatar ? Storage::url($cliente->avatar) : 'data:image/svg+xml,%3csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100\' height=\'100\' fill=\'%23f3f4f6\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-size=\'18\' text-anchor=\'middle\' alignment-baseline=\'middle\' font-family=\'monospace, sans-serif\' fill=\'%236b7280\'%3e' . strtoupper(substr($cliente->nome, 0, 2)) . '%3c/text%3e%3c/svg%3e' }}" 
+                     alt="{{ $cliente->nome }}">
+                <div>
+                    <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ $cliente->nome }}</h1>
+                    <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">Cliente #{{ $cliente->id }}</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 sm:space-x-3">
                 <a href="{{ route('clientes.index') }}" 
-                   class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                   class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </a>
-                <div class="flex items-center space-x-4">
-                    <img class="h-16 w-16 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600" 
-                         src="{{ $cliente->avatar ? Storage::url($cliente->avatar) : 'data:image/svg+xml,%3csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100\' height=\'100\' fill=\'%23f3f4f6\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-size=\'18\' text-anchor=\'middle\' alignment-baseline=\'middle\' font-family=\'monospace, sans-serif\' fill=\'%236b7280\'%3e' . strtoupper(substr($cliente->nome, 0, 2)) . '%3c/text%3e%3c/svg%3e' }}" 
-                         alt="{{ $cliente->nome }}">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $cliente->nome }}</h1>
-                        <p class="mt-2 text-gray-600 dark:text-gray-400">Cliente #{{ $cliente->id }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-3">
                 <a href="{{ route('clientes.edit', $cliente) }}" 
                    class="inline-flex items-center justify-center w-10 h-10 text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,7 +462,7 @@
                 <!-- Timeline Container - Responsivo -->
                 <div class="relative">
                     <!-- Timeline Line - Corrigida para mobile -->
-                    <div class="absolute left-4 sm:left-36 top-0 bottom-0 w-0.5 bg-gray-300"></div>
+                    <div class="absolute left-4 sm:left-36 top-0 bottom-0 w-0.5 bg-gray-300 -z-10"></div>
                     
                     <!-- Timeline Items -->
                     <div class="space-y-6">
@@ -473,10 +471,10 @@
                             <!-- Layout Mobile: Vertical Stack -->
                             <div class="block sm:hidden">
                                 <!-- Timeline Marker - Corrigido para mobile -->
-                                <div class="absolute left-3.5 top-2 w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm z-10"></div>
+                                <div class="absolute left-3.5 top-2 w-3 h-3 bg-gray-800 rounded-full border-2 border-white shadow-sm z-20"></div>
                                 
                                 <!-- Content Container -->
-                                <div class="ml-10">
+                                <div class="ml-12 relative z-30">
                                     <!-- Data/Hora -->
                                     <div class="mb-2">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -489,7 +487,7 @@
                                     
                                     <!-- Timeline Card -->
                                     <a href="{{ route('orcamentos.show', $orcamento) }}" class="block">
-                                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md">
+                                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-md relative z-40" style="background-color: inherit !important;">
                                             <!-- Header -->
                                             <div class="mb-3">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
@@ -671,7 +669,7 @@
 
 <!-- Modal para Link do Extrato -->
 <div id="extractModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+    <div class="relative top-20 mx-auto mx-4 p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900">
                 <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -708,7 +706,7 @@
 
 <!-- Modal de Confirmação para Desativar -->
 <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+    <div class="relative top-20 mx-auto mx-4 p-5 border w-11/12 max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900">
                 <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

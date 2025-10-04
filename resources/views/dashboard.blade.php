@@ -141,7 +141,7 @@
                         @forelse($orcamentosRecentes as $orcamento)
                             <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
                                         {{ substr($orcamento->cliente->nome ?? 'C', 0, 1) }}
                                     </div>
                                     <div>

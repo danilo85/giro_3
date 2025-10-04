@@ -253,7 +253,7 @@
    
         @if($pagamentos->count() > 0)
             <!-- Grid de Cards de Pagamentos Empilhados -->
-            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 mb-6">
                 @foreach($pagamentosAgrupados as $grupo)
                     <!-- Container do Grupo de Pagamentos -->
                     <div class="payment-stack-container relative" data-orcamento-id="{{ $grupo['orcamento_id'] }}">
@@ -847,6 +847,27 @@
     .payment-card .relative.z-20,
     .payment-card .relative.z-30 {
         pointer-events: auto;
+    }
+    
+    /* Responsividade específica para a faixa problemática entre 1024px e 1280px */
+    @media (min-width: 1024px) and (max-width: 1280px) {
+        .payment-card {
+            min-width: 280px; /* Largura mínima para garantir espaço para os botões */
+            max-width: 100%; /* Não exceder o container */
+        }
+        
+        .payment-card .px-6.py-4.border-t {
+            padding-left: 1rem; /* Reduzir padding lateral nos botões */
+            padding-right: 1rem;
+        }
+        
+        .payment-card .flex.space-x-3 {
+            gap: 0.5rem; /* Reduzir espaçamento entre botões */
+        }
+        
+        .payment-card .relative.z-30 {
+            padding: 0.375rem; /* Reduzir padding dos botões */
+        }
     }
     
     /* Responsividade */
