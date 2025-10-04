@@ -138,16 +138,14 @@
                         
                         // Definir classes de fundo
                         $backgroundClass = '';
-                        $inlineStyle = '';
                         if ($hasArquivadoOrPublicado) {
-                            $backgroundClass = $isCurrentMonth ? 'bg-green-100 border-green-300 dark:bg-green-900/30 dark:border-green-700' : 'bg-green-200 border-green-400 dark:bg-green-800/40 dark:border-green-600';
-                            $inlineStyle = $isCurrentMonth ? 'background-color: #dcfce7; border-color: #86efac;' : 'background-color: #bbf7d0; border-color: #4ade80;';
+                            $backgroundClass = $isCurrentMonth ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-700' : 'bg-green-100 border-green-300 dark:bg-green-800/30 dark:border-green-600';
                         } else {
-                            $backgroundClass = $isCurrentMonth ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700';
+                            $backgroundClass = $isCurrentMonth ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600' : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600';
                         }
                     @endphp
 
-                    <div class="relative min-h-[120px] border border-gray-200 dark:border-gray-600 rounded-lg p-2 {{ $backgroundClass }} {{ $isToday ? 'ring-2 ring-blue-500' : '' }}" style="{{ $inlineStyle }}" {!! $debugInfo !!} title="Posts: {{ $dayPosts->count() }} | Publicados/Arquivados: {{ $dayPosts->whereIn('status', ['arquivado', 'publicado'])->count() }}">
+                    <div class="relative min-h-[120px] border rounded-lg p-2 {{ $backgroundClass }} {{ $isToday ? 'ring-2 ring-blue-500' : '' }}" {!! $debugInfo !!} title="Posts: {{ $dayPosts->count() }} | Publicados/Arquivados: {{ $dayPosts->whereIn('status', ['arquivado', 'publicado'])->count() }}">
                         <!-- Número do dia -->
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium {{ $isCurrentMonth ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500' }}">
@@ -225,7 +223,7 @@
                         $hasArquivadoOrPublicado = $dayPosts->whereIn('status', ['arquivado', 'publicado'])->count() > 0;
                     @endphp
 
-                    <div class="bg-white dark:bg-gray-800 rounded-lg border {{ $isToday ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-700' }} {{ $hasArquivadoOrPublicado ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' : '' }} p-4 shadow-sm">
+                    <div class="rounded-lg border p-4 shadow-sm {{ $isToday ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-800' : '' }} {{ $hasArquivadoOrPublicado ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' }}">
                         <!-- Header do dia -->
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center space-x-3">
