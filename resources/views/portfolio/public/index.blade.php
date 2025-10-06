@@ -59,7 +59,7 @@
                         
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                                <a href="{{ route('public.portfolio.work', $work->slug) }}">
+                                <a href="{{ route('public.portfolio.public.work', $work->slug) }}">
                                     {{ $work->title }}
                                 </a>
                             </h3>
