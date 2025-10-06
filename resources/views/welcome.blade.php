@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Portfolio') }}</title>
+    <title>Danilo Miguel</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('storage/favicon_site.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('storage/favicon_site.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('storage/favicon_site.png') }}">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -643,6 +648,58 @@
             resize: vertical;
         }
         
+        /* Skeleton Loader */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        .skeleton-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .skeleton-image svg {
+            width: 3rem;
+            height: 3rem;
+            color: #c0c0c0;
+            opacity: 0.5;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .portfolio-item img {
+            transition: opacity 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .portfolio-item img.loading {
+            opacity: 0;
+        }
+
+        .portfolio-item img.loaded {
+            opacity: 1;
+        }
+        
         .submit-btn {
             background: var(--primary-orange);
             color: var(--primary-white);
@@ -803,6 +860,176 @@
         
         /* Wave Animations */
 
+        /* Mobile Menu Styles */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: var(--primary-white);
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .mobile-menu-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        .mobile-menu-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: var(--primary-dark);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mobile-menu-modal.active .mobile-menu-content {
+            transform: translateX(0);
+        }
+        
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .mobile-menu-logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: var(--primary-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-orange);
+        }
+        
+        .mobile-menu-nav {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .mobile-nav-link {
+            display: block;
+            color: var(--primary-white);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+            color: var(--primary-orange);
+            background: rgba(248, 170, 34, 0.1);
+            border-left-color: var(--primary-orange);
+        }
+        
+        .mobile-menu-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .mobile-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mobile-social-link {
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-social-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+
+
         
         /* Portfolio Grid Styles */
          #portfolio-grid {
@@ -824,12 +1051,20 @@
                  display: none;
              }
              
+             .mobile-menu-btn {
+                 display: flex;
+             }
+             
              .header-right {
                  gap: 1rem;
              }
              
              .social-icons {
-                 gap: 0.5rem;
+                 display: none;
+             }
+             
+             .auth-links {
+                 display: none;
              }
              
              .social-link {
@@ -1315,6 +1550,13 @@
                 </div>
                 @endif
                 
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                
                 <!-- Auth Links -->
                 @if (Route::has('login'))
                     <div class="auth-links">
@@ -1338,7 +1580,91 @@
         </div>
     </nav>
 
-
+    <!-- Mobile Menu Modal -->
+    <div class="mobile-menu-modal" id="mobileMenuModal">
+        <div class="mobile-menu-overlay"></div>
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <div class="mobile-menu-logo">
+                    <img src="{{ asset('storage/logo_site.svg') }}" alt="Logo Site">
+                </div>
+                <button class="mobile-menu-close" id="mobileMenuClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="mobile-menu-nav">
+                <a href="#home" class="mobile-nav-link active">Home</a>
+                <a href="#about" class="mobile-nav-link">Sobre</a>
+                <a href="#portfolio" class="mobile-nav-link">Portfólio</a>
+                <a href="#contact" class="mobile-nav-link">Contato</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <!-- Social Media Icons and Auth Icons -->
+                <div class="mobile-social-icons">
+                    @if($user && ($user->facebook_url || $user->instagram_url || $user->twitter_url || $user->linkedin_url || $user->youtube_url || $user->tiktok_url || $user->whatsapp_url || $user->website_url))
+                        @if($user->facebook_url)
+                        <a href="{{ $user->facebook_url }}" target="_blank" class="mobile-social-link" title="Facebook" style="color: #1877F2;">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        @endif
+                        @if($user->instagram_url)
+                        <a href="{{ $user->instagram_url }}" target="_blank" class="mobile-social-link" title="Instagram" style="color: #E4405F;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        @endif
+                        @if($user->twitter_url)
+                        <a href="{{ $user->twitter_url }}" target="_blank" class="mobile-social-link" title="Twitter" style="color: #1DA1F2;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        @endif
+                        @if($user->linkedin_url)
+                        <a href="{{ $user->linkedin_url }}" target="_blank" class="mobile-social-link" title="LinkedIn" style="color: #0A66C2;">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        @endif
+                        @if($user->youtube_url)
+                        <a href="{{ $user->youtube_url }}" target="_blank" class="mobile-social-link" title="YouTube" style="color: #FF0000;">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        @endif
+                        @if($user->tiktok_url)
+                        <a href="{{ $user->tiktok_url }}" target="_blank" class="mobile-social-link" title="TikTok" style="color: #000000;">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        @endif
+                        @if($user->whatsapp_url)
+                        <a href="{{ $user->whatsapp_url }}" target="_blank" class="mobile-social-link" title="WhatsApp" style="color: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        @endif
+                        @if($user->website_url)
+                        <a href="{{ $user->website_url }}" target="_blank" class="mobile-social-link" title="BEHANCE" style="color: #1769ff;">
+                            <i class="fab fa-behance"></i>
+                        </a>
+                        @endif
+                    @endif
+                    
+                    <!-- Auth Icons (aligned with social icons) -->
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="mobile-social-link" title="Dashboard" style="color: var(--primary-orange);">
+                                <i class="fas fa-toggle-on"></i>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="mobile-social-link" title="Entrar" style="color: var(--primary-white);">
+                                <i class="fas fa-toggle-off"></i>
+                            </a>
+                            @if (Route::has('register') && App\Models\Setting::isPublicRegistrationEnabled())
+                                <a href="{{ route('register') }}" class="mobile-social-link" title="Cadastrar" style="color: var(--primary-white);">
+                                    <i class="fas fa-user-plus"></i>
+                                </a>
+                            @endif
+                        @endauth
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Home Section -->
     <section id="home">
@@ -1443,14 +1769,34 @@
                      data-client="{{ $work->client ?? '' }}"
                      data-date="{{ $work->date ? $work->date->format('Y') : '' }}"
                      data-url="{{ $work->url ?? '' }}"
-                     data-technologies="{{ $work->technologies ? implode(',', $work->technologies) : '' }}"
+                     data-technologies="{{ $work->technologies ? implode(',', is_array($work->technologies) ? $work->technologies : [$work->technologies]) : '' }}"
                      data-content="{{ $work->content ?? '' }}"
                      onclick="openPortfolioModal(this)">
                     
                     @if($work->featuredImage)
-                        <img src="{{ $work->featuredImage->url }}" alt="{{ $work->title }}" class="w-full h-full object-cover">
+                        <div class="skeleton-image" id="skeleton-{{ $work->id }}">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <img src="{{ $work->featuredImage->url }}" 
+                             alt="{{ $work->title }}" 
+                             class="w-full h-full object-cover loading" 
+                             data-work-id="{{ $work->id }}"
+                             onload="imageLoaded(this)"
+                             onerror="imageError(this)">
                     @elseif($work->images->count() > 0)
-                        <img src="{{ $work->images->first()->url }}" alt="{{ $work->title }}" class="w-full h-full object-cover">
+                        <div class="skeleton-image" id="skeleton-{{ $work->id }}">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <img src="{{ $work->images->first()->url }}" 
+                             alt="{{ $work->title }}" 
+                             class="w-full h-full object-cover loading" 
+                             data-work-id="{{ $work->id }}"
+                             onload="imageLoaded(this)"
+                             onerror="imageError(this)">
                     @else
                         <div class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                             <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
@@ -1595,6 +1941,64 @@
     </section>
 
     <script>
+        // Skeleton Loader v2.1 - Image loading functions
+        
+        // Image loading functions - MUST be defined first for inline usage
+        function imageLoaded(img) {
+            const workId = img.getAttribute('data-work-id');
+            const skeleton = document.getElementById('skeleton-' + workId);
+            
+            if (skeleton) {
+                skeleton.style.display = 'none';
+            }
+            
+            img.classList.remove('loading');
+            img.classList.add('loaded');
+        }
+
+        function imageError(img) {
+            const workId = img.getAttribute('data-work-id');
+            const skeleton = document.getElementById('skeleton-' + workId);
+            
+            if (skeleton) {
+                skeleton.innerHTML = `
+                    <div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-500 opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                `;
+            }
+            
+            img.style.display = 'none';
+        }
+
+        // Lazy loading for better performance
+        function setupLazyLoading() {
+            const images = document.querySelectorAll('.portfolio-item img[data-work-id]');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            if (img.dataset.src) {
+                                img.src = img.dataset.src;
+                                img.removeAttribute('data-src');
+                            }
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                images.forEach(img => imageObserver.observe(img));
+            }
+        }
+        
+        // Ensure functions are available globally for inline usage
+        window.imageLoaded = imageLoaded;
+        window.imageError = imageError;
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -2078,6 +2482,76 @@
                 // Change slide every 4 seconds
                 setInterval(nextSlide, 4000);
             }
+        });
+
+        // Mobile Menu Control
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenuModal');
+            const mobileMenuClose = document.getElementById('mobileMenuClose');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-nav-link');
+
+            // Open mobile menu
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('active');
+                        mobileMenuBtn.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+
+            // Close mobile menu
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+
+            // Close menu when clicking outside
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function(e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+
+            // Close menu when clicking on navigation links
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+
+            // Close menu with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Initialize lazy loading when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupLazyLoading();
         });
     </script>
     

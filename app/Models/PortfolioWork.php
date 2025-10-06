@@ -162,7 +162,7 @@ class PortfolioWork extends Model
      */
     public function getUrlAttribute()
     {
-        return route('public.portfolio.public.work', $this->slug);
+        return route('public.portfolio.work', $this->slug);
     }
 
     /**

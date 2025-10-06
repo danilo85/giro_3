@@ -13,12 +13,12 @@
             
             <!-- Categories Filter -->
             <div class="flex flex-wrap justify-center gap-3 mb-8">
-                <a href="{{ route('public.portfolio.public.index') }}" 
+                <a href="{{ route('public.portfolio.index') }}" 
                    class="px-6 py-2 rounded-full border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-300 {{ !request('category') ? 'bg-white text-blue-600' : 'text-white' }}">
                     Todos
                 </a>
                 @foreach($categories as $category)
-                    <a href="{{ route('public.portfolio.public.index', ['category' => $category->slug]) }}" 
+                    <a href="{{ route('public.portfolio.index', ['category' => $category->slug]) }}" 
                        class="px-6 py-2 rounded-full border-2 border-white/30 hover:bg-white hover:text-blue-600 transition-all duration-300 {{ request('category') === $category->slug ? 'bg-white text-blue-600' : 'text-white' }}">
                         {{ $category->name }}
                     </a>
@@ -86,7 +86,7 @@
                             @endif
                             
                             <a href="{{ route('public.portfolio.work', $work->slug) }}" 
-                               class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
+               class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                                 Ver projeto
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>

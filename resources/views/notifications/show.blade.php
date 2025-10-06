@@ -31,19 +31,19 @@
             <!-- Notification Details -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6">
                 <div class="p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="notification-type-badge px-3 py-1 text-sm font-medium rounded-full {{ $notification->getTypeBadgeClass() }}">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                            <span class="notification-type-badge px-2 py-1 text-xs sm:px-3 sm:py-1 sm:text-sm font-medium rounded-full {{ $notification->getTypeBadgeClass() }} inline-block w-fit">
                                 {{ $notification->getTypeLabel() }}
                             </span>
                             @if(!$notification->read_at)
-                                <span class="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400">
+                                <span class="flex items-center gap-1 text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                                     <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
                                     Não lida
                                 </span>
                             @endif
                         </div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 order-first sm:order-last">
                             <i class="fas fa-clock mr-1"></i>
                             {{ $notification->created_at->format('d/m/Y H:i') }}
                         </div>

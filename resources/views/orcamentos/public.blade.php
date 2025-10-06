@@ -163,7 +163,7 @@
                         </div>
                         
                         <!-- Botões de Imprimir e Salvar PDF -->
-                        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center no-print">
                             <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
@@ -322,9 +322,9 @@
                                 $iconLogo = optional($orcamento->cliente->user)->getLogoByType('vertical');
                             @endphp
                             @if($iconLogo && file_exists(storage_path('app/public/' . $iconLogo->caminho)))
-                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="h-12 sm:h-16 w-auto rounded">
+                                <img src="{{ $iconLogo->url }}" alt="Logo da Empresa" class="w-full sm:w-auto h-16 sm:h-16 rounded">
                             @else
-                                <div class="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded font-bold text-base sm:text-lg">
+                                <div class="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded font-bold text-base sm:text-lg w-full sm:w-auto text-center">
                                     <span class="text-white">LOGO</span>
                                 </div>
                             @endif
@@ -432,9 +432,9 @@
                         $logoIcone = optional($orcamento->cliente->user)->getLogoByType('icone');
                     @endphp
                     @if($logoIcone && file_exists(storage_path('app/public/' . $logoIcone->caminho)))
-                        <img src="{{ $logoIcone->url }}" alt="Logo Ícone" class="h-12 sm:h-16 w-auto rounded">
+                        <img src="{{ $logoIcone->url }}" alt="Logo Ícone" class="h-20 sm:h-16 w-auto rounded">
                     @else
-                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
+                        <div class="w-20 h-20 sm:w-16 sm:h-16 bg-gray-200 border-2 border-gray-300 flex items-center justify-center">
                             <span class="text-gray-600 text-xs font-bold">ÍCONE</span>
                         </div>
                     @endif
@@ -534,7 +534,6 @@
     }
     
     function salvarPDF() {
-        // Função para salvar como PDF usando a funcionalidade de impressão do navegador
         window.print();
     }
     
@@ -597,5 +596,6 @@
     }
 
 </script>
+
 </body>
 </html>

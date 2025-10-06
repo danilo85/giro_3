@@ -613,14 +613,14 @@ function updatePreview() {
     if (!previewHTML) {
         previewHTML = `
             <div class="text-gray-500 dark:text-gray-400 text-center py-3">
-                <svg class="w-8 h-8 mx-auto mb-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-8 h-8 mx-auto mb-2 text-gray-400 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2ZM2 5h16v10H2V5Z"/>
                 </svg>
-                <p class="mb-0">Preview do post aparecerá aqui</p>
+                <p class="mb-0 text-gray-500 dark:text-gray-400">Preview do post aparecerá aqui</p>
             </div>`;
     }
 
-    previewElement.innerHTML = `<div class="social-post-preview">${previewHTML}</div>`;
+    previewElement.innerHTML = `<div class="social-post-preview dark:text-white">${previewHTML}</div>`;
 }
 
 // Form submission

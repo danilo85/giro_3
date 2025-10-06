@@ -4,7 +4,43 @@
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <!-- Mobile Layout -->
+        <div class="flex flex-col space-y-4 md:hidden">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Editar Trabalho</h1>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">{{ $work->title }}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                @if($work->status === 'published')
+                    <a href="{{ route('public.portfolio.work', $work->slug) }}" target="_blank"
+                       class="inline-flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                @endif
+                
+                <form action="{{ route('portfolio.works.destroy', $work) }}" method="POST" class="inline"
+                      onsubmit="return confirm('Tem certeza que deseja excluir este trabalho?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="inline-flex items-center justify-center w-10 h-10 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </form>
+                
+                <a href="{{ route('portfolio.works.index') }}" 
+                   class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar ao Portfólio
+                </a>
+            </div>
+        </div>
+        
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Editar Trabalho</h1>
@@ -14,7 +50,7 @@
             
             <div class="flex items-center space-x-3">
                 @if($work->status === 'published')
-                    <a href="{{ route('public.portfolio.public.work', $work->slug) }}" target="_blank"
+                    <a href="{{ route('public.portfolio.work', $work->slug) }}" target="_blank"
                        class="inline-flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>

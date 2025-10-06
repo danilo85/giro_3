@@ -448,6 +448,11 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         Route::post('/background-colors/set-default', [\App\Http\Controllers\SocialPostController::class, 'setDefaultColorFromPicker'])->name('background-colors.set-default-picker');
         Route::patch('/background-colors/{colorId}/default', [\App\Http\Controllers\SocialPostController::class, 'setDefaultColor'])->name('background-colors.set-default');
         Route::delete('/background-colors/{colorId}', [\App\Http\Controllers\SocialPostController::class, 'deleteBackgroundColor'])->name('background-colors.destroy');
+
+        // API Routes for Hashtags
+        Route::get('/api/hashtags/search', [\App\Http\Controllers\HashtagController::class, 'search'])->name('api.hashtags.search');
+        Route::get('/api/hashtags/popular', [\App\Http\Controllers\HashtagController::class, 'popular'])->name('api.hashtags.popular');
+        Route::get('/api/hashtags/stats', [\App\Http\Controllers\HashtagController::class, 'stats'])->name('api.hashtags.stats');
     });
 
     // Kanban Module (Módulo Kanban)
@@ -489,7 +494,8 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
 
         // CRUD de trabalhos
         Route::get('/works', [PortfolioController::class, 'worksIndex'])->name('works.index');
-        Route::resource('works', PortfolioController::class)->except(['index', 'pipeline']);
+        Route::get('/works/{work}', [PortfolioController::class, 'show'])->name('works.show');
+        Route::resource('works', PortfolioController::class)->except(['index', 'show']);
         Route::post('/works/{work}/images/upload', [PortfolioController::class, 'uploadImages'])->name('works.images.upload');
         Route::delete('/works/images/{image}', [PortfolioController::class, 'deleteImage'])->name('works.images.delete');
         Route::patch('/works/images/{image}/set-cover', [PortfolioController::class, 'setCoverImage'])->name('works.images.set-cover');
@@ -677,10 +683,13 @@ Route::name('public.')->group(function () {
         Route::get('/categoria/{category:slug}', [PortfolioApiController::class, 'category'])->name('category');
 
         // Página de trabalho específico
-        Route::get('/trabalho/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('public.work');
+        Route::get('/trabalho/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work');
 
         // Página de autor específico
         Route::get('/autor/{author:slug}', [PortfolioApiController::class, 'authorPortfolio'])->name('author');
+
+        // Rota pública para visualização de trabalhos usando padrão /portfolio/public/{work}
+        Route::get('/public/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work.detail')->where('work', '[a-z0-9\-]+');
     });
 
     // Rota de contato

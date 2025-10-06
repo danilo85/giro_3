@@ -7,7 +7,42 @@
 
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <!-- Mobile Layout: Stack vertical -->
+        <div class="flex flex-col space-y-4 sm:hidden">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Detalhes do Pagamento</h1>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">Informações completas do pagamento #{{ $pagamento->id }}</p>
+            </div>
+            
+            <div class="flex items-center justify-start space-x-3">
+                <a href="{{ route('pagamentos.edit', $pagamento) }}" 
+                   class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                   title="Editar">
+                    <svg class="w-5 h-5 text-blue-600 hover:text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </a>
+                
+                <button type="button" onclick="openDeleteModal()"
+                        class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        title="Excluir">
+                    <svg class="w-5 h-5 text-red-600 hover:text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+                
+                <a href="{{ route('pagamentos.index') }}" 
+                   class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                   title="Voltar">
+                    <svg class="w-5 h-5 text-gray-600 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Desktop Layout: Horizontal -->
+        <div class="hidden sm:flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detalhes do Pagamento</h1>
                 <p class="mt-2 text-gray-600 dark:text-gray-400">Informações completas do pagamento #{{ $pagamento->id }}</p>
@@ -123,8 +158,8 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Orçamento Relacionado</h2>
                 </div>
                 <div class="p-6">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex-shrink-0">
+                    <div class="flex items-center space-x-6 sm:space-x-4">
+                        <div class="flex-shrink-0 mr-2">
                             <img class="h-12 w-12 rounded-full" 
                                  src="{{ $pagamento->orcamento->cliente->avatar ? Storage::url($pagamento->orcamento->cliente->avatar) : 'data:image/svg+xml,%3csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3e%3crect width=\'100\' height=\'100\' fill=\'%23f3f4f6\'/%3e%3ctext x=\'50%25\' y=\'50%25\' font-size=\'18\' text-anchor=\'middle\' alignment-baseline=\'middle\' font-family=\'monospace, sans-serif\' fill=\'%236b7280\'%3e' . strtoupper(substr($pagamento->orcamento->cliente->nome, 0, 2)) . '%3c/text%3e%3c/svg%3e' }}" 
                                  alt="{{ $pagamento->orcamento->cliente->nome }}">

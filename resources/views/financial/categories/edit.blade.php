@@ -46,14 +46,14 @@
                                 Tipo de Categoria *
                             </label>
                             <div class="grid grid-cols-2 gap-4">
-                                <label class="relative cursor-pointer">
+                                <label class="relative cursor-pointer h-full">
                                     <input type="radio" name="tipo" value="receita" class="sr-only peer" required {{ $category->tipo == 'receita' ? 'checked' : '' }}>
-                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 transition-all hover:border-green-300">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xl">
+                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 transition-all hover:border-green-300 h-full min-h-[80px] flex items-center">
+                                        <div class="flex items-center space-x-4 w-full">
+                                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0">
                                                 💰
                                             </div>
-                                            <div>
+                                            <div class="flex-1">
                                                 <h3 class="font-semibold text-gray-900 dark:text-white">Receita</h3>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">Dinheiro que entra</p>
                                             </div>
@@ -61,14 +61,14 @@
                                     </div>
                                 </label>
                                 
-                                <label class="relative cursor-pointer">
+                                <label class="relative cursor-pointer h-full">
                                     <input type="radio" name="tipo" value="despesa" class="sr-only peer" required {{ $category->tipo == 'despesa' ? 'checked' : '' }}>
-                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 transition-all hover:border-red-300">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-xl">
+                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 transition-all hover:border-red-300 h-full min-h-[80px] flex items-center">
+                                        <div class="flex items-center space-x-4 w-full">
+                                            <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0">
                                                 💸
                                             </div>
-                                            <div>
+                                            <div class="flex-1">
                                                 <h3 class="font-semibold text-gray-900 dark:text-white">Despesa</h3>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">Dinheiro que sai</p>
                                             </div>
@@ -84,7 +84,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                 Ícone da Categoria *
                             </label>
-                            <input type="hidden" id="icone" name="icone" value="{{ $category->icone_url }}" required>
+                            <input type="hidden" id="icone_url" name="icone_url" value="{{ $category->icone_url }}" required>
                             
                             <!-- Search Icons -->
                             <div class="mb-4">
@@ -96,7 +96,7 @@
                             <div id="icon-grid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 sm:gap-3 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3 sm:p-4">
                                 <!-- Icons will be populated by JavaScript -->
                             </div>
-                            <div class="text-red-500 text-sm mt-1 hidden" id="icone-error"></div>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="icone_url-error"></div>
                         </div>
 
                         <!-- Descrição -->
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set initial icon value
     if (selectedIcon) {
-        document.getElementById('icone').value = selectedIcon;
+        document.getElementById('icone_url').value = selectedIcon;
     }
     
     // Inicializar preview com dados existentes
@@ -320,7 +320,7 @@ function renderIcons(searchTerm = '') {
 
 function selectIcon(iconKey) {
     selectedIcon = iconKey;
-    document.getElementById('icone').value = iconKey;
+    document.getElementById('icone_url').value = iconKey;
     
     // Update visual selection
     document.querySelectorAll('.icon-option').forEach(btn => {
@@ -492,9 +492,9 @@ function validateForm() {
         isValid = false;
     }
     
-    // Validate icone
+    // Validate icone_url
     if (!selectedIcon) {
-        showError('icone', 'Selecione um ícone para a categoria');
+        showError('icone_url', 'Selecione um ícone para a categoria');
         isValid = false;
     }
     
@@ -529,7 +529,7 @@ function clearError(field) {
 }
 
 function clearAllErrors() {
-    ['nome', 'tipo', 'icone'].forEach(field => {
+    ['nome', 'tipo', 'icone_url'].forEach(field => {
         clearError(field);
     });
 }

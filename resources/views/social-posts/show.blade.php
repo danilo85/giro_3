@@ -56,6 +56,9 @@ use Illuminate\Support\Facades\Storage;
                     <button type="button" onclick="exportPost()" class="p-2 text-gray-500 hover:text-cyan-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Exportar">
                         <i class="fas fa-download"></i>
                     </button>
+                    <a href="{{ route('social-posts.generate-images', $socialPost) }}" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Gerar Imagens">
+                        <i class="fas fa-images"></i>
+                    </a>
                     <button type="button" onclick="confirmDelete()" class="p-2 text-gray-500 hover:text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200" title="Excluir">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -326,16 +329,16 @@ use Illuminate\Support\Facades\Storage;
                         <a href="{{ route('social-posts.edit', $socialPost) }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
                             <i class="fas fa-edit mr-1"></i> Editar Post
                         </a>
-                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-green-300 text-green-700 rounded-md hover:bg-green-50 transition duration-200" onclick="duplicatePost()">
+                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-green-300 text-green-700 rounded-md hover:bg-green-50 dark:border-green-600 dark:text-green-400 dark:hover:bg-green-900 transition duration-200" onclick="duplicatePost()">
                             <i class="fas fa-copy mr-1"></i> Duplicar Post
                         </button>
-                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-cyan-300 text-cyan-700 rounded-md hover:bg-cyan-50 transition duration-200" onclick="exportPost()">
+                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-cyan-300 text-cyan-700 rounded-md hover:bg-cyan-50 dark:border-cyan-600 dark:text-cyan-400 dark:hover:bg-cyan-900 transition duration-200" onclick="exportPost()">
                             <i class="fas fa-download mr-1"></i> Exportar
                         </button>
-                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition duration-200" onclick="confirmDelete()">
+                        <button type="button" class="w-full inline-flex items-center justify-center px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900 transition duration-200" onclick="confirmDelete()">
                             <i class="fas fa-trash mr-1"></i> Excluir
                         </button>
-                        <a href="{{ route('social-posts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition duration-200">
+                        <a href="{{ route('social-posts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 transition duration-200">
                             <i class="fas fa-arrow-left mr-1"></i> Voltar à Lista
                         </a>
                     </div>

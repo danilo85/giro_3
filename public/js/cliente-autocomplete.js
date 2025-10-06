@@ -3,8 +3,9 @@ class ClienteAutocomplete {
         this.input = inputElement;
         this.hidden = hiddenElement;
         this.dropdown = null;
-        this.selectedCliente = null;
+        this.selectedClientes = [];
         this.debounceTimer = null;
+        this.container = document.getElementById('clientes_container');
         
         this.init();
     }
@@ -205,47 +206,119 @@ class ClienteAutocomplete {
     }
     
     selectCliente(cliente) {
-        this.selectedCliente = cliente;
-        this.hidden.value = cliente.id;
-        this.showSelectedTag(cliente.nome, 'existing');
+        // Verificar se o cliente já foi selecionado
+        if (this.selectedClientes.includes(cliente.id.toString())) {
+            this.input.value = '';
+            this.hideDropdown();
+            return;
+        }
+        
+        this.selectedClientes.push(cliente.id.toString());
+        this.addClienteToContainer(cliente, 'existing');
+        this.input.value = '';
         this.hideDropdown();
     }
     
     selectNewCliente(nome) {
-        this.selectedCliente = { nome: nome, isNew: true };
-        this.hidden.value = 'new:' + nome;
-        this.showSelectedTag(nome, 'new');
-        this.hideDropdown();
-    }
-    
-    showSelectedTag(nome, type) {
-        // Esconder o input e mostrar a tag
-        this.input.style.display = 'none';
-        
-        // Remover tag anterior se existir
-        const existingTag = this.input.parentNode.querySelector('.cliente-tag');
-        if (existingTag) {
-            existingTag.remove();
+        // Verificar se já existe um cliente novo com o mesmo nome
+        const existingNew = this.selectedClientes.find(id => id.startsWith('new:' + nome));
+        if (existingNew) {
+            this.input.value = '';
+            this.hideDropdown();
+            return;
         }
         
-        const tag = document.createElement('div');
-        tag.className = 'cliente-tag';
+        const newCliente = { id: 'new:' + nome, nome: nome, isNew: true };
+        this.selectedClientes.push('new:' + nome);
+        this.addClienteToContainer(newCliente, 'new');
+        this.input.value = '';
+        this.hideDropdown();
+    }
+
+    addClienteToContainer(cliente, type) {
+        if (!this.container) return;
         
-        const bgColor = type === 'existing' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
-        const icon = type === 'existing' ? 'fa-check' : 'fa-plus';
+        const clienteCard = document.createElement('div');
         
-        tag.innerHTML = `
-            <div class="inline-flex items-center px-3 py-2 rounded-md border ${bgColor}">
-                <i class="fas ${icon} mr-2"></i>
-                <span class="font-medium">${nome}</span>
-                <button type="button" class="ml-2 text-gray-400 hover:text-gray-600" onclick="this.closest('.cliente-tag').nextElementSibling.style.display='block'; this.closest('.cliente-tag').remove(); this.closest('div').querySelector('input[type=hidden]').value='';">
-                    <i class="fas fa-times"></i>
-                </button>
+        // Calcular a posição atual para alternância de cores
+        const currentPosition = this.container.children.length;
+        const isEven = currentPosition % 2 === 0;
+        
+        // Aplicar alternância de cores
+        const backgroundClass = isEven ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700';
+        const textClass = 'text-gray-900 dark:text-white';
+        
+        clienteCard.className = `relative ${backgroundClass} border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow`;
+        clienteCard.setAttribute('data-cliente-id', cliente.id);
+        
+        const bgColor = type === 'existing' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
+        const label = type === 'existing' ? 'Existente' : 'Novo';
+        const inputValue = type === 'existing' ? cliente.id : 'new:' + cliente.nome;
+        
+        clienteCard.innerHTML = `
+            <input type="checkbox" name="clientes[]" value="${inputValue}" checked class="hidden">
+            
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    ${cliente.nome.substring(0, 2).toUpperCase()}
+                </div>
+                
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium ${textClass} truncate">${cliente.nome}</p>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${bgColor}">
+                        ${label}
+                    </span>
+                </div>
             </div>
+            
+            <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 remove-cliente" data-cliente-id="${cliente.id}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         `;
         
-        this.input.parentNode.insertBefore(tag, this.input);
+        this.container.appendChild(clienteCard);
+        
+        // Adicionar event listener para remoção
+        const removeBtn = clienteCard.querySelector('.remove-cliente');
+        removeBtn.addEventListener('click', () => {
+            this.removeCliente(cliente.id);
+        });
     }
+
+    removeCliente(clienteId) {
+        const clienteCard = document.querySelector(`[data-cliente-id="${clienteId}"]`);
+        if (clienteCard) {
+            clienteCard.remove();
+            this.selectedClientes = this.selectedClientes.filter(id => id !== clienteId.toString());
+            // Recalcular cores após remoção
+            this.updateAlternatingColors();
+        }
+    }
+
+    updateAlternatingColors() {
+        if (!this.container) return;
+        
+        const clienteCards = this.container.children;
+        
+        for (let i = 0; i < clienteCards.length; i++) {
+            const card = clienteCards[i];
+            const isEven = i % 2 === 0;
+            
+            // Remover classes de cor antigas
+            card.classList.remove('bg-gray-50', 'dark:bg-gray-800', 'bg-gray-100', 'dark:bg-gray-700');
+            
+            // Aplicar novas classes baseadas na posição atual
+            if (isEven) {
+                card.classList.add('bg-gray-50', 'dark:bg-gray-800');
+            } else {
+                card.classList.add('bg-gray-100', 'dark:bg-gray-700');
+            }
+        }
+    }
+
+
     
     handleEnter() {
         const items = this.dropdown.querySelectorAll('.autocomplete-item');
@@ -273,14 +346,12 @@ class ClienteAutocomplete {
     }
     
     reset() {
-        this.selectedCliente = null;
+        this.selectedClientes = [];
         this.hidden.value = '';
         this.input.value = '';
-        this.input.style.display = 'block';
         
-        const existingTag = this.input.parentNode.querySelector('.cliente-tag');
-        if (existingTag) {
-            existingTag.remove();
+        if (this.container) {
+            this.container.innerHTML = '';
         }
         
         this.hideDropdown();

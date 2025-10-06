@@ -32,6 +32,9 @@ class Kernel extends ConsoleKernel
         
         // Verificar datas de vencimento de pagamentos diariamente às 9:00 AM
         $schedule->command('payments:check-due-dates')->dailyAt('09:00');
+        
+        // Processar transações recorrentes diariamente às 6:00 AM
+        $schedule->command('transactions:process-recurring')->dailyAt('06:00');
     }
 
     /**

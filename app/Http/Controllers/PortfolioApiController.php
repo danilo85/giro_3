@@ -11,6 +11,25 @@ use Illuminate\Support\Facades\Cache;
 class PortfolioApiController extends Controller
 {
     /**
+     * Display the public portfolio index page
+     */
+    public function index()
+    {
+        $works = PortfolioWork::with(['category', 'client'])
+            ->published()
+            ->featured()
+            ->latest()
+            ->limit(12)
+            ->get();
+        
+        $categories = PortfolioCategory::active()
+            ->ordered()
+            ->get();
+        
+        return view('portfolio.public.index', compact('works', 'categories'));
+    }
+
+    /**
      * Get public portfolio works
      */
     public function works(Request $request)

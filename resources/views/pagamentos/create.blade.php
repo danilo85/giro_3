@@ -7,7 +7,24 @@
 
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <!-- Mobile Layout: Stack vertical -->
+        <div class="flex flex-col space-y-4 sm:hidden">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Novo Pagamento</h1>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">Registre um novo pagamento no sistema</p>
+            </div>
+            
+            <div class="flex items-center justify-start">
+                <a href="{{ route('pagamentos.index') }}" 
+                   class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Desktop Layout: Horizontal -->
+        <div class="hidden sm:flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Novo Pagamento</h1>

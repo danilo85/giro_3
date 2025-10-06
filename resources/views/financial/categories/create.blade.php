@@ -45,14 +45,14 @@
                                 Tipo de Categoria *
                             </label>
                             <div class="grid grid-cols-2 gap-4">
-                                <label class="relative cursor-pointer">
+                                <label class="relative cursor-pointer h-full">
                                     <input type="radio" name="tipo" value="receita" class="sr-only peer" required>
-                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 transition-all hover:border-green-300">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xl">
+                                    <div class="p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/20 transition-all hover:border-green-300 h-full min-h-[80px] flex items-center">
+                                        <div class="flex items-center space-x-4 w-full">
+                                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0 mr-2">
                                                 💰
                                             </div>
-                                            <div>
+                                            <div class="flex-1">
                                                 <h3 class="font-semibold text-gray-900 dark:text-white">Receita</h3>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">Dinheiro que entra</p>
                                             </div>
@@ -60,14 +60,14 @@
                                     </div>
                                 </label>
                                 
-                                <label class="relative cursor-pointer">
+                                <label class="relative cursor-pointer h-full">
                                     <input type="radio" name="tipo" value="despesa" class="sr-only peer" required>
-                                    <div class="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 transition-all hover:border-red-300">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-xl">
+                                    <div class="p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/20 transition-all hover:border-red-300 h-full min-h-[80px] flex items-center">
+                                        <div class="flex items-center space-x-4 w-full">
+                                            <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0 mr-2">
                                                 💸
                                             </div>
-                                            <div>
+                                            <div class="flex-1">
                                                 <h3 class="font-semibold text-gray-900 dark:text-white">Despesa</h3>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">Dinheiro que sai</p>
                                             </div>

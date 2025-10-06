@@ -41,7 +41,7 @@ class CategoryController extends Controller
             $validated = $request->validate([
                 'nome' => 'required|string|max:100',
                 'tipo' => 'required|in:receita,despesa',
-                'icone' => 'required|string|max:50',
+                'icone_url' => 'required|string|max:50',
                 'descricao' => 'nullable|string|max:255',
                 'cor' => 'nullable|string|max:7',
                 'ativo' => 'boolean'
@@ -51,10 +51,6 @@ class CategoryController extends Controller
             
             // Converter ativo para boolean - checkbox só envia valor quando marcado
             $validated['ativo'] = $request->has('ativo') && $request->input('ativo') == '1';
-            
-            // Mapear 'icone' para 'icone_url' no banco de dados
-            $validated['icone_url'] = $validated['icone'];
-            unset($validated['icone']);
             
             // Se cor não foi fornecida, remove do array para usar o valor padrão da migration
             if (empty($validated['cor'])) {
@@ -137,7 +133,7 @@ class CategoryController extends Controller
             $validated = $request->validate([
                 'nome' => 'required|string|max:100',
                 'tipo' => 'required|in:receita,despesa',
-                'icone' => 'required|string|max:50',
+                'icone_url' => 'required|string|max:50',
                 'descricao' => 'nullable|string|max:255',
                 'cor' => 'nullable|string|max:7',
                 'ativo' => 'boolean'
@@ -148,10 +144,6 @@ class CategoryController extends Controller
             
             // Converter ativo para boolean - checkbox só envia valor quando marcado
             $validated['ativo'] = $request->has('ativo') && $request->input('ativo') == '1';
-            
-            // Mapear 'icone' para 'icone_url' no banco de dados
-            $validated['icone_url'] = $validated['icone'];
-            unset($validated['icone']);
 
             $category->update($validated);
 

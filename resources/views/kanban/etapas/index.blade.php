@@ -6,17 +6,38 @@
 <div class="container mx-auto px-4 py-6" x-data="etapasManager()">
 
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900  dark:text-white">Gestão de Etapas</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Configure as etapas do seu fluxo de trabalho</p>
+    <div class="mb-6">
+        <!-- Mobile Layout -->
+        <div class="sm:hidden">
+            <div class="flex flex-col space-y-4">
+                <div class="w-full">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Gestão de Etapas</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-1">Configure as etapas do seu fluxo de trabalho</p>
+                </div>
+                <div class="flex justify-start">
+                    <a href="{{ route('kanban.index') }}" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100" title="Voltar ao Kanban">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Voltar ao Kanban
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="flex space-x-3">
-            <a href="{{ route('kanban.index') }}" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors" title="Voltar ao Kanban">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
+
+        <!-- Desktop Layout -->
+        <div class="hidden sm:flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestão de Etapas</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Configure as etapas do seu fluxo de trabalho</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('kanban.index') }}" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors" title="Voltar ao Kanban">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
 

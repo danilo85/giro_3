@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
@@ -38,13 +39,20 @@ class ContactController extends Controller
         }
 
         try {
-            // Get site owner (user with ID 1)
-            $siteOwner = User::find(1);
+            // Get contact email from settings, fallback to site owner email
+            $contactEmail = Setting::get('contact_email');
             
-            if (!$siteOwner) {
-                return back()
-                    ->withInput()
-                    ->with('error', 'Erro interno: usuário administrador não encontrado.');
+            if (!$contactEmail) {
+                // Fallback to site owner (user with ID 1)
+                $siteOwner = User::find(1);
+                
+                if (!$siteOwner) {
+                    return back()
+                        ->withInput()
+                        ->with('error', 'Erro interno: email de contato não configurado.');
+                }
+                
+                $contactEmail = $siteOwner->email;
             }
 
             // Prepare email data
@@ -56,8 +64,8 @@ class ContactController extends Controller
                 'sent_at' => now()->format('d/m/Y H:i:s')
             ];
 
-            // Send email to site owner
-            Mail::to($siteOwner->email)->send(new ContactFormMail($emailData));
+            // Send email to configured contact email
+            Mail::to($contactEmail)->send(new ContactFormMail($emailData));
 
             return back()
                 ->with('success', 'Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.');

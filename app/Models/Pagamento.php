@@ -219,7 +219,7 @@ class Pagamento extends Model
             return null;
         }
         
-        return url('public/recibo/' . $this->token_publico);
+        return url('recibo/' . $this->token_publico);
     }
 
     /**
