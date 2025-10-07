@@ -82,7 +82,7 @@ class ClienteAutocomplete {
         }
         
         try {
-            const response = await fetch(`/clientes/autocomplete?q=${encodeURIComponent(query)}`, {
+            const response = await fetch(`/api/budget/clientes/autocomplete?q=${encodeURIComponent(query)}`, {
                 credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
@@ -215,6 +215,10 @@ class ClienteAutocomplete {
         
         this.selectedClientes.push(cliente.id.toString());
         this.addClienteToContainer(cliente, 'existing');
+        
+        // Preencher o campo hidden cliente_id
+        this.hidden.value = cliente.id;
+        
         this.input.value = '';
         this.hideDropdown();
     }
@@ -231,6 +235,10 @@ class ClienteAutocomplete {
         const newCliente = { id: 'new:' + nome, nome: nome, isNew: true };
         this.selectedClientes.push('new:' + nome);
         this.addClienteToContainer(newCliente, 'new');
+        
+        // Preencher o campo hidden cliente_id com o valor para novo cliente
+        this.hidden.value = 'new:' + nome;
+        
         this.input.value = '';
         this.hideDropdown();
     }
@@ -292,6 +300,15 @@ class ClienteAutocomplete {
         if (clienteCard) {
             clienteCard.remove();
             this.selectedClientes = this.selectedClientes.filter(id => id !== clienteId.toString());
+            
+            // Limpar o campo hidden se não há mais clientes selecionados
+            if (this.selectedClientes.length === 0) {
+                this.hidden.value = '';
+            } else {
+                // Se ainda há clientes, usar o primeiro da lista
+                this.hidden.value = this.selectedClientes[0];
+            }
+            
             // Recalcular cores após remoção
             this.updateAlternatingColors();
         }

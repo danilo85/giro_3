@@ -71,6 +71,11 @@ Route::get('/', function () {
     return view('welcome', compact('user', 'portfolioWorks', 'portfolioCategories'));
 })->name('home');
 
+// Test route for API debugging
+Route::get('/test-api', function () {
+    return view('test-api');
+})->name('test-api');
+
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     // Login
@@ -119,9 +124,6 @@ Route::get('/test-transaction-form', [TransactionController::class, 'create'])->
 Route::get('/test-categories', [CategoryController::class, 'getCategoriesGrouped'])->name('test.categories');
 
 
-
-// AJAX Routes (require session but not full auth middleware)
-Route::get('/clientes/autocomplete', [ClienteController::class, 'autocomplete'])->name('clientes.autocomplete');
 
 // Protected Routes
 Route::middleware(['auth', 'conditional.verified'])->group(function () {
@@ -494,8 +496,8 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
 
         // CRUD de trabalhos
         Route::get('/works', [PortfolioController::class, 'worksIndex'])->name('works.index');
-        Route::get('/works/{work}', [PortfolioController::class, 'show'])->name('works.show');
         Route::resource('works', PortfolioController::class)->except(['index', 'show']);
+        Route::get('/works/{work}', [PortfolioController::class, 'show'])->name('works.show');
         Route::post('/works/{work}/images/upload', [PortfolioController::class, 'uploadImages'])->name('works.images.upload');
         Route::delete('/works/images/{image}', [PortfolioController::class, 'deleteImage'])->name('works.images.delete');
         Route::patch('/works/images/{image}/set-cover', [PortfolioController::class, 'setCoverImage'])->name('works.images.set-cover');
@@ -674,8 +676,8 @@ Route::name('public.')->group(function () {
     // Rotas públicas para extrato do cliente
     Route::get('/extrato/{cliente_id}/{token}', [ExtratoController::class, 'show'])->name('extrato.public');
 
-    // Rotas públicas do portfólio
-    Route::prefix('portfolio')->name('portfolio.')->group(function () {
+    // Rotas públicas do portfólio - usando prefixo diferente para evitar conflito
+    Route::prefix('portfolio-public')->name('portfolio.public.')->group(function () {
         // Página principal do portfólio
         Route::get('/', [PortfolioApiController::class, 'index'])->name('index');
 
@@ -688,8 +690,13 @@ Route::name('public.')->group(function () {
         // Página de autor específico
         Route::get('/autor/{author:slug}', [PortfolioApiController::class, 'authorPortfolio'])->name('author');
 
-        // Rota pública para visualização de trabalhos usando padrão /portfolio/public/{work}
-        Route::get('/public/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work.detail')->where('work', '[a-z0-9\-]+');
+        // Rota pública para visualização de trabalhos usando padrão /portfolio-public/view/{work}
+        Route::get('/view/{work:slug}', [PortfolioApiController::class, 'workDetail'])->name('work.detail')->where('work', '[a-z0-9\-]+');
+    });
+
+    // Rota alternativa para manter compatibilidade - redireciona /portfolio para /portfolio-public
+    Route::get('/portfolio', function () {
+        return redirect('/portfolio-public');
     });
 
     // Rota de contato

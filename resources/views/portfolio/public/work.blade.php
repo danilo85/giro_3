@@ -8,7 +8,7 @@
 <meta property="og:title" content="{{ $work->meta_title ?: $work->title }}">
 <meta property="og:description" content="{{ $work->meta_description ?: Str::limit($work->description, 160) }}">
 <meta property="og:type" content="article">
-<meta property="og:url" content="{{ route('public.portfolio.work', $work->slug) }}">
+<meta property="og:url" content="{{ route('public.portfolio.public.work', $work->slug) }}">
 @if($work->featured_image)
 <meta property="og:image" content="{{ asset('storage/' . $work->featured_image) }}">
 @endif
@@ -28,7 +28,7 @@
   "@type": "CreativeWork",
   "name": "{{ $work->title }}",
   "description": "{{ $work->description }}",
-  "url": "{{ route('public.portfolio.work', $work->slug) }}",
+  "url": "{{ route('public.portfolio.public.work', $work->slug) }}",
   @if($work->featured_image)
   "image": "{{ asset('storage/' . $work->featured_image) }}",
   @endif
@@ -259,7 +259,7 @@
                         
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                <a href="{{ route('public.portfolio.work', $relatedWork->slug) }}">
+                                <a href="{{ route('public.portfolio.public.work', $relatedWork->slug) }}">
                                     {{ $relatedWork->title }}
                                 </a>
                             </h3>

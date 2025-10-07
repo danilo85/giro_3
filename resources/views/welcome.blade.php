@@ -16,6 +16,43 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- Critical JavaScript functions - Must be loaded before any inline handlers -->
+    <script>
+        // Image loading functions - MUST be defined first for inline usage
+        function imageLoaded(img) {
+            const workId = img.getAttribute('data-work-id');
+            const skeleton = document.getElementById('skeleton-' + workId);
+            
+            if (skeleton) {
+                skeleton.style.display = 'none';
+            }
+            
+            img.classList.remove('loading');
+            img.classList.add('loaded');
+        }
+
+        function imageError(img) {
+            const workId = img.getAttribute('data-work-id');
+            const skeleton = document.getElementById('skeleton-' + workId);
+            
+            if (skeleton) {
+                skeleton.innerHTML = `
+                    <div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-500 opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                `;
+            }
+            
+            img.style.display = 'none';
+        }
+
+        // Ensure functions are available globally for inline usage
+        window.imageLoaded = imageLoaded;
+        window.imageError = imageError;
+    </script>
+    
     <style>
         :root {
             --primary-dark: #2b363f;
@@ -2003,37 +2040,8 @@
 
     <script>
         // Skeleton Loader v2.1 - Image loading functions
+        // Note: imageLoaded and imageError functions are now defined in the head section
         
-        // Image loading functions - MUST be defined first for inline usage
-        function imageLoaded(img) {
-            const workId = img.getAttribute('data-work-id');
-            const skeleton = document.getElementById('skeleton-' + workId);
-            
-            if (skeleton) {
-                skeleton.style.display = 'none';
-            }
-            
-            img.classList.remove('loading');
-            img.classList.add('loaded');
-        }
-
-        function imageError(img) {
-            const workId = img.getAttribute('data-work-id');
-            const skeleton = document.getElementById('skeleton-' + workId);
-            
-            if (skeleton) {
-                skeleton.innerHTML = `
-                    <div class="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-gray-500 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                `;
-            }
-            
-            img.style.display = 'none';
-        }
-
         // Lazy loading for better performance
         function setupLazyLoading() {
             const images = document.querySelectorAll('.portfolio-item img[data-work-id]');
@@ -2055,10 +2063,6 @@
                 images.forEach(img => imageObserver.observe(img));
             }
         }
-        
-        // Ensure functions are available globally for inline usage
-        window.imageLoaded = imageLoaded;
-        window.imageError = imageError;
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
@@ -2462,8 +2466,12 @@
                 await incrementViews(workSlug);
                 
                 // Depois, carregar as métricas atualizadas
-                const guestUserId = 6; // ID do usuário guest
-                const response = await fetch(`/api/portfolio/works/${workSlug}/stats?user_id=${guestUserId}`);
+                const guestUserId = 1; // ID do usuário guest válido
+                const response = await fetch(`/api/portfolio/works/${workSlug}/stats?user_id=${guestUserId}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`Failed to fetch stats: ${response.status}`);
                 }
@@ -2513,6 +2521,7 @@
                 const response = await fetch(`/api/portfolio/works/${workSlug}`, {
                     method: 'GET',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json',
                     }
                 });
@@ -2535,11 +2544,12 @@
             
             try {
                 const formData = new FormData();
-                formData.append('user_id', '6');
+                formData.append('user_id', '1'); // Usar user_id válido
                 
                 const response = await fetch(`/api/portfolio/works/${currentWorkData.workSlug}/like`, {
                     method: 'POST',
                     headers: {
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                     },
                     body: formData
