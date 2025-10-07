@@ -514,6 +514,11 @@
                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                  </svg>
                              </a>
+                             <a href="{{ route('partners.index') }}" 
+                                class="{{ request()->routeIs('partners.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                title="Principais Parceiros">
+                                 <i class="{{ request()->routeIs('partners.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} fas fa-handshake flex-shrink-0 w-6 h-6 text-center"></i>
+                             </a>
                          </div>
                          
                          <!-- Expanded state: show normal module structure -->
@@ -572,6 +577,11 @@
                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                      </svg>
                                      <span class="ml-3">Trabalhos</span>
+                                 </a>
+                                 <a href="{{ route('partners.index') }}" 
+                                    class="{{ request()->routeIs('partners.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors">
+                                     <i class="{{ request()->routeIs('partners.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} fas fa-handshake flex-shrink-0 w-6 h-6"></i>
+                                     <span class="ml-3">Principais Parceiros</span>
                                  </a>
                              </div>
                          </div>

@@ -241,25 +241,99 @@ class PortfolioCategoryController extends Controller
      */
     public function updateOrder(Request $request)
     {
-        $request->validate([
-            'categories' => 'required|array',
-            'categories.*.id' => 'required|exists:portfolio_categories,id',
-            'categories.*.sort_order' => 'required|integer|min:0'
-        ]);
-
-        foreach ($request->categories as $index => $categoryId) {
-            $query = PortfolioCategory::where('id', $categoryId);
+        try {
+            Log::info('=== INÍCIO updateOrder ===');
+            Log::info('User authenticated: ' . (auth()->check() ? 'YES' : 'NO'));
+            Log::info('User ID: ' . (auth()->check() ? auth()->id() : 'N/A'));
+            Log::info('Request method: ' . $request->method());
+            Log::info('Request URL: ' . $request->fullUrl());
+            Log::info('Request IP: ' . $request->ip());
+            Log::info('User Agent: ' . $request->userAgent());
+            Log::info('CSRF Token from request: ' . $request->header('X-CSRF-TOKEN'));
+            Log::info('Session CSRF Token: ' . csrf_token());
+            Log::info('Content-Type: ' . $request->header('Content-Type'));
+            Log::info('Accept: ' . $request->header('Accept'));
+            Log::info('Request headers: ', $request->headers->all());
+            Log::info('Request data: ', $request->all());
             
-            // Garantir que apenas categorias do usuário logado sejam atualizadas
-            $query->where('user_id', Auth::id());
+            // Verificar se o usuário está autenticado
+            if (!auth()->check()) {
+                Log::warning('Usuário não autenticado');
+                return response()->json(['error' => 'Não autenticado'], 401);
+            }
             
-            $query->update(['sort_order' => $index + 1]);
+            $draggedId = $request->input('dragged_id');
+            $targetId = $request->input('target_id');
+            
+            Log::info('Dragged ID: ' . $draggedId);
+            Log::info('Target ID: ' . $targetId);
+            
+            // Validar se os IDs foram fornecidos
+            if (!$draggedId || !$targetId) {
+                Log::warning('IDs não fornecidos - dragged_id: ' . $draggedId . ', target_id: ' . $targetId);
+                return response()->json(['error' => 'IDs obrigatórios'], 400);
+            }
+            
+            // Verificar se as categorias pertencem ao usuário autenticado
+            $draggedCategory = PortfolioCategory::where('id', $draggedId)
+                ->where('user_id', auth()->id())
+                ->first();
+            
+            $targetCategory = PortfolioCategory::where('id', $targetId)
+                ->where('user_id', auth()->id())
+                ->first();
+            
+            Log::info('Dragged category found: ' . ($draggedCategory ? 'YES' : 'NO'));
+            Log::info('Target category found: ' . ($targetCategory ? 'YES' : 'NO'));
+            
+            if (!$draggedCategory || !$targetCategory) {
+                Log::warning('Categoria não encontrada ou não pertence ao usuário');
+                return response()->json(['error' => 'Categoria não encontrada'], 404);
+            }
+            
+            // Obter a ordem atual da categoria de destino
+            $targetOrder = $targetCategory->sort_order;
+            
+            // Atualizar a ordem da categoria arrastada
+            $draggedCategory->sort_order = $targetOrder;
+            $draggedCategory->save();
+            
+            // Reordenar todas as categorias do usuário
+            $categories = PortfolioCategory::where('user_id', auth()->id())
+                ->orderBy('sort_order')
+                ->get();
+            
+            $order = 1;
+            foreach ($categories as $category) {
+                $category->sort_order = $order;
+                $category->save();
+                $order++;
+            }
+            
+            $responseData = [
+                'success' => true,
+                'dragged_id' => $draggedId,
+                'target_id' => $targetId
+            ];
+            
+            Log::info('Success response data: ', $responseData);
+            Log::info('=== FIM updateOrder ===');
+            
+            return response()->json($responseData);
+            
+        } catch (\Exception $e) {
+            Log::error('=== ERRO updateOrder ===');
+            Log::error('Error message: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('User ID: ' . (auth()->check() ? auth()->id() : 'N/A'));
+            Log::error('Request data: ', $request->all());
+            Log::error('=== FIM ERRO ===');
+            
+            return response()->json([
+                'error' => 'Erro interno do servidor',
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Ordem das categorias atualizada com sucesso!'
-        ]);
     }
 
     /**

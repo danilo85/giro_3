@@ -619,6 +619,51 @@ class PortfolioController extends Controller
     }
 
     /**
+     * Atualizar status do trabalho de portfólio (API e Web)
+     */
+    public function updateStatus(Request $request, PortfolioWork $work)
+    {
+        // Verificar se o usuário está autenticado e se o trabalho pertence ao usuário
+        if (Auth::check() && $work->user_id !== Auth::id()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Não autorizado'], 403);
+            }
+            abort(403);
+        }
+
+        $request->validate([
+            'status' => 'required|in:draft,published,archived'
+        ]);
+
+        try {
+            $work->update(['status' => $request->status]);
+            
+            // Se é uma requisição AJAX, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status atualizado com sucesso!',
+                    'work' => $work->fresh(['category', 'client']),
+                    'status_label' => $work->fresh()->status_label
+                ]);
+            }
+            
+            // Se é uma requisição web tradicional, redireciona
+            return redirect()->back()->with('success', 'Status atualizado com sucesso!');
+            
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao atualizar status: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->withErrors(['error' => 'Erro ao atualizar status: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
      * Upload e salvar imagens adicionais do trabalho
      */
     private function uploadImages(PortfolioWork $work, array $images)

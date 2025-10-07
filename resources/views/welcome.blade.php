@@ -180,6 +180,13 @@
             position: relative;
         }
         
+        /* Partners Section - Override general section rules */
+        .partners-section {
+            min-height: auto !important;
+            padding: 1.5rem 2rem 10rem !important;
+            position: relative;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -780,8 +787,10 @@
         }
         
         .wave.wave-dark .shape-fill {
-            fill: var(--primary-dark);
+            fill: #e9ecef;
         }
+        
+
         
         .wave.wave-portfolio .shape-fill {
             fill: #f8f9fa;
@@ -789,6 +798,10 @@
         
         .wave.wave-footer .shape-fill {
             fill: #1f212c;
+        }
+        
+        .wave.wave-contact .shape-fill {
+            fill: var(--primary-dark);
         }
         
         /* Wave transition from contact to footer */
@@ -1594,6 +1607,9 @@
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#about" class="nav-link">Sobre</a></li>
                 <li><a href="#portfolio" class="nav-link">Portfólio</a></li>
+                @if($partners->count() > 0)
+                <li><a href="#partners" class="nav-link">Parceiros</a></li>
+                @endif
                 <li><a href="#contact" class="nav-link">Contato</a></li>
             </ul>
             
@@ -1693,6 +1709,9 @@
                 <a href="#home" class="mobile-nav-link active">Home</a>
                 <a href="#about" class="mobile-nav-link">Sobre</a>
                 <a href="#portfolio" class="mobile-nav-link">Portfólio</a>
+                @if($partners->count() > 0)
+                <a href="#partners" class="mobile-nav-link">Parceiros</a>
+                @endif
                 <a href="#contact" class="mobile-nav-link">Contato</a>
             </nav>
             <div class="mobile-menu-footer">
@@ -1938,6 +1957,57 @@
             </svg>
         </div>
     </section>
+
+    <!-- Partners Section -->
+    @if($partners->count() > 0)
+    <section id="partners" class="partners-section" style="background: #e9ecef; color: var(--primary-dark);">
+        <div class="container mx-auto px-4">
+            <!-- Centralized Header -->
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark); text-align: center;">Principais Parceiros</h2>
+                <p style="font-size: 1.125rem; color: #495057; max-width: 600px; margin: 0 auto; text-align: center;">Conheça as empresas e organizações que confiam em nosso trabalho</p>
+            </div>
+            
+            <!-- Simple Partners Container -->
+            <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 3rem; padding: 1rem 0;">
+                @foreach($partners as $partner)
+                    @if($partner->logo_path)
+                        @if($partner->website_url)
+                            <a href="{{ $partner->website_url }}" target="_blank" rel="noopener noreferrer" style="display: block; text-decoration: none;">
+                                <img src="{{ $partner->logo_url }}" 
+                                     alt="{{ $partner->name }}" 
+                                     style="max-height: 60px; width: auto; object-fit: contain; filter: grayscale(100%); transition: filter 0.3s ease;"
+                                     onmouseover="this.style.filter='grayscale(0%)'"
+                                     onmouseout="this.style.filter='grayscale(100%)'"
+                                     loading="lazy">
+                            </a>
+                        @else
+                            <div style="display: block;">
+                                <img src="{{ $partner->logo_url }}" 
+                                     alt="{{ $partner->name }}" 
+                                     style="max-height: 60px; width: auto; object-fit: contain; filter: grayscale(100%); transition: filter 0.3s ease;"
+                                     onmouseover="this.style.filter='grayscale(0%)'"
+                                     onmouseout="this.style.filter='grayscale(100%)'"
+                                     loading="lazy">
+                            </div>
+                        @endif
+                    @else
+                        <div style="display: flex; align-items: center; justify-content: center; padding: 1rem 1.5rem; min-width: 120px; height: 60px;">
+                            <span style="font-size: 0.875rem; font-weight: 500; color: #495057; text-align: center;">{{ $partner->name }}</span>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+        
+        <!-- Wave Transition to Contact -->
+        <div class="wave wave-contact" style="margin-top: 4rem;">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill" style="fill: var(--primary-dark);"></path>
+            </svg>
+        </div>
+    </section>
+    @endif
 
     <!-- Contact Section -->
     <section id="contact">

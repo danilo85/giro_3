@@ -187,7 +187,7 @@
                                     <div class="text-xs text-gray-500 dark:text-gray-400">Trabalhos</div>
                                 </div>
                                 <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                    <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $category->order }}</div>
+                                    <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $category->sort_order }}</div>
                                     <div class="text-xs text-gray-500 dark:text-gray-400">Ordem</div>
                                 </div>
                             </div>
@@ -1008,16 +1008,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ModalSystem.init();
 });
 
+
+
 // Função para atualizar a ordem das categorias
 async function updateOrder(draggedId, targetId) {
-    if (draggedId === targetId) return;
+    console.log('updateOrder chamada:', { draggedId, targetId });
+    
+    if (draggedId === targetId) {
+        console.log('IDs iguais, cancelando');
+        return;
+    }
     
     try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        console.log('CSRF Token encontrado:', csrfToken);
+        console.log('Enviando requisição para /portfolio/categories/update-order');
         const response = await fetch('/portfolio/categories/update-order', {
-            method: 'PATCH',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': csrfToken
             },
             body: JSON.stringify({
                 dragged_id: draggedId,
@@ -1025,8 +1035,34 @@ async function updateOrder(draggedId, targetId) {
             })
         });
         
+        console.log('Resposta recebida:', response.status, response.statusText);
+        console.log('Headers da resposta:', response.headers);
+        console.log('Content-Type:', response.headers.get('content-type'));
+        
+        // Capturar o texto da resposta primeiro para debug
+        const responseText = await response.text();
+        console.log('Texto da resposta:', responseText);
+        
         if (response.ok) {
-            window.location.reload();
+            try {
+                const data = JSON.parse(responseText);
+                console.log('Dados da resposta:', data);
+                window.location.reload();
+            } catch (parseError) {
+                console.error('Erro ao fazer parse do JSON:', parseError);
+                console.error('Resposta não é JSON válido:', responseText);
+            }
+        } else {
+            console.error('Erro na resposta (status não ok):', response.status, response.statusText);
+            console.error('Conteúdo da resposta de erro:', responseText);
+            
+            // Tentar fazer parse se for JSON
+            try {
+                const errorData = JSON.parse(responseText);
+                console.error('Dados de erro (JSON):', errorData);
+            } catch (parseError) {
+                console.error('Resposta de erro não é JSON:', responseText);
+            }
         }
     } catch (error) {
         console.error('Erro ao atualizar ordem:', error);
@@ -1044,29 +1080,49 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeDragAndDrop() {
+    console.log('Inicializando drag and drop');
     const grid = document.getElementById('categories-grid');
-    if (!grid) return;
+    console.log('Grid encontrado:', grid);
+    if (!grid) {
+        console.log('Grid não encontrado!');
+        return;
+    }
     
     // Event listeners para drag and drop
+    console.log('Adicionando event listeners');
     grid.addEventListener('dragstart', handleDragStart);
     grid.addEventListener('dragend', handleDragEnd);
     grid.addEventListener('dragover', handleDragOver);
     grid.addEventListener('dragenter', handleDragEnter);
     grid.addEventListener('dragleave', handleDragLeave);
     grid.addEventListener('drop', handleDrop);
+    console.log('Event listeners adicionados com sucesso');
 }
 
 function handleDragStart(e) {
+    console.log('handleDragStart chamada', e.target);
     const cardElement = e.target.closest('[data-category-id]');
-    if (!cardElement || !cardElement.hasAttribute('draggable')) return;
+    console.log('cardElement encontrado:', cardElement);
+    if (!cardElement || !cardElement.hasAttribute('draggable')) {
+        console.log('Card não encontrado ou não é draggable');
+        return;
+    }
     
     draggedElement = cardElement;
     draggedId = cardElement.dataset.categoryId;
     isDragging = true;
     
+    console.log('Drag iniciado - ID:', draggedId);
+    
     // Feedback visual para o elemento sendo arrastado
     cardElement.style.opacity = '0.6';
     cardElement.classList.add('transform', 'scale-95', 'rotate-2');
+    
+    // Desabilitar pointer events nos elementos filhos para evitar interferência
+    const childElements = cardElement.querySelectorAll('*');
+    childElements.forEach(child => {
+        child.style.pointerEvents = 'none';
+    });
     
     // Adicionar classe para todos os outros cards
     document.querySelectorAll('[data-category-id]').forEach(card => {
@@ -1083,9 +1139,17 @@ function handleDragEnd(e) {
     const cardElement = e.target.closest('[data-category-id]');
     if (!cardElement) return;
     
+    console.log('Drag finalizado');
+    
     // Restaurar aparência do elemento arrastado
     cardElement.style.opacity = '1';
     cardElement.classList.remove('transform', 'scale-95', 'rotate-2');
+    
+    // Restaurar pointer events nos elementos filhos
+    const childElements = cardElement.querySelectorAll('*');
+    childElements.forEach(child => {
+        child.style.pointerEvents = '';
+    });
     
     // Limpar estado
     draggedElement = null;
@@ -1147,9 +1211,19 @@ function handleDragLeave(e) {
 
 function handleDrop(e) {
     e.preventDefault();
+    console.log('handleDrop chamada');
     
     const dropTarget = e.target.closest('[data-category-id]');
-    if (!dropTarget || !draggedId || dropTarget.dataset.categoryId === draggedId) return;
+    console.log('dropTarget:', dropTarget);
+    console.log('draggedId:', draggedId);
+    console.log('dropTarget.dataset.categoryId:', dropTarget?.dataset.categoryId);
+    
+    if (!dropTarget || !draggedId || dropTarget.dataset.categoryId === draggedId) {
+        console.log('Condições não atendidas para drop');
+        return;
+    }
+    
+    console.log('Executando drop - draggedId:', draggedId, 'targetId:', dropTarget.dataset.categoryId);
     
     // Feedback visual de sucesso
     dropTarget.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50', 'dark:bg-blue-900');

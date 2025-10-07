@@ -70,7 +70,15 @@ class LoginController extends Controller
 
         Auth::login($user, $request->boolean('remember'));
 
-        return redirect()->intended('/dashboard');
+        // Get the intended URL
+        $intendedUrl = session()->pull('url.intended', '/dashboard');
+        
+        // If the intended URL is /dashboard, redirect to financial dashboard
+        if ($intendedUrl === '/dashboard' || $intendedUrl === url('/dashboard')) {
+            return redirect()->route('financial.dashboard');
+        }
+        
+        return redirect($intendedUrl);
     }
 
     /**

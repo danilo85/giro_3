@@ -201,9 +201,54 @@
                                     </span>
                                 @endif
                                 
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $work->is_published ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
-                                    {{ $work->is_published ? 'Publicado' : 'Rascunho' }}
-                                </span>
+                                <!-- Status Dropdown -->
+                                <div class="status-dropdown-container relative" data-work-id="{{ $work->id }}">
+                                    <span class="status-tag inline-flex items-center px-2 py-1 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 
+                                        @if($work->status === 'published') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @elseif($work->status === 'draft') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                                        @elseif($work->status === 'archived') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                        @endif">
+                                        {{ $work->status_label }}
+                                        <svg class="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </span>
+                                    
+                                    <!-- Dropdown Menu -->
+                                    <div class="status-dropdown absolute top-full left-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50 hidden">
+                                        <div class="py-1">
+                                            <button class="status-option w-full text-left px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" 
+                                                    data-status="published" data-label="Publicado">
+                                                <span class="inline-flex items-center">
+                                                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                                    Publicado
+                                                </span>
+                                            </button>
+                                            <button class="status-option w-full text-left px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" 
+                                                    data-status="draft" data-label="Rascunho">
+                                                <span class="inline-flex items-center">
+                                                    <span class="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
+                                                    Rascunho
+                                                </span>
+                                            </button>
+                                            <button class="status-option w-full text-left px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" 
+                                                    data-status="archived" data-label="Arquivado">
+                                                <span class="inline-flex items-center">
+                                                    <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                                                    Arquivado
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Loading Spinner -->
+                                    <div class="status-loading absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 bg-opacity-75 rounded-full flex items-center justify-center hidden">
+                                        <svg class="animate-spin h-3 w-3 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -350,7 +395,7 @@
     <!-- Botão Flutuante de Criação -->
     <div class="fixed bottom-6 right-6 z-50">
         <a href="{{ route('portfolio.works.create') }}" 
-           class="group fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center w-14 h-14 transform hover:scale-105"
+           class="group fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center w-14 h-14"
            title="Adicionar Novo Trabalho">
             <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -536,6 +581,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load metrics for all visible works
     loadAllWorksMetrics();
+    
+    // Initialize Status Dropdowns
+    initStatusDropdowns();
 });
 
 // Function removed - like functionality is now only available in modal and public work page
@@ -632,6 +680,186 @@ function initWorksCardSlideshows() {
         startSlideshow();
     });
 }
+
+// Status Dropdown Functionality
+function initStatusDropdowns() {
+    const statusContainers = document.querySelectorAll('.status-dropdown-container');
+    
+    statusContainers.forEach(container => {
+        const statusTag = container.querySelector('.status-tag');
+        const dropdown = container.querySelector('.status-dropdown');
+        const statusOptions = container.querySelectorAll('.status-option');
+        const loadingSpinner = container.querySelector('.status-loading');
+        const workId = container.dataset.workId;
+        
+        // Show dropdown on hover
+        container.addEventListener('mouseenter', () => {
+            dropdown.classList.remove('hidden');
+        });
+        
+        // Hide dropdown when mouse leaves
+        container.addEventListener('mouseleave', () => {
+            dropdown.classList.add('hidden');
+        });
+        
+        // Handle status option clicks
+        statusOptions.forEach(option => {
+            option.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const newStatus = option.dataset.status;
+                const newLabel = option.dataset.label;
+                const currentStatus = getCurrentStatus(statusTag);
+                
+                // Don't update if same status
+                if (newStatus === currentStatus) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+                
+                // Show loading state
+                showLoadingState(container, true);
+                dropdown.classList.add('hidden');
+                
+                try {
+                    const response = await fetch(`/api/budget/portfolio/works/${workId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
+                        // Update status tag
+                        updateStatusTag(statusTag, newStatus, newLabel);
+                        
+                        // Update card colors
+                        updateCardColors(container, newStatus);
+                        
+                        // Show success feedback
+                        showStatusFeedback(container, 'success', 'Status atualizado com sucesso!');
+                    } else {
+                        throw new Error(data.message || 'Erro ao atualizar status');
+                    }
+                } catch (error) {
+                    console.error('Error updating status:', error);
+                    showStatusFeedback(container, 'error', 'Erro ao atualizar status. Tente novamente.');
+                } finally {
+                    showLoadingState(container, false);
+                }
+            });
+        });
+    });
+}
+
+function getCurrentStatus(statusTag) {
+    if (statusTag.classList.contains('bg-green-100') || statusTag.classList.contains('bg-green-900')) {
+        return 'published';
+    } else if (statusTag.classList.contains('bg-red-100') || statusTag.classList.contains('bg-red-900')) {
+        return 'archived';
+    } else {
+        return 'draft';
+    }
+}
+
+function updateStatusTag(statusTag, newStatus, newLabel) {
+    // Remove all status classes
+    statusTag.classList.remove(
+        'bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200',
+        'bg-gray-100', 'text-gray-800', 'dark:bg-gray-700', 'dark:text-gray-300',
+        'bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-200'
+    );
+    
+    // Add new status classes
+    switch (newStatus) {
+        case 'published':
+            statusTag.classList.add('bg-green-100', 'text-green-800', 'dark:bg-green-900', 'dark:text-green-200');
+            break;
+        case 'archived':
+            statusTag.classList.add('bg-red-100', 'text-red-800', 'dark:bg-red-900', 'dark:text-red-200');
+            break;
+        case 'draft':
+        default:
+            statusTag.classList.add('bg-gray-100', 'text-gray-800', 'dark:bg-gray-700', 'dark:text-gray-300');
+            break;
+    }
+    
+    // Update text content (keep the SVG)
+    const textNode = statusTag.firstChild;
+    if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+        textNode.textContent = newLabel;
+    } else {
+        // If no text node found, update the entire content but preserve SVG
+        const svg = statusTag.querySelector('svg');
+        statusTag.innerHTML = newLabel;
+        if (svg) {
+            statusTag.appendChild(svg);
+        }
+    }
+}
+
+function updateCardColors(container, newStatus) {
+    const card = container.closest('.bg-white');
+    if (!card) return;
+    
+    // Remove existing status border classes
+    card.classList.remove('border-l-green-500', 'border-l-red-500', 'border-l-gray-400');
+    
+    // Add new status border
+    switch (newStatus) {
+        case 'published':
+            card.classList.add('border-l-green-500');
+            break;
+        case 'archived':
+            card.classList.add('border-l-red-500');
+            break;
+        case 'draft':
+        default:
+            card.classList.add('border-l-gray-400');
+            break;
+    }
+}
+
+function showLoadingState(container, show) {
+    const loadingSpinner = container.querySelector('.status-loading');
+    const statusTag = container.querySelector('.status-tag');
+    
+    if (show) {
+        loadingSpinner.classList.remove('hidden');
+        statusTag.style.opacity = '0.5';
+    } else {
+        loadingSpinner.classList.add('hidden');
+        statusTag.style.opacity = '1';
+    }
+}
+
+function showStatusFeedback(container, type, message) {
+    // Create feedback element
+    const feedback = document.createElement('div');
+    feedback.className = `absolute top-full left-0 mt-1 px-3 py-2 rounded-md text-xs font-medium z-50 ${
+        type === 'success' 
+            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+    }`;
+    feedback.textContent = message;
+    
+    // Add to container
+    container.appendChild(feedback);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+        }
+    }, 3000);
+}
 </script>
 @endpush
 
@@ -717,6 +945,100 @@ function initWorksCardSlideshows() {
     
     .works-indicator.active {
         background-color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* Status Dropdown Styles */
+.status-dropdown-container {
+    position: relative;
+}
+
+.status-tag {
+    transition: all 0.2s ease;
+}
+
+.status-dropdown-container:hover .status-tag {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-dropdown {
+    min-width: 140px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.status-option {
+    transition: background-color 0.15s ease;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+.status-option:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.status-option:active {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.status-loading {
+    backdrop-filter: blur(2px);
+}
+
+/* Card border animations */
+.bg-white {
+    transition: border-color 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.border-l-green-500 {
+    border-left-color: #10b981 !important;
+}
+
+.border-l-red-500 {
+    border-left-color: #ef4444 !important;
+}
+
+.border-l-gray-400 {
+    border-left-color: #9ca3af !important;
+}
+
+/* Hover effects for status dropdown */
+.status-dropdown-container:hover .status-tag svg {
+    opacity: 1 !important;
+    transform: rotate(180deg);
+    transition: all 0.2s ease;
+}
+
+/* Animation for dropdown appearance */
+.status-dropdown {
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.status-dropdown-container:hover .status-dropdown {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Feedback message styles */
+.status-dropdown-container > div:last-child {
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 </style>

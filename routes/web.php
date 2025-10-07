@@ -27,6 +27,7 @@ use App\Http\Controllers\HistoricoController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PortfolioCategoryController;
 use App\Http\Controllers\PortfolioApiController;
+use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileCategoryController;
 use App\Http\Controllers\SharedLinkController;
@@ -68,13 +69,21 @@ Route::get('/', function () {
         ->unique('name')
         ->values();
 
-    return view('welcome', compact('user', 'portfolioWorks', 'portfolioCategories'));
+    // Get active partners for the welcome page
+    $partners = \App\Models\Partner::where('user_id', 1)
+        ->where('is_active', true)
+        ->orderBy('sort_order')
+        ->get();
+
+    return view('welcome', compact('user', 'portfolioWorks', 'portfolioCategories', 'partners'));
 })->name('home');
 
 // Test route for API debugging
 Route::get('/test-api', function () {
     return view('test-api');
 })->name('test-api');
+
+
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -492,7 +501,7 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         // CRUD de categorias
         Route::resource('categories', PortfolioCategoryController::class)->except(['show']);
         Route::patch('/categories/{category}/toggle-status', [PortfolioCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-        Route::patch('/categories/update-order', [PortfolioCategoryController::class, 'updateOrder'])->name('categories.update-order');
+        Route::post('/categories/update-order', [PortfolioCategoryController::class, 'updateOrder'])->name('categories.update-order');
 
         // CRUD de trabalhos
         Route::get('/works', [PortfolioController::class, 'worksIndex'])->name('works.index');
@@ -502,6 +511,22 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         Route::delete('/works/images/{image}', [PortfolioController::class, 'deleteImage'])->name('works.images.delete');
         Route::patch('/works/images/{image}/set-cover', [PortfolioController::class, 'setCoverImage'])->name('works.images.set-cover');
         Route::patch('/works/images/update-order', [PortfolioController::class, 'updateImagesOrder'])->name('works.images.update-order');
+    });
+
+    // Partners Management Module (Módulo de Gestão de Parceiros)
+    Route::prefix('partners')->name('partners.')->group(function () {
+        // CRUD de parceiros
+        Route::get('/', [PartnerController::class, 'index'])->name('index');
+        Route::get('/create', [PartnerController::class, 'create'])->name('create');
+        Route::post('/', [PartnerController::class, 'store'])->name('store');
+        Route::get('/{partner}', [PartnerController::class, 'show'])->name('show');
+        Route::get('/{partner}/edit', [PartnerController::class, 'edit'])->name('edit');
+        Route::put('/{partner}', [PartnerController::class, 'update'])->name('update');
+        Route::delete('/{partner}', [PartnerController::class, 'destroy'])->name('destroy');
+        
+        // AJAX routes for status and ordering
+        Route::patch('/{partner}/toggle-status', [PartnerController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/update-order', [PartnerController::class, 'updateOrder'])->name('update-order');
     });
 
     // File Management Module (Módulo de Gestão de Arquivos)
@@ -653,6 +678,9 @@ Route::prefix('api/budget')->name('api.budget.')->group(function () {
             // API de trabalhos
             Route::get('/works/api', [PortfolioController::class, 'api'])->name('works.api');
             Route::get('/works/{work}/images', [PortfolioController::class, 'getImages'])->name('works.images.get');
+            
+            // API para atualizar status do trabalho
+            Route::patch('/works/{work:id}/status', [PortfolioController::class, 'updateStatus'])->name('works.update-status');
 
             // API para pipeline
             Route::get('/pipeline/api', [PortfolioController::class, 'pipelineApi'])->name('pipeline.api');

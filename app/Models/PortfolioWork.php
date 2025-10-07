@@ -135,6 +135,22 @@ class PortfolioWork extends Model
     }
 
     /**
+     * Scope para trabalhos arquivados
+     */
+    public function scopeArchived($query)
+    {
+        return $query->where('status', 'archived');
+    }
+
+    /**
+     * Scope para trabalhos em rascunho
+     */
+    public function scopeDraft($query)
+    {
+        return $query->where('status', 'draft');
+    }
+
+    /**
      * Scope para trabalhos em destaque
      */
     public function scopeFeatured($query)
@@ -164,6 +180,35 @@ class PortfolioWork extends Model
     public function getIsPublishedAttribute()
     {
         return $this->status === 'published';
+    }
+
+    /**
+     * Accessor para verificar se está arquivado
+     */
+    public function getIsArchivedAttribute()
+    {
+        return $this->status === 'archived';
+    }
+
+    /**
+     * Accessor para verificar se está em rascunho
+     */
+    public function getIsDraftAttribute()
+    {
+        return $this->status === 'draft';
+    }
+
+    /**
+     * Accessor para obter o label do status
+     */
+    public function getStatusLabelAttribute()
+    {
+        return match($this->status) {
+            'published' => 'Publicado',
+            'draft' => 'Rascunho',
+            'archived' => 'Arquivado',
+            default => 'Desconhecido'
+        };
     }
 
     /**
