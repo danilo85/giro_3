@@ -94,7 +94,7 @@
                 @if($work->client)
                     <div class="flex items-center">
                         <i class="fas fa-building mr-2"></i>
-                        <span>{{ $work->client->name }}</span>
+                        <span>{{ is_object($work->client) ? $work->client->name : $work->client }}</span>
                     </div>
                 @endif
             </div>
@@ -102,29 +102,55 @@
             <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-300">{{ $work->description }}</p>
         </div>
 
-        <!-- Featured Image -->
-        @if($work->featured_image)
-        <div class="modal-image-wrapper">
-            <img src="{{ asset('storage/' . $work->featured_image) }}" 
-                 alt="{{ $work->title }}" 
-                 class="modal-stacked-image w-full h-auto display-block">
-        </div>
-        @endif
+        <!-- Image Slideshow -->
+        @php
+            $allImages = collect();
+            
+            // Add featured image first
+            if($work->featured_image) {
+                $allImages->push((object)[
+                    'path' => $work->featured_image,
+                    'alt_text' => $work->title,
+                    'is_featured' => true
+                ]);
+            }
+            
+            // Add gallery images
+            foreach($work->images as $image) {
+                $allImages->push((object)[
+                    'path' => $image->path,
+                    'alt_text' => $image->alt_text,
+                    'is_featured' => false
+                ]);
+            }
+        @endphp
 
-        <!-- Gallery Images - Stacked Vertically -->
-        @if($work->images->count() > 0)
-            <div class="modal-images-stack">
-                @foreach($work->images as $image)
-                    <div class="modal-image-wrapper">
-                        <img src="{{ asset('storage/' . $image->path) }}" 
-                             alt="{{ $image->alt_text }}" 
-                             class="modal-stacked-image w-full h-auto display-block cursor-pointer"
-                             onclick="openLightbox('{{ asset('storage/' . $image->path) }}', '{{ $image->alt_text }}')">
-                        @if($image->alt_text)
-                            <div class="modal-image-caption">{{ $image->alt_text }}</div>
-                        @endif
+        @if($allImages->count() > 0)
+            <div class="work-slideshow-container" data-slideshow-id="work-main">
+                <div class="work-slideshow">
+                    @foreach($allImages as $index => $image)
+                        <div class="work-slide {{ $index === 0 ? 'active' : '' }}">
+                            <img src="{{ asset('storage/' . $image->path) }}" 
+                                 alt="{{ $image->alt_text }}" 
+                                 class="work-slide-image w-full h-auto display-block cursor-pointer"
+                                 onclick="openLightbox('{{ asset('storage/' . $image->path) }}', '{{ $image->alt_text }}')">
+                            @if($image->alt_text)
+                                <div class="work-slide-caption">{{ $image->alt_text }}</div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                
+                @if($allImages->count() > 1)
+                    <!-- Slideshow Indicators -->
+                    <div class="work-slideshow-indicators">
+                        @foreach($allImages as $index => $image)
+                            <button class="work-indicator {{ $index === 0 ? 'active' : '' }}" 
+                                    data-slide="{{ $index }}"
+                                    aria-label="Ir para imagem {{ $index + 1 }}"></button>
+                        @endforeach
                     </div>
-                @endforeach
+                @endif
             </div>
         @endif
 
@@ -245,6 +271,103 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Work Slideshow Styles */
+.work-slideshow-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.work-slideshow {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.work-slide {
+    display: none;
+    width: 100%;
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.work-slide.active {
+    display: block;
+    opacity: 1;
+}
+
+.work-slide-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.work-slide-caption {
+    padding: 12px 40px;
+    background-color: #f8f9fa;
+    color: #6b7280;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .work-slide-caption {
+    background-color: #374151;
+    color: #d1d5db;
+    border-bottom: 1px solid #4b5563;
+}
+
+.work-slideshow-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .work-slideshow-indicators {
+    background-color: #374151;
+    border-bottom: 1px solid #4b5563;
+}
+
+.work-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background-color: #d1d5db;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.work-indicator:hover {
+    background-color: #9ca3af;
+    transform: scale(1.1);
+}
+
+.work-indicator.active {
+    background-color: #3b82f6;
+}
+
+.dark .work-indicator {
+    background-color: #6b7280;
+}
+
+.dark .work-indicator:hover {
+    background-color: #9ca3af;
+}
+
+.dark .work-indicator.active {
+    background-color: #60a5fa;
 }
 
 /* Modal-style layout */
@@ -527,7 +650,72 @@ function updateThemeIcon(isDark) {
 // Initialize theme on page load
 document.addEventListener('DOMContentLoaded', function() {
     initTheme();
+    initWorkSlideshows();
 });
+
+// Work Slideshow functionality
+function initWorkSlideshows() {
+    const slideshows = document.querySelectorAll('.work-slideshow-container');
+    
+    slideshows.forEach(slideshow => {
+        const slideshowId = slideshow.dataset.slideshowId;
+        const slides = slideshow.querySelectorAll('.work-slide');
+        const indicators = slideshow.querySelectorAll('.work-indicator');
+        
+        if (slides.length <= 1) return;
+        
+        let currentSlide = 0;
+        let slideInterval;
+        
+        // Show specific slide
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+            
+            currentSlide = index;
+        }
+        
+        // Next slide
+        function nextSlide() {
+            const nextIndex = (currentSlide + 1) % slides.length;
+            showSlide(nextIndex);
+        }
+        
+        // Start slideshow
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 3500); // 3.5 seconds
+        }
+        
+        // Stop slideshow
+        function stopSlideshow() {
+            if (slideInterval) {
+                clearInterval(slideInterval);
+                slideInterval = null;
+            }
+        }
+        
+        // Add click events to indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+                stopSlideshow();
+                startSlideshow(); // Restart timer
+            });
+        });
+        
+        // Pause on hover
+        slideshow.addEventListener('mouseenter', stopSlideshow);
+        slideshow.addEventListener('mouseleave', startSlideshow);
+        
+        // Start the slideshow
+        startSlideshow();
+    });
+}
 
 function openLightbox(imageSrc, caption) {
     const lightbox = document.getElementById('lightbox');

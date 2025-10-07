@@ -1673,8 +1673,8 @@
             @php
                 $portfolioImages = [];
                 foreach($portfolioWorks as $work) {
-                    if($work->featuredImage) {
-                        $portfolioImages[] = $work->featuredImage->url;
+                    if($work->featured_image) {
+                        $portfolioImages[] = asset('storage/' . $work->featured_image);
                     } elseif($work->images->count() > 0) {
                         $portfolioImages[] = $work->images->first()->url;
                     }
@@ -1773,13 +1773,13 @@
                      data-content="{{ $work->content ?? '' }}"
                      onclick="openPortfolioModal(this)">
                     
-                    @if($work->featuredImage)
+                    @if($work->featured_image)
                         <div class="skeleton-image" id="skeleton-{{ $work->id }}">
                             <svg fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <img src="{{ $work->featuredImage->url }}" 
+                        <img src="{{ asset('storage/' . $work->featured_image) }}" 
                              alt="{{ $work->title }}" 
                              class="w-full h-full object-cover loading" 
                              data-work-id="{{ $work->id }}"

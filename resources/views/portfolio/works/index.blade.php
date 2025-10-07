@@ -138,11 +138,50 @@
                 @foreach($works as $work)
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col h-full">
                         <!-- Imagem do Trabalho -->
-                        <div class="relative h-48 bg-gray-100 dark:bg-gray-700">
-                            @if($work->images->count() > 0)
-                                <img src="{{ $work->first_image_url }}" alt="{{ $work->title }}" class="w-full h-full object-cover">
-                            @elseif($work->featured_image)
-                                <img src="{{ $work->featured_image_url }}" alt="{{ $work->title }}" class="w-full h-full object-cover">
+                        @php
+                            $allImages = collect();
+                            
+                            // Add featured image first
+                            if($work->featured_image) {
+                                $allImages->push((object)[
+                                    'url' => $work->featured_image_url,
+                                    'alt' => $work->title,
+                                    'is_featured' => true
+                                ]);
+                            }
+                            
+                            // Add gallery images
+                            foreach($work->images as $image) {
+                                $allImages->push((object)[
+                                    'url' => $image->url,
+                                    'alt' => $image->alt_text ?: $work->title,
+                                    'is_featured' => false
+                                ]);
+                            }
+                        @endphp
+
+                        <div class="relative h-48 bg-gray-100 dark:bg-gray-700 works-card-slideshow" data-slideshow-id="works-card-{{ $work->id }}">
+                            @if($allImages->count() > 0)
+                                <div class="works-slideshow">
+                                    @foreach($allImages as $index => $image)
+                                        <div class="works-slide {{ $index === 0 ? 'active' : '' }}">
+                                            <img src="{{ $image->url }}" 
+                                                 alt="{{ $image->alt }}" 
+                                                 class="w-full h-full object-cover">
+                                        </div>
+                                    @endforeach
+                                </div>
+                                
+                                @if($allImages->count() > 1)
+                                    <!-- Slideshow Indicators -->
+                                    <div class="works-slideshow-indicators">
+                                        @foreach($allImages as $index => $image)
+                                            <button class="works-indicator {{ $index === 0 ? 'active' : '' }}" 
+                                                    data-slide="{{ $index }}"
+                                                    aria-label="Ir para imagem {{ $index + 1 }}"></button>
+                                        @endforeach
+                                    </div>
+                                @endif
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
                                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -480,6 +519,161 @@ document.addEventListener('DOMContentLoaded', function() {
             performSearch();
         }
     }
+    
+    // Initialize Works Card Slideshows
+    initWorksCardSlideshows();
 });
+
+function initWorksCardSlideshows() {
+    const slideshows = document.querySelectorAll('.works-card-slideshow');
+    
+    slideshows.forEach(slideshow => {
+        const slideshowId = slideshow.dataset.slideshowId;
+        const slides = slideshow.querySelectorAll('.works-slide');
+        const indicators = slideshow.querySelectorAll('.works-indicator');
+        
+        if (slides.length <= 1) return;
+        
+        let currentSlide = 0;
+        let slideInterval;
+        
+        // Show specific slide
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            indicators.forEach((indicator, i) => {
+                indicator.classList.toggle('active', i === index);
+            });
+            
+            currentSlide = index;
+        }
+        
+        // Next slide
+        function nextSlide() {
+            const nextIndex = (currentSlide + 1) % slides.length;
+            showSlide(nextIndex);
+        }
+        
+        // Start slideshow
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 3500); // 3.5 seconds
+        }
+        
+        // Stop slideshow
+        function stopSlideshow() {
+            if (slideInterval) {
+                clearInterval(slideInterval);
+                slideInterval = null;
+            }
+        }
+        
+        // Add click events to indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showSlide(index);
+                stopSlideshow();
+                startSlideshow(); // Restart timer
+            });
+        });
+        
+        // Pause on hover
+        slideshow.addEventListener('mouseenter', stopSlideshow);
+        slideshow.addEventListener('mouseleave', startSlideshow);
+        
+        // Start the slideshow
+        startSlideshow();
+    });
+}
 </script>
+@endpush
+
+@push('styles')
+<style>
+/* Works Card Slideshow Styles */
+.works-card-slideshow {
+    position: relative;
+    overflow: hidden;
+}
+
+.works-slideshow {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.works-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.works-slide.active {
+    opacity: 1;
+}
+
+.works-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.works-slideshow-indicators {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
+
+.works-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.works-indicator:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.works-indicator.active {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+
+/* Pause slideshow on card hover */
+.works-card-slideshow:hover .works-slide {
+    animation-play-state: paused;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .works-indicator {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .works-indicator:hover {
+        background-color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .works-indicator.active {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+}
+</style>
 @endpush
