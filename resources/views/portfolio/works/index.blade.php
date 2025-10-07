@@ -248,12 +248,23 @@
                                     {{ $work->created_at->format('d/m/Y') }}
                                 </div>
                                 
-                                <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                    {{ number_format($work->views ?? 0) }} visualizações
+                                <!-- Métricas: Visualizações e Curtidas -->
+                                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        <span class="work-views-count" data-work-id="{{ $work->id }}" data-work-slug="{{ $work->slug }}">{{ number_format($work->views_count ?? 0) }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="flex items-center text-gray-500 dark:text-gray-400">
+                                            <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                            </svg>
+                                            <span class="work-likes-count" data-work-id="{{ $work->id }}" data-work-slug="{{ $work->slug }}">{{ number_format($work->likes_count ?? 0) }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -522,7 +533,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize Works Card Slideshows
     initWorksCardSlideshows();
+    
+    // Load metrics for all visible works
+    loadAllWorksMetrics();
 });
+
+// Function removed - like functionality is now only available in modal and public work page
+
+// Load metrics for all works on the page
+async function loadAllWorksMetrics() {
+    const workCards = document.querySelectorAll('.work-views-count[data-work-slug]');
+    
+    for (const viewsElement of workCards) {
+        const workSlug = viewsElement.getAttribute('data-work-slug');
+        try {
+            const response = await fetch(`/api/portfolio/works/${workSlug}/stats`);
+            if (!response.ok) continue;
+            
+            const data = await response.json();
+            
+            // Update views count
+            viewsElement.textContent = data.stats.views_count || 0;
+            
+            // Update likes count (display only)
+            const likesElement = document.querySelector(`.work-likes-count[data-work-slug="${workSlug}"]`);
+            
+            if (likesElement) {
+                likesElement.textContent = data.stats.likes_count || 0;
+            }
+            
+        } catch (error) {
+            console.error(`Error loading metrics for work ${workSlug}:`, error);
+        }
+    }
+}
 
 function initWorksCardSlideshows() {
     const slideshows = document.querySelectorAll('.works-card-slideshow');
