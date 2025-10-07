@@ -28,7 +28,8 @@ class PortfolioWork extends Model
         'status',
         'is_featured',
         'user_id',
-        'orcamento_id'
+        'orcamento_id',
+        'views_count'
     ];
 
     protected $casts = [
@@ -115,6 +116,14 @@ class PortfolioWork extends Model
     public function orcamento()
     {
         return $this->belongsTo(Orcamento::class);
+    }
+
+    /**
+     * Relacionamento com curtidas
+     */
+    public function likes()
+    {
+        return $this->hasMany(PortfolioWorkLike::class);
     }
 
     /**
@@ -219,6 +228,31 @@ class PortfolioWork extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    /**
+     * Método para incrementar visualizações
+     */
+    public function incrementViews()
+    {
+        $this->increment('views_count');
+    }
+
+    /**
+     * Método para verificar se usuário curtiu
+     */
+    public function isLikedBy($user)
+    {
+        if (!$user) return false;
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Accessor para contagem de curtidas
+     */
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
     }
 
     /**

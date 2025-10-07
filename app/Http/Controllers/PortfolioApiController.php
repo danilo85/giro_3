@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PortfolioWork;
+use App\Models\PortfolioWorkLike;
 use App\Models\PortfolioCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -53,7 +54,7 @@ class PortfolioApiController extends Controller
             ->published()
             ->select([
                 'id', 'title', 'slug', 'description', 'portfolio_category_id',
-                'client_id', 'project_date', 'project_url', 'technologies',
+                'client_id', 'completion_date', 'project_url', 'technologies',
                 'featured_image', 'is_featured', 'views_count', 'created_at'
             ]);
 
@@ -121,10 +122,10 @@ class PortfolioApiController extends Controller
             ->where('slug', $slug)
             ->select([
                 'id', 'title', 'slug', 'description', 'content',
-                'portfolio_category_id', 'client_id', 'project_date',
+                'portfolio_category_id', 'client_id', 'completion_date',
                 'project_url', 'technologies', 'featured_image',
                 'is_featured', 'views_count', 'meta_title',
-                'meta_description', 'meta_keywords', 'created_at', 'updated_at'
+                'meta_description', 'created_at', 'updated_at'
             ])
             ->first();
         });
@@ -246,7 +247,7 @@ class PortfolioApiController extends Controller
         ->published()
         ->select([
             'id', 'title', 'slug', 'description', 'portfolio_category_id',
-            'client_id', 'project_date', 'featured_image', 'is_featured',
+            'client_id', 'completion_date', 'featured_image', 'is_featured',
             'views_count', 'created_at'
         ]);
 
@@ -378,7 +379,7 @@ class PortfolioApiController extends Controller
         ]);
 
         // Incrementar visualizações
-        // $work->incrementViews(); // Comentado: coluna views_count não existe
+        $work->incrementViews();
 
         // Trabalhos relacionados
         $relatedWorks = $this->getRelatedWorks($work, 3);
@@ -424,6 +425,94 @@ class PortfolioApiController extends Controller
             'work_id' => $work->id,
             'work_title' => $work->title,
             'images' => $images
+        ]);
+    }
+
+    /**
+     * Toggle like for a portfolio work
+     */
+    public function toggleLike(Request $request, PortfolioWork $work)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $userId = $request->user_id;
+
+        // Verificar se o trabalho está publicado
+        if ($work->status !== 'published') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Trabalho não encontrado'
+            ], 404);
+        }
+
+        // Verificar se já existe uma curtida
+        $existingLike = $work->likes()->where('user_id', $userId)->first();
+
+        if ($existingLike) {
+            // Remover curtida
+            $existingLike->delete();
+            $liked = false;
+        } else {
+            // Adicionar curtida
+            $work->likes()->create(['user_id' => $userId]);
+            $liked = true;
+        }
+
+        // Limpar cache relacionado
+        Cache::forget("portfolio_work_stats_{$work->id}");
+        Cache::forget("portfolio_stats");
+
+        return response()->json([
+            'success' => true,
+            'liked' => $liked,
+            'likes_count' => $work->likes_count
+        ]);
+    }
+
+    /**
+     * Get stats for a specific portfolio work
+     */
+    public function getStats(Request $request, PortfolioWork $work)
+    {
+        // Verificar se o trabalho está publicado
+        if ($work->status !== 'published') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Trabalho não encontrado'
+            ], 404);
+        }
+
+        $request->validate([
+            'user_id' => 'nullable|exists:users,id'
+        ]);
+
+        $userId = $request->get('user_id');
+        
+        // Para stats básicas, usar cache
+        $cacheKey = "portfolio_work_stats_{$work->id}";
+        
+        $basicStats = Cache::remember($cacheKey, 300, function() use ($work) {
+            return [
+                'views_count' => $work->views_count,
+                'likes_count' => $work->likes_count
+            ];
+        });
+
+        // Para is_liked, não usar cache pois é específico do usuário
+        $isLiked = false;
+        if ($userId) {
+            $isLiked = $work->likes()->where('user_id', $userId)->exists();
+        }
+
+        $stats = array_merge($basicStats, [
+            'is_liked' => $isLiked
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'stats' => $stats
         ]);
     }
 

@@ -58,6 +58,12 @@ Route::prefix('portfolio')->name('api.portfolio.')->group(function () {
     
     // Portfólio de um usuário específico (autor)
     Route::get('/users/{user}/works', [PortfolioApiController::class, 'userPortfolio'])->name('users.works');
+    
+    // Toggle like para um trabalho específico
+    Route::post('/works/{work:slug}/like', [PortfolioApiController::class, 'toggleLike'])->name('works.like');
+    
+    // Estatísticas de um trabalho específico (visualizações e curtidas)
+    Route::get('/works/{work:slug}/stats', [PortfolioApiController::class, 'getStats'])->name('works.stats');
 });
 
 // Note: Other Financial API routes moved to routes/web.php to avoid middleware conflicts

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Danilo Miguel</title>
     
     <!-- Favicon -->
@@ -1434,6 +1435,65 @@
              height: 20px;
          }
          
+         /* Modal Metrics Styles */
+         .modal-metrics {
+             display: flex;
+             align-items: center;
+             gap: 20px;
+             margin: 20px 0;
+             padding: 15px;
+             background: #f8f9fa;
+             border-radius: 8px;
+             border: 1px solid #e5e5e5;
+         }
+         
+         .metric-item {
+             display: flex;
+             align-items: center;
+             gap: 8px;
+             font-size: 14px;
+             color: #666;
+         }
+         
+         .metric-item svg {
+             width: 18px;
+             height: 18px;
+             color: #3b82f6;
+         }
+         
+         .like-button {
+             background: none;
+             border: none;
+             cursor: pointer;
+             display: flex;
+             align-items: center;
+             gap: 8px;
+             padding: 8px 12px;
+             border-radius: 6px;
+             transition: all 0.3s ease;
+             font-size: 14px;
+             color: #666;
+         }
+         
+         .like-button:hover {
+             background: #e2e8f0;
+         }
+         
+         .like-button.liked {
+             color: #dc2626;
+         }
+         
+         .like-button.liked svg {
+             color: #dc2626;
+             fill: #dc2626;
+         }
+         
+         .like-button svg {
+             width: 18px;
+             height: 18px;
+             color: #666;
+             transition: all 0.3s ease;
+         }
 
          
          /* Mobile Responsive */
@@ -1763,6 +1823,7 @@
                 <div class="portfolio-item group relative aspect-square overflow-hidden rounded-lg cursor-pointer" 
                      data-category="{{ $work->category ? $work->category->slug : 'uncategorized' }}"
                      data-id="{{ $work->id }}"
+                     data-slug="{{ $work->slug }}"
                      data-title="{{ $work->title }}"
                      data-description="{{ $work->description }}"
                      data-category-name="{{ $work->category ? $work->category->name : 'Sem categoria' }}"
@@ -2100,6 +2161,7 @@
         };
         
         function openPortfolioModal(element) {
+            console.log('=== MODAL OPENED ===');
             console.log('openPortfolioModal called with element:', element);
             
             const modal = document.getElementById('portfolioModal');
@@ -2108,6 +2170,7 @@
             }
             
             const workId = element.getAttribute('data-id');
+            const workSlug = element.getAttribute('data-slug');
             const title = element.getAttribute('data-title');
             const description = element.getAttribute('data-description');
             const categoryName = element.getAttribute('data-category-name');
@@ -2117,21 +2180,24 @@
             const technologies = element.getAttribute('data-technologies');
             const content = element.getAttribute('data-content');
             
-            console.log('Work ID:', workId);
+            console.log('Work ID:', workId, 'Work Slug:', workSlug);
             console.log('Work data:', { title, description, categoryName, client, date, url, technologies, content });
             
             // Store current work data
             currentWorkData = {
-                workId, title, description, categoryName, client, date, url, technologies, content
+                workId, workSlug, title, description, categoryName, client, date, url, technologies, content
             };
             
-            // Fetch portfolio images
+            // Fetch portfolio images and load metrics
             fetchPortfolioImages(workId).then(images => {
                 console.log('Images fetched successfully:', images);
                 portfolioImages = images;
                 currentImageIndex = 0;
                 updateModalContent();
                 showModal();
+                
+                // Load metrics after modal is shown
+                loadWorkMetrics(workSlug);
             }).catch(error => {
                 console.error('Error in fetchPortfolioImages promise:', error);
             });
@@ -2315,6 +2381,23 @@
                             <div id="technologiesSection" class="modal-detail-item">
                                 <div id="modalTechnologies" class="modal-tech-tags"></div>
                             </div>
+                            
+                            <!-- Métricas: Visualizações e Curtidas -->
+                            <div id="metricsSection" class="modal-metrics">
+                                <div class="metric-item">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span id="modalViewsCount">0</span> visualizações
+                                </div>
+                                <button id="modalLikeBtn" class="like-button" onclick="toggleLike()">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span id="modalLikesCount">0</span>
+                                </button>
+                            </div>
                         </div>
                         
                         <!-- Images Stacked Vertically -->
@@ -2369,6 +2452,133 @@
         function closePortfolioModal() {
             document.getElementById('portfolioModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+        }
+        
+        // Load and display metrics for the current work
+        async function loadWorkMetrics(workSlug) {
+            console.log('Loading metrics for work:', workSlug);
+            try {
+                // Primeiro, incrementar visualizações
+                await incrementViews(workSlug);
+                
+                // Depois, carregar as métricas atualizadas
+                const guestUserId = 6; // ID do usuário guest
+                const response = await fetch(`/api/portfolio/works/${workSlug}/stats?user_id=${guestUserId}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch stats: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Metrics data received:', data);
+                
+                // Update views count
+                const viewsElement = document.getElementById('modalViewsCount');
+                if (viewsElement) {
+                    viewsElement.textContent = data.stats.views_count || 0;
+                    console.log('Updated views count to:', data.stats.views_count);
+                }
+                
+                // Update likes count and button state
+                const likesElement = document.getElementById('modalLikesCount');
+                const likeBtn = document.getElementById('modalLikeBtn');
+                
+                if (likesElement) {
+                    likesElement.textContent = data.stats.likes_count || 0;
+                    console.log('Updated likes count to:', data.stats.likes_count);
+                }
+                
+                if (likeBtn && data.stats.is_liked !== undefined) {
+                    if (data.stats.is_liked) {
+                        likeBtn.classList.add('liked');
+                    } else {
+                        likeBtn.classList.remove('liked');
+                    }
+                    console.log('Updated like button state, is_liked:', data.stats.is_liked);
+                }
+                
+            } catch (error) {
+                console.error('Error loading work metrics:', error);
+                // Set default values on error
+                const viewsElement = document.getElementById('modalViewsCount');
+                const likesElement = document.getElementById('modalLikesCount');
+                
+                if (viewsElement) viewsElement.textContent = '0';
+                if (likesElement) likesElement.textContent = '0';
+            }
+        }
+        
+        // Increment views for the current work
+        async function incrementViews(workSlug) {
+            try {
+                const response = await fetch(`/api/portfolio/works/${workSlug}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    console.warn('Failed to increment views:', response.status);
+                }
+            } catch (error) {
+                console.warn('Error incrementing views:', error);
+            }
+        }
+        
+        // Toggle like for the current work
+        async function toggleLike() {
+            console.log('Toggle like called for work:', currentWorkData.workSlug);
+            if (!currentWorkData.workSlug) {
+                console.error('No work slug available for like toggle');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('user_id', '6');
+                
+                const response = await fetch(`/api/portfolio/works/${currentWorkData.workSlug}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to toggle like: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Update likes count
+                const likesElement = document.getElementById('modalLikesCount');
+                const likeBtn = document.getElementById('modalLikeBtn');
+                
+                if (likesElement) {
+                    likesElement.textContent = data.likes_count || 0;
+                }
+                
+                if (likeBtn) {
+                    if (data.liked) {
+                        likeBtn.classList.add('liked');
+                    } else {
+                        likeBtn.classList.remove('liked');
+                    }
+                }
+                
+                // Add a small animation to indicate the action
+                if (likeBtn) {
+                    likeBtn.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        likeBtn.style.transform = 'scale(1)';
+                    }, 150);
+                }
+                
+            } catch (error) {
+                console.error('Error toggling like:', error);
+                alert('Erro ao curtir/descurtir. Tente novamente.');
+            }
         }
         
         // Close modal when clicking outside

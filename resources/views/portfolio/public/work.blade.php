@@ -100,6 +100,30 @@
             </div>
             
             <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-300">{{ $work->description }}</p>
+            
+            <!-- Metrics Section -->
+            <div class="work-metrics mt-6 flex items-center gap-6">
+                <div class="metric-item flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <span class="work-views-count text-gray-600 dark:text-gray-300" data-work-id="{{ $work->id }}" data-work-slug="{{ $work->slug }}">{{ number_format($work->views_count ?? 0) }}</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-sm">visualizações</span>
+                </div>
+                
+                <div class="metric-item flex items-center gap-2">
+                    <button class="work-like-btn flex items-center gap-1 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200" 
+                            data-work-id="{{ $work->id }}" 
+                            data-work-slug="{{ $work->slug }}"
+                            onclick="toggleWorkLike('{{ $work->slug }}')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        <span class="work-likes-count" data-work-id="{{ $work->id }}" data-work-slug="{{ $work->slug }}">{{ number_format($work->likes_count ?? 0) }}</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Image Slideshow -->
@@ -591,6 +615,43 @@
     color: #1d4ed8;
 }
 
+/* Work Metrics Styles */
+.work-metrics {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+}
+
+.dark .work-metrics {
+    border-top: 1px solid #4b5563;
+}
+
+.work-metrics .metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.work-like-btn {
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+}
+
+.work-like-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.work-like-btn.text-red-500 svg {
+    fill: currentColor;
+}
+
+.work-like-btn:not(.text-red-500) svg {
+    fill: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .modal-info {
@@ -599,6 +660,12 @@
     
     .modal-image-caption {
         padding: 12px 20px;
+    }
+    
+    .work-metrics {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
     }
 }
 </style>
@@ -651,6 +718,8 @@ function updateThemeIcon(isDark) {
 document.addEventListener('DOMContentLoaded', function() {
     initTheme();
     initWorkSlideshows();
+    loadWorkMetrics();
+    incrementWorkViews();
 });
 
 // Work Slideshow functionality
@@ -763,6 +832,121 @@ function copyToClipboard(text) {
             button.classList.add('bg-gray-600', 'hover:bg-gray-700');
         }, 2000);
     });
+}
+
+// Load work metrics (views and likes)
+async function loadWorkMetrics() {
+    const viewsElement = document.querySelector('.work-views-count[data-work-slug]');
+    if (!viewsElement) return;
+    
+    const workSlug = viewsElement.getAttribute('data-work-slug');
+    
+    try {
+        const response = await fetch(`/api/portfolio/works/${workSlug}/stats`);
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        
+        // Update views count
+        viewsElement.textContent = data.stats.views_count || 0;
+        
+        // Update likes count and button state
+        const likesElement = document.querySelector('.work-likes-count[data-work-slug]');
+        const likeBtn = document.querySelector('.work-like-btn[data-work-slug]');
+        
+        if (likesElement) {
+            likesElement.textContent = data.stats.likes_count || 0;
+        }
+        
+        if (likeBtn && data.stats.is_liked !== undefined) {
+            if (data.stats.is_liked) {
+                likeBtn.classList.add('text-red-500');
+                likeBtn.querySelector('svg').style.fill = 'currentColor';
+            } else {
+                likeBtn.classList.remove('text-red-500');
+                likeBtn.querySelector('svg').style.fill = 'none';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error loading work metrics:', error);
+    }
+}
+
+// Toggle like for the work
+async function toggleWorkLike(workSlug) {
+    try {
+        const response = await fetch(`/api/portfolio/works/${workSlug}/like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            body: JSON.stringify({
+                user_id: 1 // For now, using a default user ID. In production, this should come from authentication
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to toggle like: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Update likes count
+        const likesElement = document.querySelector('.work-likes-count[data-work-slug]');
+        const likeBtn = document.querySelector('.work-like-btn[data-work-slug]');
+        
+        if (likesElement) {
+            likesElement.textContent = data.likes_count || 0;
+        }
+        
+        if (likeBtn) {
+            if (data.liked) {
+                likeBtn.classList.add('text-red-500');
+                likeBtn.querySelector('svg').style.fill = 'currentColor';
+            } else {
+                likeBtn.classList.remove('text-red-500');
+                likeBtn.querySelector('svg').style.fill = 'none';
+            }
+            
+            // Add animation
+            likeBtn.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                likeBtn.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+    } catch (error) {
+        console.error('Error toggling like:', error);
+        alert('Erro ao curtir/descurtir. Tente novamente.');
+    }
+}
+
+// Increment work views when page loads
+async function incrementWorkViews() {
+    const viewsElement = document.querySelector('.work-views-count[data-work-slug]');
+    if (!viewsElement) return;
+    
+    const workSlug = viewsElement.getAttribute('data-work-slug');
+    
+    try {
+        // Call the work detail endpoint to increment views
+        await fetch(`/api/portfolio/works/${workSlug}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        // Reload metrics after incrementing views
+        setTimeout(() => {
+            loadWorkMetrics();
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error incrementing work views:', error);
+    }
 }
 </script>
 @endpush
