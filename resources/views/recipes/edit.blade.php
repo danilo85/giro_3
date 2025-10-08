@@ -59,17 +59,17 @@
                     <div class="space-y-4">
                         <!-- Título -->
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Título da Receita <span class="text-red-500">*</span>
                             </label>
                             <input type="text" 
-                                   id="name" 
-                                   name="name" 
-                                   value="{{ old('name', $recipe->name) }}"
-                                   class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('name') border-red-500 @enderror" 
+                                   id="title" 
+                                   name="title" 
+                                   value="{{ old('title', $recipe->name) }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors @error('title') border-red-500 @enderror" 
                                    placeholder="Ex: Bolo de Chocolate Fofinho"
                                    required>
-                            @error('name')
+                            @error('title')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
