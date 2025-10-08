@@ -529,6 +529,24 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
         Route::post('/update-order', [PartnerController::class, 'updateOrder'])->name('update-order');
     });
 
+    // Utilities Module - Recipes (Módulo de Utilidades - Receitas)
+    Route::prefix('utilidades/receitas')->name('recipes.')->group(function () {
+        // CRUD de receitas
+        Route::get('/', [\App\Http\Controllers\RecipeController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\RecipeController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\RecipeController::class, 'store'])->name('store');
+        Route::get('/{recipe}', [\App\Http\Controllers\RecipeController::class, 'show'])->name('show');
+        Route::get('/{recipe}/edit', [\App\Http\Controllers\RecipeController::class, 'edit'])->name('edit');
+        Route::put('/{recipe}', [\App\Http\Controllers\RecipeController::class, 'update'])->name('update');
+        Route::delete('/{recipe}', [\App\Http\Controllers\RecipeController::class, 'destroy'])->name('destroy');
+        
+        // AJAX routes for status
+        Route::patch('/{recipe}/toggle-status', [\App\Http\Controllers\RecipeController::class, 'toggleStatus'])->name('toggle-status');
+        
+        // Image upload route
+        Route::post('/upload-image', [\App\Http\Controllers\RecipeController::class, 'uploadImage'])->name('upload-image');
+    });
+
     // File Management Module (Módulo de Gestão de Arquivos)
     Route::prefix('files')->name('files.')->group(function () {
         // File management routes
@@ -630,6 +648,10 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
     });
 }); // Fechamento do middleware ['auth', 'conditional.verified']
 
+// Public API Routes (no authentication required)
+// Ingredient search route for autocomplete
+Route::get('/utilidades/receitas/ingredients/search', [\App\Http\Controllers\RecipeController::class, 'searchIngredients'])->name('recipes.ingredients.search');
+
 // Notification API Routes (require auth but not email verification)
 Route::middleware(['auth'])->prefix('notifications/api')->name('notifications.api.')->group(function () {
     Route::get('/', [\App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('get');
@@ -686,6 +708,8 @@ Route::prefix('api/budget')->name('api.budget.')->group(function () {
             Route::get('/pipeline/api', [PortfolioController::class, 'pipelineApi'])->name('pipeline.api');
             Route::post('/pipeline/{orcamento}/create-work', [PortfolioController::class, 'createWorkFromBudget'])->name('pipeline.create-work');
         });
+
+
     });
 });
 

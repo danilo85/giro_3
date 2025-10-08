@@ -3,7 +3,6 @@
 @section('title', 'Upload de Assets')
 
 @section('content')
-<div class="min-h-screen bg-white dark:bg-gray-900">
     <!-- Tags de Navegação Rápida -->
     <div class="mb-6">
         <div class="flex flex-wrap gap-2">
@@ -36,6 +35,8 @@
             </span>
         </div>
     </div>
+
+<div class="min-h-screen bg-white dark:bg-gray-900">
 
     <!-- Header -->
     <div class="container mx-auto px-4 py-6">

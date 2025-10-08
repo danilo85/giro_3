@@ -625,6 +625,8 @@
                          </div>
                      </div>
 
+
+
                      <!-- Redes Sociais Section -->
                      <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_social') || 'true') }" 
                           x-init="$watch('open', value => localStorage.setItem('sidebar_social', JSON.stringify(value)))">
@@ -880,6 +882,83 @@
                                        class="ml-3">Upload</span>
                              </a>
 
+                         </div>
+                     </div>
+
+                     <!-- Utilities Section -->
+                     <div class="mt-8" x-data="{ open: JSON.parse(localStorage.getItem('sidebar_utilities') || 'true'), showTooltip: false }" 
+                          x-init="$watch('open', value => localStorage.setItem('sidebar_utilities', JSON.stringify(value)))">
+                         <!-- Botão do módulo quando não colapsado -->
+                         <button @click="open = !open" 
+                                 class="w-full flex items-center justify-between px-3 py-3 text-left text-sm font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider hover:text-purple-900 dark:hover:text-purple-100 transition-colors bg-gray-50 dark:bg-gray-800 rounded-md"
+                                 x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile"
+                                 x-transition:enter="transition ease-in-out duration-150"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in-out duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95">
+                             <span class="flex items-center">
+                                 <i class="fas fa-utensils w-5 h-5 mr-2"></i>
+                                 Utilidades
+                             </span>
+                             <svg class="w-4 h-4 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                             </svg>
+                         </button>
+                         
+                         <!-- Ícone principal quando colapsado com tooltip -->
+                         <div class="relative" x-show="$store.sidebar.collapsed && !$store.sidebar.isMobile">
+                             <button @mouseenter="showTooltip = true" 
+                                     @mouseleave="showTooltip = false"
+                                     class="{{ request()->routeIs('recipes.*') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md transition-colors w-full">
+                                 <i class="fas fa-utensils {{ request()->routeIs('recipes.*') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                             </button>
+                             
+                             <!-- Tooltip com sub-itens -->
+                             <div x-show="showTooltip" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0 transform scale-95"
+                                  x-transition:enter-end="opacity-100 transform scale-100"
+                                  x-transition:leave="transition ease-in duration-150"
+                                  x-transition:leave-start="opacity-100 transform scale-100"
+                                  x-transition:leave-end="opacity-0 transform scale-95"
+                                  class="absolute left-full top-0 ml-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
+                                  @mouseenter="showTooltip = true" 
+                                  @mouseleave="showTooltip = false">
+                                 <div class="px-3 py-2 text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
+                                     Utilidades
+                                 </div>
+                                 <a href="{{ route('recipes.index') }}" 
+                                    class="{{ request()->routeIs('recipes.index', 'recipes.show', 'recipes.create', 'recipes.edit') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-3 py-2 text-sm font-medium transition-colors">
+                                     <i class="fas fa-utensils {{ request()->routeIs('recipes.index', 'recipes.show', 'recipes.create', 'recipes.edit') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-4 h-4 mr-3"></i>
+                                     Receitas
+                                 </a>
+                             </div>
+                         </div>
+                         
+                         <!-- Links expandidos quando não colapsado -->
+                         <div class="mt-2 space-y-1" :class="{ 'mt-0': $store.sidebar.collapsed }" 
+                              x-show="open && (!$store.sidebar.collapsed || $store.sidebar.isMobile)" 
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0 transform scale-95"
+                              x-transition:enter-end="opacity-100 transform scale-100"
+                              x-transition:leave="transition ease-in duration-150"
+                              x-transition:leave-start="opacity-100 transform scale-100"
+                              x-transition:leave-end="opacity-0 transform scale-95">
+                             <a href="{{ route('recipes.index') }}" 
+                                class="{{ request()->routeIs('recipes.index', 'recipes.show', 'recipes.create', 'recipes.edit') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
+                                :class="{ 'justify-center': $store.sidebar.collapsed }">
+                                 <i class="fas fa-utensils {{ request()->routeIs('recipes.index', 'recipes.show', 'recipes.create', 'recipes.edit') ? 'text-blue-500 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }} flex-shrink-0 w-6 h-6"></i>
+                                 <span x-show="!$store.sidebar.collapsed || $store.sidebar.isMobile" 
+                                       x-transition:enter="transition ease-in-out duration-150"
+                                       x-transition:enter-start="opacity-0 transform scale-95"
+                                       x-transition:enter-end="opacity-100 transform scale-100"
+                                       x-transition:leave="transition ease-in-out duration-150"
+                                       x-transition:leave-start="opacity-100 transform scale-100"
+                                       x-transition:leave-end="opacity-0 transform scale-95"
+                                       class="ml-3">Receitas</span>
+                             </a>
                          </div>
                      </div>
 
