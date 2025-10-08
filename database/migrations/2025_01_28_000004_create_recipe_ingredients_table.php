@@ -11,21 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recipe_ingredients', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('recipe_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
-            $table->decimal('quantity', 8, 2);
-            $table->string('unit', 50);
-            $table->timestamps();
+        if (!Schema::hasTable('recipe_ingredients')) {
+            Schema::create('recipe_ingredients', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('recipe_id')->constrained()->onDelete('cascade');
+                $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
+                $table->decimal('quantity', 8, 2);
+                $table->string('unit', 50);
+                $table->timestamps();
 
-            // Unique constraint to prevent duplicate ingredients in the same recipe
-            $table->unique(['recipe_id', 'ingredient_id'], 'unique_recipe_ingredient');
+                // Unique constraint to prevent duplicate ingredients in the same recipe
+                $table->unique(['recipe_id', 'ingredient_id'], 'unique_recipe_ingredient');
 
-            // Indexes for better performance
-            $table->index(['recipe_id']);
-            $table->index(['ingredient_id']);
-        });
+                // Indexes for better performance
+                $table->index(['recipe_id']);
+                $table->index(['ingredient_id']);
+            });
+        }
     }
 
     /**
