@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('temp_files', function (Blueprint $table) {
-            $table->id();
-            $table->string('temp_id'); // ID temporário único
-            $table->string('nome_arquivo');
-            $table->text('url_arquivo');
-            $table->string('tipo_arquivo');
-            $table->bigInteger('tamanho');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->timestamps();
-            
-            $table->index('temp_id');
-            $table->index('user_id');
-            $table->index('created_at');
-        });
+        if (!Schema::hasTable('temp_files')) {
+            Schema::create('temp_files', function (Blueprint $table) {
+                $table->id();
+                $table->string('temp_id'); // ID temporário único
+                $table->string('nome_arquivo');
+                $table->text('url_arquivo');
+                $table->string('tipo_arquivo');
+                $table->bigInteger('tamanho');
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->timestamps();
+                
+                $table->index('temp_id');
+                $table->index('user_id');
+                $table->index('created_at');
+            });
+        }
     }
 
     /**
