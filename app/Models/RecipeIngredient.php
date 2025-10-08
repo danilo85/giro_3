@@ -42,7 +42,7 @@ class RecipeIngredient extends Model
      */
     public function getFormattedQuantityAttribute(): string
     {
-        return $this->quantity . ' ' . $this->unit;
+        return \App\Helpers\QuantityFormatter::formatWithUnit($this->quantity, $this->unit);
     }
 
     /**

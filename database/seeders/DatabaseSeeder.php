@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             NotificationLogSeeder::class,
             RecipeCategorySeeder::class,
             IngredientSeeder::class,
+            RecipeSeeder::class,
         ]);
     }
 }

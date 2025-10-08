@@ -18,7 +18,7 @@ class RecipeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['searchIngredients']);
+        $this->middleware('auth')->except(['searchIngredients', 'publicIndex', 'publicShow']);
     }
 
     /**
@@ -63,7 +63,7 @@ class RecipeController extends Controller
             $query->byServings($request->servings);
         }
 
-        $recipes = $query->get();
+        $recipes = $query->paginate(12)->withQueryString();
         $categories = RecipeCategory::withRecipeCount()->get();
 
         return view('recipes.index', compact('recipes', 'categories'));
@@ -326,5 +326,55 @@ class RecipeController extends Controller
                 'message' => 'Erro ao fazer upload da imagem.'
             ], 500);
         }
+    }
+
+    /**
+     * Display a public listing of active recipes.
+     */
+    public function publicIndex(Request $request)
+    {
+        $query = Recipe::with(['category', 'user'])
+            ->where('is_active', true)
+            ->latest();
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $query->search($request->search);
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->byCategory($request->category);
+        }
+
+        // Filter by preparation time
+        if ($request->filled('time')) {
+            $query->byPreparationTime($request->time);
+        }
+
+        // Filter by servings
+        if ($request->filled('servings')) {
+            $query->byServings($request->servings);
+        }
+
+        $recipes = $query->paginate(12);
+        $categories = RecipeCategory::withRecipeCount()->get();
+
+        return view('culinaria.index', compact('recipes', 'categories'));
+    }
+
+    /**
+     * Display a public recipe.
+     */
+    public function publicShow(Recipe $recipe)
+    {
+        // Only show active recipes to public
+        if (!$recipe->is_active) {
+            abort(404);
+        }
+        
+        $recipe->load(['category', 'recipeIngredients.ingredient', 'user']);
+        
+        return view('culinaria.show', compact('recipe'));
     }
 }

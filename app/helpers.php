@@ -46,3 +46,31 @@ if (!function_exists('formatarDataExtenso')) {
         return "Marília, {$mes}, {$dia} de {$ano}";
     }
 }
+
+if (!function_exists('formatQuantity')) {
+    /**
+     * Formatar quantidade para exibição mais limpa
+     * Remove decimais desnecessários e converte frações comuns para símbolos Unicode
+     * 
+     * @param mixed $quantity
+     * @return string
+     */
+    function formatQuantity($quantity)
+    {
+        return \App\Helpers\QuantityFormatter::format($quantity);
+    }
+}
+
+if (!function_exists('formatQuantityWithUnit')) {
+    /**
+     * Formatar quantidade com unidade e pluralização
+     * 
+     * @param mixed $quantity
+     * @param string $unit
+     * @return string
+     */
+    function formatQuantityWithUnit($quantity, $unit)
+    {
+        return \App\Helpers\QuantityFormatter::formatWithUnit($quantity, $unit);
+    }
+}

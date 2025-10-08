@@ -298,7 +298,22 @@
         </div>
     @endif
 
-    <!-- Botão Flutuante de Criação -->
+    <!-- Paginação -->
+    @if($recipes->hasPages())
+        <div class="mt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <!-- Informações da Paginação -->
+            <div class="pagination-info text-sm text-gray-600 dark:text-gray-400">
+                Mostrando {{ $recipes->firstItem() }} a {{ $recipes->lastItem() }} de {{ $recipes->total() }} resultados
+            </div>
+            
+            <!-- Links de Paginação -->
+            <div class="pagination-wrapper">
+                {{ $recipes->links('pagination.custom') }}
+            </div>
+        </div>
+    @endif
+
+</div> <!-- Botão Flutuante de Criação -->
     <div class="fixed bottom-6 right-6 z-50">
         <a href="{{ route('recipes.create') }}" 
            class="group fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center justify-center w-14 h-14"
@@ -336,7 +351,16 @@
         </div>
     </div>
 </div>
-
+<footer class="mt-8">
+    <div class="text-center py-6">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            © {{ date('Y') }} Danilo Miguel. Todos os direitos reservados.
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            Sistema de Gestão Financeira - Desenvolvido com Laravel
+        </p>
+    </div>
+</footer>
 @endsection
 
 @push('scripts')
@@ -504,4 +528,150 @@ function deleteRecipe(recipeId, recipeTitle) {
     };
 }
 </script>
+
+<style>
+/* Estilos de Paginação */
+.pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.page-item {
+    margin: 0 !important;
+}
+
+.page-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    padding: 0.5rem 0.75rem !important;
+    color: #374151 !important;
+    background-color: #ffffff !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.page-link:hover {
+    color: #ffffff !important;
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    transform: translateY(-1px) !important;
+}
+
+.page-item.active .page-link {
+    color: #ffffff !important;
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+.page-item.disabled .page-link {
+    color: #9ca3af !important;
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+.page-item.disabled .page-link:hover {
+    color: #9ca3af !important;
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    transform: none !important;
+}
+
+/* Pagination arrows */
+.page-link[rel="prev"],
+.page-link[rel="next"] {
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+}
+
+.page-link[rel="prev"]:before {
+    content: "‹";
+    margin-right: 0.25rem;
+}
+
+.page-link[rel="next"]:after {
+    content: "›";
+    margin-left: 0.25rem;
+}
+
+/* Pagination info text */
+.pagination-info {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination {
+        gap: 0.25rem;
+    }
+    
+    .page-link {
+        min-width: 40px !important;
+        height: 40px !important;
+        padding: 0.375rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .pagination-info {
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .page-link {
+        color: #e5e7eb !important;
+        background-color: #374151 !important;
+        border-color: #4b5563 !important;
+    }
+    
+    .page-link:hover {
+        color: #ffffff !important;
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+    }
+    
+    .page-item.active .page-link {
+        color: #ffffff !important;
+        background-color: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+    }
+    
+    .page-item.disabled .page-link {
+        color: #6b7280 !important;
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+    
+    .page-item.disabled .page-link:hover {
+        color: #6b7280 !important;
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+    
+    .pagination-info {
+        color: #9ca3af;
+    }
+}
+</style>
+
 @endpush

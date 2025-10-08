@@ -83,6 +83,10 @@ Route::get('/test-api', function () {
     return view('test-api');
 })->name('test-api');
 
+// Public Culinary Routes (no authentication required)
+Route::get('/culinaria', [App\Http\Controllers\RecipeController::class, 'publicIndex'])->name('culinaria.index');
+Route::get('/culinaria/{recipe}', [App\Http\Controllers\RecipeController::class, 'publicShow'])->name('culinaria.show');
+
 
 
 // Authentication Routes
