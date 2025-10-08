@@ -16,53 +16,53 @@ class RecipeCategorySeeder extends Seeder
         $categories = [
             [
                 'name' => 'Doces e Sobremesas',
-                'description' => 'Bolos, tortas, pudins, mousses e outras delícias doces',
-                'is_active' => true,
+                'slug' => 'doces-e-sobremesas',
+                'color' => '#F59E0B',
             ],
             [
                 'name' => 'Pratos Principais',
-                'description' => 'Carnes, peixes, aves e pratos vegetarianos para refeições principais',
-                'is_active' => true,
+                'slug' => 'pratos-principais',
+                'color' => '#EF4444',
             ],
             [
                 'name' => 'Entradas e Aperitivos',
-                'description' => 'Petiscos, canapés, saladas e pratos para começar a refeição',
-                'is_active' => true,
+                'slug' => 'entradas-e-aperitivos',
+                'color' => '#3B82F6',
             ],
             [
                 'name' => 'Sopas e Caldos',
-                'description' => 'Sopas cremosas, caldos nutritivos e consommés',
-                'is_active' => true,
+                'slug' => 'sopas-e-caldos',
+                'color' => '#8B5CF6',
             ],
             [
                 'name' => 'Massas e Risotos',
-                'description' => 'Massas frescas, secas, risotos e pratos com arroz',
-                'is_active' => true,
+                'slug' => 'massas-e-risotos',
+                'color' => '#DC2626',
             ],
             [
                 'name' => 'Bebidas',
-                'description' => 'Sucos, vitaminas, drinks, cafés e chás especiais',
-                'is_active' => true,
+                'slug' => 'bebidas',
+                'color' => '#10B981',
             ],
             [
                 'name' => 'Pães e Panificação',
-                'description' => 'Pães caseiros, bolos salgados, biscoitos e produtos de panificação',
-                'is_active' => true,
+                'slug' => 'paes-e-panificacao',
+                'color' => '#F97316',
             ],
             [
                 'name' => 'Saladas',
-                'description' => 'Saladas verdes, de frutas, grãos e acompanhamentos frescos',
-                'is_active' => true,
+                'slug' => 'saladas',
+                'color' => '#06B6D4',
             ],
             [
                 'name' => 'Molhos e Temperos',
-                'description' => 'Molhos caseiros, marinadas, temperos e condimentos',
-                'is_active' => true,
+                'slug' => 'molhos-e-temperos',
+                'color' => '#84CC16',
             ],
             [
                 'name' => 'Comida Vegetariana',
-                'description' => 'Pratos sem carne, veganos e vegetarianos',
-                'is_active' => true,
+                'slug' => 'comida-vegetariana',
+                'color' => '#22C55E',
             ],
         ];
 
