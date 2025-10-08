@@ -15,10 +15,11 @@ class PortfolioWorkLike extends Model
         'portfolio_work_id',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    // Commented out because we now support anonymous user IDs
+    // public function user(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function portfolioWork(): BelongsTo
     {

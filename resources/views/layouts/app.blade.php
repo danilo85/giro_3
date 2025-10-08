@@ -84,6 +84,44 @@
             align-items: center;
         }
         
+        /* Sidebar Discrete Scrollbar Styles */
+        .sidebar-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 3px;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.3);
+            border-radius: 3px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(156, 163, 175, 0.6);
+        }
+        
+        /* Dark theme scrollbar */
+        .dark .sidebar-scroll {
+            scrollbar-color: rgba(75, 85, 99, 0.4) transparent;
+        }
+        
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(75, 85, 99, 0.4);
+        }
+        
+        .dark .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(75, 85, 99, 0.7);
+        }
+        
         /* Mobile layout fixes */
         @media (max-width: 1023px) {
             .flex-1 {
@@ -182,7 +220,7 @@
                 </div>
                 
                 <!-- Navigation -->
-                 <nav class="flex-1 px-2 space-y-1 overflow-y-auto" :class="$store.sidebar.isMobile ? 'py-2' : 'py-4'">
+                 <nav class="flex-1 px-2 space-y-1 overflow-y-auto sidebar-scroll" :class="$store.sidebar.isMobile ? 'py-2' : 'py-4'">
                      <!-- User Avatar and Info -->
                      <div class="flex flex-col items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700" :class="{ 'justify-center': $store.sidebar.collapsed && !$store.sidebar.isMobile, 'px-4': $store.sidebar.isMobile }">
                          <a href="{{ route('dashboard') }}" class="flex flex-col items-center">

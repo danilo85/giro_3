@@ -434,7 +434,7 @@ class PortfolioApiController extends Controller
     public function toggleLike(Request $request, PortfolioWork $work)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|string'
         ]);
 
         $userId = $request->user_id;

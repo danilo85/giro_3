@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="light only">
     <title>Danilo Miguel</title>
     
     <!-- Favicon -->
@@ -54,6 +55,28 @@
     </script>
     
     <style>
+        /* Prevent forced dark mode by browsers */
+        :root {
+            color-scheme: light only;
+        }
+
+        html {
+            color-scheme: light only;
+        }
+
+        body {
+            color-scheme: light only;
+        }
+
+        /* Additional protection against browser dark mode */
+        * {
+            color-scheme: light only !important;
+        }
+
+        input, textarea, select, button {
+            color-scheme: light only !important;
+        }
+
         :root {
             --primary-dark: #2b363f;
             --primary-orange: #f8aa22;
@@ -2604,6 +2627,23 @@
             }
         }
         
+        // Function to get or generate unique user ID
+        function getUniqueUserId() {
+            // If user is authenticated, use the real ID
+            @auth
+                return {{ auth()->id() }};
+            @else
+                // For anonymous visitors, generate unique ID based on localStorage
+                let anonymousId = localStorage.getItem('anonymous_user_id');
+                if (!anonymousId) {
+                    // Generate unique ID based on timestamp + random
+                    anonymousId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('anonymous_user_id', anonymousId);
+                }
+                return anonymousId;
+            @endauth
+        }
+        
         // Toggle like for the current work
         async function toggleLike() {
             console.log('Toggle like called for work:', currentWorkData.workSlug);
@@ -2614,7 +2654,7 @@
             
             try {
                 const formData = new FormData();
-                formData.append('user_id', '1'); // Usar user_id válido
+                formData.append('user_id', getUniqueUserId());
                 
                 const response = await fetch(`/api/portfolio/works/${currentWorkData.workSlug}/like`, {
                     method: 'POST',
