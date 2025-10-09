@@ -42,50 +42,59 @@ graph TD
 
 ## 2. Technology Description
 
-- Frontend: Laravel Blade Templates + Alpine.js + Tailwind CSS
-- Backend: Laravel 10 + PHP 8.1+
-- Database: MySQL (via Laravel Eloquent ORM)
-- File Storage: Laravel Storage (local/cloud)
-- Validation: Laravel Form Requests
-- Authentication: Laravel Sanctum (sistema existente)
+* Frontend: Laravel Blade Templates + Alpine.js + Tailwind CSS
+
+* Backend: Laravel 10 + PHP 8.1+
+
+* Database: MySQL (via Laravel Eloquent ORM)
+
+* File Storage: Laravel Storage (local/cloud)
+
+* Validation: Laravel Form Requests
+
+* Authentication: Laravel Sanctum (sistema existente)
 
 ## 3. Route definitions
 
-| Route | Purpose |
-|-------|---------|
-| /utilities | Página principal do módulo utilidades (redirect para receitas) |
-| /utilities/recipes | Listagem de receitas com busca e filtros |
-| /utilities/recipes/create | Formulário para criar nova receita |
-| /utilities/recipes/{id} | Visualização detalhada de uma receita |
-| /utilities/recipes/{id}/edit | Formulário para editar receita existente |
-| /utilities/recipes/{id}/delete | Exclusão de receita (POST) |
-| /api/ingredients/search | API para autocomplete de ingredientes |
-| /api/recipes/upload-image | API para upload de imagens |
+| Route                          | Purpose                                                        |
+| ------------------------------ | -------------------------------------------------------------- |
+| /utilities                     | Página principal do módulo utilidades (redirect para receitas) |
+| /utilities/recipes             | Listagem de receitas com busca e filtros                       |
+| /utilities/recipes/create      | Formulário para criar nova receita                             |
+| /utilities/recipes/{id}        | Visualização detalhada de uma receita                          |
+| /utilities/recipes/{id}/edit   | Formulário para editar receita existente                       |
+| /utilities/recipes/{id}/delete | Exclusão de receita (POST)                                     |
+| /api/ingredients/search        | API para autocomplete de ingredientes                          |
+| /api/recipes/upload-image      | API para upload de imagens                                     |
 
 ## 4. API definitions
 
 ### 4.1 Core API
 
 **Busca de ingredientes para autocomplete**
+
 ```
 GET /api/ingredients/search?q={query}
 ```
 
 Request:
-| Param Name | Param Type | isRequired | Description |
-|------------|------------|------------|-------------|
-| q | string | true | Termo de busca para ingredientes |
-| limit | integer | false | Limite de resultados (padrão: 10) |
+
+| Param Name | Param Type | isRequired | Description                       |
+| ---------- | ---------- | ---------- | --------------------------------- |
+| q          | string     | true       | Termo de busca para ingredientes  |
+| limit      | integer    | false      | Limite de resultados (padrão: 10) |
 
 Response:
-| Param Name | Param Type | Description |
-|------------|------------|-------------|
-| data | array | Lista de ingredientes encontrados |
-| data[].id | integer | ID do ingrediente |
-| data[].name | string | Nome do ingrediente |
-| data[].unit | string | Unidade padrão (g, ml, unidade, etc.) |
+
+| Param Name   | Param Type | Description                           |
+| ------------ | ---------- | ------------------------------------- |
+| data         | array      | Lista de ingredientes encontrados     |
+| data\[].id   | integer    | ID do ingrediente                     |
+| data\[].name | string     | Nome do ingrediente                   |
+| data\[].unit | string     | Unidade padrão (g, ml, unidade, etc.) |
 
 Example Response:
+
 ```json
 {
   "data": [
@@ -104,21 +113,24 @@ Example Response:
 ```
 
 **Upload de imagem da receita**
+
 ```
 POST /api/recipes/upload-image
 ```
 
 Request:
-| Param Name | Param Type | isRequired | Description |
-|------------|------------|------------|-------------|
-| image | file | true | Arquivo de imagem (jpg, png, webp) |
+
+| Param Name | Param Type | isRequired | Description                        |
+| ---------- | ---------- | ---------- | ---------------------------------- |
+| image      | file       | true       | Arquivo de imagem (jpg, png, webp) |
 
 Response:
-| Param Name | Param Type | Description |
-|------------|------------|-------------|
-| success | boolean | Status do upload |
-| path | string | Caminho da imagem salva |
-| url | string | URL pública da imagem |
+
+| Param Name | Param Type | Description             |
+| ---------- | ---------- | ----------------------- |
+| success    | boolean    | Status do upload        |
+| path       | string     | Caminho da imagem salva |
+| url        | string     | URL pública da imagem   |
 
 ## 5. Server architecture diagram
 
@@ -220,6 +232,7 @@ erDiagram
 ### 6.2 Data Definition Language
 
 **Tabela de Receitas (recipes)**
+
 ```sql
 -- create table
 CREATE TABLE recipes (
@@ -249,6 +262,7 @@ CREATE INDEX idx_recipes_is_active ON recipes(is_active);
 ```
 
 **Tabela de Ingredientes (ingredients)**
+
 ```sql
 -- create table
 CREATE TABLE ingredients (
@@ -281,7 +295,8 @@ INSERT INTO ingredients (name, default_unit) VALUES
 ('Feijão', 'g');
 ```
 
-**Tabela de Ingredientes da Receita (recipe_ingredients)**
+**Tabela de Ingredientes da Receita (recipe\_ingredients)**
+
 ```sql
 -- create table
 CREATE TABLE recipe_ingredients (
@@ -303,7 +318,8 @@ CREATE INDEX idx_recipe_ingredients_recipe_id ON recipe_ingredients(recipe_id);
 CREATE INDEX idx_recipe_ingredients_ingredient_id ON recipe_ingredients(ingredient_id);
 ```
 
-**Tabela de Categorias de Receitas (recipe_categories)**
+**Tabela de Categorias de Receitas (recipe\_categories)**
+
 ```sql
 -- create table
 CREATE TABLE recipe_categories (
@@ -329,3 +345,4 @@ INSERT INTO recipe_categories (name, slug, color) VALUES
 ('Sobremesas', 'sobremesas', '#F97316'),
 ('Lanches', 'lanches', '#06B6D4');
 ```
+

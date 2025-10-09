@@ -76,13 +76,12 @@
                         
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                E-mail *
+                                E-mail
                             </label>
                             <input type="email" 
                                    id="email" 
                                    name="email" 
                                    value="{{ old('email') }}"
-                                   required
                                    onkeyup="updatePreview()"
                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('email') border-red-500 @enderror">
                             @error('email')
