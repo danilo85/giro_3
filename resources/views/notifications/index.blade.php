@@ -191,24 +191,24 @@
                 <h3 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Notificações</h3>
                 
                 <!-- Controles de Ação em Lote -->
-                <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <div class="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-4 w-full sm:w-auto">
                     <!-- Selecionar Todas -->
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-2 flex-shrink-0">
                         <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" 
                                class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700">
-                        <label for="selectAll" class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Selecionar Todas</label>
+                        <label for="selectAll" class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Selecionar Todas</label>
                     </div>
                     
                     <!-- Ações em Lote -->
-                    <div class="flex items-center space-x-2">
-                        <select id="bulkAction" class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-xs sm:text-sm flex-1 sm:flex-none">
+                    <div class="flex items-center space-x-2 w-full sm:w-auto min-w-0">
+                        <select id="bulkAction" class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-xs sm:text-sm w-full sm:w-auto sm:min-w-[140px] max-w-[200px]">
                             <option value="">Ações em Lote</option>
                             <option value="mark_read">Marcar como Lidas</option>
                             <option value="mark_unread">Marcar como Não Lidas</option>
                             <option value="delete">Excluir</option>
                         </select>
                         <button onclick="executeBulkAction()" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap">
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0">
                             Aplicar
                         </button>
                     </div>

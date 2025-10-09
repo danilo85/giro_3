@@ -68,7 +68,12 @@ class PagamentoController extends Controller
         // Carregar orçamentos para o filtro
         $orcamentos = Orcamento::whereHas('cliente', function($q) {
             $q->where('user_id', Auth::id());
-        })->with('cliente')->orderBy('created_at', 'desc')->get();
+        })
+        ->where('status', 'aprovado')
+        ->whereRaw('valor_total > (SELECT COALESCE(SUM(valor), 0) FROM pagamentos WHERE orcamento_id = orcamentos.id)')
+        ->with('cliente')
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         // Calcular totais para os cards de resumo
         $baseQuery = Pagamento::whereHas('orcamento', function($q) {
@@ -111,7 +116,12 @@ class PagamentoController extends Controller
 
         $orcamentos = Orcamento::whereHas('cliente', function($q) {
             $q->where('user_id', Auth::id());
-        })->with('cliente')->orderBy('created_at', 'desc')->get();
+        })
+        ->where('status', 'aprovado')
+        ->whereRaw('valor_total > (SELECT COALESCE(SUM(valor), 0) FROM pagamentos WHERE orcamento_id = orcamentos.id)')
+        ->with('cliente')
+        ->orderBy('created_at', 'desc')
+        ->get();
         
         $bancos = Bank::where('user_id', Auth::id())
                      ->where('ativo', true)
@@ -260,7 +270,15 @@ class PagamentoController extends Controller
 
         $orcamentos = Orcamento::whereHas('cliente', function($q) {
             $q->where('user_id', Auth::id());
-        })->with('cliente')->orderBy('created_at', 'desc')->get();
+        })
+        ->where(function($query) use ($pagamento) {
+            $query->where('status', 'aprovado')
+                  ->whereRaw('valor_total > (SELECT COALESCE(SUM(valor), 0) FROM pagamentos WHERE orcamento_id = orcamentos.id)')
+                  ->orWhere('id', $pagamento->orcamento_id); // Incluir o orçamento atual
+        })
+        ->with('cliente')
+        ->orderBy('created_at', 'desc')
+        ->get();
         
         $bancos = Bank::where('user_id', Auth::id())
                      ->where('ativo', true)
