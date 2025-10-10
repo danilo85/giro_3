@@ -615,8 +615,7 @@ Route::middleware(['auth', 'conditional.verified'])->group(function () {
             return view('debug.session-check');
         })->name('session-check');
 
-        // Include test logs route
-        include __DIR__ . '/test-logs.php';
+
 
         Route::post('/test-csrf', function () {
             return response()->json([
