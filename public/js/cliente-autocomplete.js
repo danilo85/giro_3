@@ -256,7 +256,8 @@ class ClienteAutocomplete {
         const backgroundClass = isEven ? 'bg-gray-50 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700';
         const textClass = 'text-gray-900 dark:text-white';
         
-        clienteCard.className = `relative ${backgroundClass} border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow`;
+        // Usar largura total para melhor exibição do nome do cliente
+        clienteCard.className = `relative ${backgroundClass} border border-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow w-full col-span-full`;
         clienteCard.setAttribute('data-cliente-id', cliente.id);
         
         const bgColor = type === 'existing' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
@@ -266,24 +267,26 @@ class ClienteAutocomplete {
         clienteCard.innerHTML = `
             <input type="checkbox" name="clientes[]" value="${inputValue}" checked class="hidden">
             
-            <div class="flex items-center space-x-4">
-                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                    ${cliente.nome.substring(0, 2).toUpperCase()}
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4 flex-1 min-w-0">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                        ${cliente.nome.substring(0, 2).toUpperCase()}
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <p class="text-base font-medium ${textClass} break-words">${cliente.nome}</p>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${bgColor} mt-1">
+                            ${label}
+                        </span>
+                    </div>
                 </div>
                 
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium ${textClass} truncate">${cliente.nome}</p>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${bgColor}">
-                        ${label}
-                    </span>
-                </div>
+                <button type="button" class="ml-4 text-gray-400 hover:text-red-500 remove-cliente flex-shrink-0" data-cliente-id="${cliente.id}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
-            
-            <button type="button" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 remove-cliente" data-cliente-id="${cliente.id}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
         `;
         
         this.container.appendChild(clienteCard);
@@ -293,6 +296,9 @@ class ClienteAutocomplete {
         removeBtn.addEventListener('click', () => {
             this.removeCliente(cliente.id);
         });
+        
+        // Atualizar o layout do container para acomodar melhor o card
+        this.updateContainerLayout();
     }
 
     removeCliente(clienteId) {
@@ -309,8 +315,26 @@ class ClienteAutocomplete {
                 this.hidden.value = this.selectedClientes[0];
             }
             
-            // Recalcular cores após remoção
+            // Atualizar layout e cores após remoção
+            this.updateContainerLayout();
             this.updateAlternatingColors();
+        }
+    }
+
+    updateContainerLayout() {
+        if (!this.container) return;
+        
+        const clienteCount = this.container.children.length;
+        
+        // Ajustar o layout do container baseado no número de clientes
+        if (clienteCount === 0) {
+            this.container.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4';
+        } else if (clienteCount === 1) {
+            // Para um cliente, usar largura total
+            this.container.className = 'grid grid-cols-1 gap-3 mb-4';
+        } else {
+            // Para múltiplos clientes, usar grid responsivo
+            this.container.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4';
         }
     }
 

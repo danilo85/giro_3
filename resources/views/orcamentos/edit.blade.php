@@ -100,7 +100,7 @@
                         </div>
                         
                         <!-- Container para clientes selecionados -->
-                        <div id="clientes_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+                        <div id="clientes_container" class="w-full mb-4">
                             <!-- Clientes selecionados aparecerão aqui -->
                         </div>
                         
@@ -117,8 +117,6 @@
                             </a>
                         </div>
                     </div>
-
-                </div>
 
                     <!-- Modelo de Proposta -->
                     <div>
@@ -609,10 +607,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Adicionar tag do cliente atual
     const clienteTagsContainer = document.getElementById('clientes_container');
     const tag = document.createElement('div');
-    tag.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+    tag.className = 'w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-700';
     tag.innerHTML = `
-        <span>${clienteAtual.nome} - ${clienteAtual.email}</span>
-        <button type="button" class="ml-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200" onclick="removeClienteTag()">
+        <div class="flex items-center space-x-3 flex-1 min-w-0">
+            <div class="w-8 h-8 bg-green-200 dark:bg-green-800 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-green-800 dark:text-green-200 break-words">${clienteAtual.nome}</p>
+                <p class="text-xs text-green-600 dark:text-green-400 break-words">${clienteAtual.email}</p>
+            </div>
+        </div>
+        <button type="button" class="ml-3 p-1 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 hover:bg-green-200 dark:hover:bg-green-800 rounded-full flex-shrink-0" onclick="removeClienteTag()">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
