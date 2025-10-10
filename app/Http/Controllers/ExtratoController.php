@@ -31,8 +31,9 @@ class ExtratoController extends Controller
             abort(403, 'Token inválido ou expirado');
         }
         
-        // Buscar orçamentos do cliente com seus pagamentos
+        // Buscar orçamentos do cliente com seus pagamentos (apenas aprovados e quitados)
         $orcamentos = Orcamento::where('cliente_id', $cliente_id)
+            ->whereIn('status', ['aprovado', 'quitado'])
             ->with(['pagamentos' => function($query) {
                 $query->orderBy('data_pagamento', 'desc');
             }])

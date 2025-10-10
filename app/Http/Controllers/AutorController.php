@@ -30,18 +30,34 @@ class AutorController extends Controller
 
         // Calcular estatísticas antes da paginação (apenas para o usuário logado)
         $totalAutores = Autor::forUser(Auth::id())->count();
-        $totalOrcamentos = Autor::forUser(Auth::id())->withCount('orcamentos')->get()->sum('orcamentos_count');
+        $totalOrcamentos = Autor::forUser(Auth::id())->withCount(['orcamentos' => function($query) {
+            $query->whereHas('cliente', function($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }])->get()->sum('orcamentos_count');
         $valorTotalOrcamentos = Autor::forUser(Auth::id())->with(['orcamentos' => function($query) {
-            $query->select('orcamentos.id', 'valor_total');
+            $query->select('orcamentos.id', 'valor_total')
+                  ->whereHas('cliente', function($q) {
+                      $q->where('user_id', Auth::id());
+                  })
+                  ->where('status', '!=', 'rejeitado');
         }])->get()->sum(function($autor) {
             return $autor->orcamentos->sum('valor_total');
         });
         $autoresComWhatsapp = Autor::forUser(Auth::id())->whereNotNull('whatsapp')->where('whatsapp', '!=', '')->count();
 
         // Buscar autores com orçamentos e contagem
-        $autores = $query->withCount('orcamentos')
+        $autores = $query->withCount(['orcamentos' => function($query) {
+                $query->whereHas('cliente', function($q) {
+                    $q->where('user_id', Auth::id());
+                });
+            }])
             ->with(['orcamentos' => function($query) {
-                $query->select('orcamentos.id', 'valor_total');
+                $query->select('orcamentos.id', 'valor_total')
+                      ->whereHas('cliente', function($q) {
+                          $q->where('user_id', Auth::id());
+                      })
+                      ->where('status', '!=', 'rejeitado');
             }])
             ->paginate(15)
             ->appends($request->query());
@@ -108,14 +124,20 @@ class AutorController extends Controller
         // Carrega os orçamentos do autor com relacionamentos necessários
         $autor->load(['orcamentos' => function($query) {
             $query->with(['cliente', 'autores', 'pagamentos'])
+                  ->whereHas('cliente', function($q) {
+                      $q->where('user_id', Auth::id());
+                  })
                   ->orderBy('created_at', 'desc');
         }]);
         
         // Cálculos para cards de resumo
         $orcamentos = $autor->orcamentos;
         
-        // Valores totais gerados
-        $valorTotalGerado = $orcamentos->sum('valor_total');
+        // Valores totais gerados - apenas orçamentos com pagamentos
+        $valorTotalGerado = $orcamentos->filter(function($orcamento) {
+            return $orcamento->pagamentos->sum('valor') > 0;
+        })->sum('valor_total');
+        
         $valorTotalPago = $orcamentos->sum(function($orcamento) {
             return $orcamento->pagamentos->sum('valor');
         });

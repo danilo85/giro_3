@@ -18,7 +18,8 @@ class ClienteController extends Controller
     {
         $query = Cliente::forUser(Auth::id())->withCount('orcamentos')
             ->with(['orcamentos' => function($query) {
-                $query->select('cliente_id', 'valor_total');
+                $query->select('cliente_id', 'valor_total')
+                      ->where('status', '!=', 'rejeitado');
             }])
             ->orderBy('nome');
 
@@ -39,7 +40,7 @@ class ClienteController extends Controller
         $totalOrcamentos = Cliente::forUser(Auth::id())->withCount('orcamentos')->get()->sum('orcamentos_count');
         $valorTotal = \App\Models\Orcamento::whereHas('cliente', function($q) {
             $q->where('user_id', Auth::id());
-        })->sum('valor_total');
+        })->where('status', '!=', 'rejeitado')->sum('valor_total');
         $novosEsteMes = Cliente::forUser(Auth::id())->where('created_at', '>=', now()->startOfMonth())->count();
 
         return view('clientes.index', compact('clientes', 'totalOrcamentos', 'valorTotal', 'novosEsteMes'));
